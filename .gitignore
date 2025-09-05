@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Sensitive Data
+.env
+
+# Build Artifacts (if your project creates these)
+/build
+/dist
+
+# IDE and OS Files
+.DS_Store
+.vscode/
+
+# Logs
+npm-debug.log
+*.log
