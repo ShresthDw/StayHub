@@ -23,7 +23,9 @@ jobs:
             set -e
 
             cd /home/ec2-user/apps/StayHub
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
+
 
             # Backend
             cd server
