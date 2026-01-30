@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { icons } from '../constants.jsx';
+import BrandLogo from './BrandLogo.jsx';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -11,9 +12,8 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                     {/* Brand Section */}
                     <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
-                            <span className="text-red-500">{icons.heart}</span>
-                            <span className="text-xl font-bold text-white">StayHub24</span>
+                        <div className="text-teal-300">
+                            <BrandLogo />
                         </div>
                         <p className="text-gray-400 text-sm">
                             Discover unique stays and unforgettable experiences around the world.

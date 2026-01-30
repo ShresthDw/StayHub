@@ -1,8 +1,10 @@
-// VITE_API_URL is configured in Vercel. The fallback keeps production working
-// until that environment variable is added in the Vercel dashboard.
-export const API_BASE_URL = `${(
-    import.meta.env.VITE_API_URL || 'https://stayhub-backend-qah8.onrender.com'
-).replace(/\/$/, '')}/api`;
+// VITE_API_URL can be overridden per deployment. Render is the production fallback.
+const API_GATEWAY_URL = (
+  import.meta.env.VITE_API_URL || 'https://stayhub-backend-qah8.onrender.com'
+).replace(/\/$/, '');
+
+export const API_BASE_URL = `${API_GATEWAY_URL}/api`;
+
 export const PROPERTY_TYPES = ['apartment', 'house', 'resort', 'villa', 'hotel', 'cottage', 'hostel'];
 export const ROOM_TYPES = ['entire_place', 'private_room', 'shared_room'];
 export const STAY_TYPES = ['daily', 'monthly'];
@@ -10,11 +12,6 @@ export const FACILITY_OPTIONS = ['WiFi', 'Parking', 'AC', 'Gym', 'Laundry', 'Bal
 export const ROOM_CATEGORIES = ['apartment', 'house', 'resort', 'villa', 'hotel', 'cottage', 'hostel'];
 
 export const hasCoordinates = (loc) => Number.isFinite(loc?.lat) && Number.isFinite(loc?.lng);
-export const getSafeDistance = (value, fallback = 10) => {
-    const n = Number.parseFloat(value);
-    return Number.isFinite(n) && n > 0 ? n : fallback;
-};
-
 const getRoomText = (room) => `${room?.propertyType || ''} ${room?.roomType || ''} ${room?.title || ''} ${room?.description || ''}`.toLowerCase();
 
 export const inferRoomCategory = (room) => {

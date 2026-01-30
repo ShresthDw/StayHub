@@ -42,6 +42,7 @@ test-*.js
 tests/
 test/
 __tests__/
+/local-testing/
 
 # Local documentation and reports (not published with the application source)
 /mdfiles/

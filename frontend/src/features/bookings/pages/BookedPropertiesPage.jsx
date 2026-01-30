@@ -21,9 +21,9 @@ const BookedPropertiesPage = () => {
 
     if (currentUser?.role !== 'owner') {
         return (
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
+                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
                 </div>
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
                     <p className="text-gray-500 dark:text-gray-400">Only property owners can view booked properties. Become a host to start receiving bookings!</p>
@@ -33,9 +33,9 @@ const BookedPropertiesPage = () => {
     }
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="mb-8">
-                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">View all your properties that have active or upcoming bookings.</p>
             </div>
 

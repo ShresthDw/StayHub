@@ -19,9 +19,9 @@ const BookingsPage = () => {
     }
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="mb-8">
-                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">Host Bookings</h1>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">Host Bookings</h1>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Track all guest reservations across your listed properties.</p>
             </div>
 

@@ -18,10 +18,10 @@ const Toast = ({ message, type, onClose }) => {
     if (!message) return null;
 
     const bgColor = type === 'success' 
-        ? 'bg-green-500 text-white' 
+        ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white' 
         : type === 'error'
-        ? 'bg-red-500 text-white'
-        : 'bg-blue-500 text-white';
+        ? 'bg-rose-600 text-white'
+        : 'bg-cyan-600 text-white';
 
     return (
         <div

@@ -28,7 +28,7 @@ const CityCard = ({ city, imageUrl, roomCount, onClick }) => {
 	);
 };
 
-// ✅ OPTIMIZATION: Memoize to prevent re-renders when props haven't changed
+// OPTIMIZATION: Memoize to prevent re-renders when props haven't changed
 export default React.memo(CityCard, (prevProps, nextProps) => {
 	return prevProps.city === nextProps.city && prevProps.roomCount === nextProps.roomCount;
 });

@@ -19,12 +19,17 @@ if (!process.env.GEOAPIFY_API_KEY) {
 const app = express();
 
 // app.use(cors({ credentials: true }));
+const configuredFrontendOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean);
+
 const allowedOrigins = [
     "http://localhost:5173", // Vite local
     "http://localhost:3000", // CRA local (if applicable)
     "https://stay-hub-psi.vercel.app", // Production frontend
-    process.env.FRONTEND_URL
-].filter(Boolean);
+    ...configuredFrontendOrigins
+];
 
 app.use(
     cors({

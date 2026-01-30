@@ -239,7 +239,7 @@ export const logout = async (req, res) => {
 
 export const getWishlist = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location propertyType roomType');
+        const user = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
@@ -299,7 +299,7 @@ export const toggleWishlist = async (req, res) => {
         await user.save();
 
         // Populate wishlist for response
-        const updatedUser = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location propertyType roomType');
+        const updatedUser = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
 
         // Send wishlist IDs for Redux store (not full objects)
         const wishlistIds = updatedUser.wishlist.map(item => item._id.toString());

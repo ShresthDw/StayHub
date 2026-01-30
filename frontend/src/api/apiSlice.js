@@ -176,7 +176,8 @@ export const apiSlice = createApi({
 
         getPublicRoomsByType: builder.query({
             query: ({ propertyType, filters, searchLocation, checkInDate, checkOutDate, page = 1 }) => {
-                const params = { isActive: 'true', page, limit: 5, propertyType };
+                // Load more than the five visible cards so horizontal sections can scroll.
+                const params = { isActive: 'true', page, limit: 10, propertyType };
 
                 if (filters?.amenities?.length > 0) params.amenities = filters.amenities.join(',');
                 if (checkInDate) params.checkInDate = checkInDate;

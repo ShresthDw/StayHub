@@ -1,7 +1,6 @@
 // features/rooms/roomController.js
 import Room from '../../models/Room.js';
 import Booking from '../../models/Booking.js';
-import { getActualRoadDistance, getRoomCoordinates, filterRoomsByDistance } from './roomService.js';
 
 // Helper function to check if a room is available for a date range
 const isRoomAvailable = async (roomId, checkInDate, checkOutDate) => {
@@ -89,37 +88,6 @@ export const getRooms = async (req, res) => {
             });
         }
 
-        // Location filter: fetch all matching rooms (for distance calculation)
-        let dbQuery = Room.find(query)
-            .select(projectionFields)
-            .populate('hostId', 'name email phone avatar')
-            .lean(); // OPTIMIZATION 2: Use .lean() for read operations (15-20% faster)
-        
-        let allRooms = await dbQuery;
-        // Filter by date availability if both dates provided
-        if (checkInDate && checkOutDate) {
-            const availableRooms = [];
-            for (const room of allRooms) {
-                const isAvailable = await isRoomAvailable(room._id, checkInDate, checkOutDate);
-                if (isAvailable) {
-                    availableRooms.push(room);
-                }
-            }
-            allRooms = availableRooms;
-        }
-
-        if (allRooms.length === 0) {
-            return res.status(200).json({
-                rooms: [],
-                pagination: {
-                    page: pageNum,
-                    limit: pageSize,
-                    total: 0,
-                    pages: 0
-                }
-            });
-        }
-
         const userLat = parseFloat(lat);
         const userLng = parseFloat(lng);
         const maxDistKm = parseFloat(maxDistance);
@@ -129,11 +97,38 @@ export const getRooms = async (req, res) => {
             return res.status(400).json({ message: 'Invalid location or distance parameters' });
         }
 
-        const roomsWithDistance = await filterRoomsByDistance(allRooms, userLat, userLng, maxDistKm);
-        // Apply pagination to filtered results (client-side since we filtered by distance)
-        const paginatedRooms = roomsWithDistance.slice(skip, skip + pageSize);
-        const total = roomsWithDistance.length;
-        
+        const geoQuery = {
+            ...query,
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [userLng, userLat]
+                    },
+                    $maxDistance: maxDistKm * 1000
+                }
+            }
+        };
+
+        let nearbyRooms = await Room.find(geoQuery)
+            .select(projectionFields)
+            .populate('hostId', 'name email phone avatar')
+            .lean();
+
+        if (checkInDate && checkOutDate) {
+            const availableRooms = [];
+            for (const room of nearbyRooms) {
+                const isAvailable = await isRoomAvailable(room._id, checkInDate, checkOutDate);
+                if (isAvailable) {
+                    availableRooms.push(room);
+                }
+            }
+            nearbyRooms = availableRooms;
+        }
+
+        const total = nearbyRooms.length;
+        const paginatedRooms = nearbyRooms.slice(skip, skip + pageSize);
+
         return res.status(200).json({
             rooms: paginatedRooms,
             pagination: {

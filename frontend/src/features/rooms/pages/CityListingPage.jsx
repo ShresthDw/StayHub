@@ -163,10 +163,10 @@ const CityListingPage = () => {
     }
 
     return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+        <main className="flex flex-col bg-gray-50 dark:bg-gray-900">
             {/* Header Section */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-20">
-                <div className="px-6 py-4">
+            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <div className="home-content-rail py-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <button
@@ -176,7 +176,7 @@ const CityListingPage = () => {
                                 {icons.chevronLeft} Back
                             </button>
                             {/* {icons.location} */}
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{decodedCity}</h1>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{decodedCity}</h1>
                             <p className="text-gray-600 dark:text-gray-400 mt-1">
                                 {citiesRooms.length} {citiesRooms.length === 1 ? 'property' : 'properties'} available
                             </p>
@@ -241,18 +241,20 @@ const CityListingPage = () => {
                                             <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Check-in date</label>
                                             <input
                                                 type="date"
+                                                onClick={(event) => event.currentTarget.showPicker?.()}
                                                 value={tempCheckInDate}
                                                 onChange={(e) => setTempCheckInDate(e.target.value)}
-                                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                                                className="date-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-teal-500 focus:border-teal-500"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Check-out date</label>
                                             <input
                                                 type="date"
+                                                onClick={(event) => event.currentTarget.showPicker?.()}
                                                 value={tempCheckOutDate}
                                                 onChange={(e) => setTempCheckOutDate(e.target.value)}
-                                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                                                className="date-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-teal-500 focus:border-teal-500"
                                             />
                                         </div>
                                     </div>
@@ -288,18 +290,19 @@ const CityListingPage = () => {
             )}
 
             {/* Main Content - Responsive Layout */}
-            <div className="flex flex-col lg:flex-row flex-1">
+            <div className="home-content-rail flex flex-col gap-6 py-8 lg:flex-row">
                 {/* Left Panel - Room Grid */}
-                <div className="w-full lg:w-3/5 bg-white dark:bg-gray-900 lg:border-r border-gray-200 dark:border-gray-700 overflow-y-auto max-h-screen lg:max-h-[calc(100vh-80px)]">
-                    <div className="px-6 py-4">
+                <div className="w-full rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm lg:w-3/5">
+                    <div>
                         {citiesRooms.length > 0 ? (
                             <>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {citiesRooms.map((room) => (
                                         <RoomCard 
                                             key={room._id} 
                                             room={room} 
                                             icons={icons} 
+                                            compact
                                             onClick={() => handleRoomClick(room)}
                                         />
                                     ))}
@@ -330,16 +333,16 @@ const CityListingPage = () => {
                 </div>
 
                 {/* Right Panel - Responsive Map */}
-                <div className="w-full lg:w-2/5 bg-gray-100 dark:bg-gray-800 flex-shrink-0 relative z-0">
+                <div className="w-full rounded-2xl bg-gray-100 p-3 shadow-sm dark:bg-gray-800 lg:w-2/5 lg:flex-shrink-0">
                     {citiesRooms.length > 0 ? (
-                        <div className="w-full h-64 lg:h-screen lg:sticky lg:top-16 p-4 flex items-center justify-center">
+                        <div className="flex h-72 w-full items-center justify-center lg:h-[calc(100vh-14rem)]">
                             <div 
                                 ref={mapRef}
                                 className="w-full h-full rounded-xl border border-gray-300 dark:border-gray-600 shadow-md"
                             />
                         </div>
                     ) : (
-                        <div className="w-full h-64 lg:h-screen lg:sticky lg:top-16 flex items-center justify-center">
+                        <div className="flex h-72 w-full items-center justify-center lg:h-[calc(100vh-14rem)]">
                             <div className="text-center">
                                 <div className="text-6xl mb-4">{icons.search}</div>
                                 <p className="text-gray-600 dark:text-gray-400">

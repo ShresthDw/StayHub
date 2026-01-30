@@ -1,32 +1,43 @@
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getSafeDistance, hasCoordinates, icons, PROPERTY_TYPES } from '../../../constants.jsx';
-import MapSearchModal from '../../../components/MapSearchModal.jsx';
+import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
 import RoomCard from '../../../components/RoomCard.jsx';
 import CityCard from '../../../components/CityCard.jsx';
 import { PageSkeleton } from '../../../components/Skeletons.jsx';
-import { geocodeAddress } from '../../app/services/geoService.js';
-import { setFilters, setSearchLocation, setCheckInDate, setCheckOutDate } from '../../../store/appSlice.js';
+import { setCheckInDate, setCheckOutDate } from '../../../store/appSlice.js';
 import { incrementCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
 import {
     useGetPublicRoomsByTypeQuery,
     useGetCitiesQuery
 } from '../../../api/apiSlice.js';
 
+// Animated placeholder texts
+const PLACEHOLDER_TEXTS = [
+    'Where to?',
+    'Try "Dehradun"...',
+    'Try "Mussoorie"...',
+    'Try "Haldwani"...',
+    'Try "Devprayag"...',
+    'Try "Chennai"...'
+];
+
 const HomePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { categoryPagination } = useSelector((state) => state.rooms);
-    const { filters, geoApiKey, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
-    const hasInitializedRef = useRef(false);
-    const [tempLocation, setTempLocation] = useState({ address: '', lat: null, lng: null, distance: 10 });
+    const { filters, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
+    const isSearching = false;
     const [tempCheckInDate, setTempCheckInDate] = useState(checkInDate || '');
     const [tempCheckOutDate, setTempCheckOutDate] = useState(checkOutDate || '');
-    const [isSearching, setIsSearching] = useState(false);
     const [searchError, setSearchError] = useState('');
-    const [searchLocationModal, setSearchLocationModal] = useState(false);
     const [scrollControls, setScrollControls] = useState({});
+    const [searchInput, setSearchInput] = useState('');
+    const [filteredCities, setFilteredCities] = useState([]);
+    const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+    const [animatedPlaceholder, setAnimatedPlaceholder] = useState(PLACEHOLDER_TEXTS[0]);
+    const [randomRooms, setRandomRooms] = useState([]);
+    const debounceTimerRef = useRef(null);
     const sectionScrollRefs = useRef({});
     
     // Store all rooms by type using RTK Query
@@ -34,18 +45,8 @@ const HomePage = () => {
 
     const handleRoomClick = (room) => navigate(`/rooms/${room._id}`);
 
-    const handleFilterChange = (k, v) => dispatch(setFilters({ ...filters, [k]: v }));
-
-    const handleClearFilters = () => {
-        dispatch(setFilters({ propertyType: '', amenities: [] }));
-    };
-
-    const handleApplySearch = (loc) => {
-        dispatch(setSearchLocation(loc));
-    };
-
     // Fetch cities
-    const { data: citiesData = [], isLoading: citiesLoading } = useGetCitiesQuery();
+    const { data: citiesData = [] } = useGetCitiesQuery();
 
     // Call hooks for each property type at top level (not inside useMemo)
     const apartmentQuery = useGetPublicRoomsByTypeQuery({
@@ -115,11 +116,62 @@ const HomePage = () => {
         cottage: cottageQuery,
         hostel: hostelQuery
     }), [apartmentQuery, houseQuery, resortQuery, villaQuery, hotelQuery, cottageQuery, hostelQuery]);
-    // Aggregate all rooms by type
+
+    // Animated placeholder effect
+    useEffect(() => {
+        let index = 0;
+        const interval = setInterval(() => {
+            index = (index + 1) % PLACEHOLDER_TEXTS.length;
+            setAnimatedPlaceholder(PLACEHOLDER_TEXTS[index]);
+        }, 3000); // Change every 3 seconds
+        return () => clearInterval(interval);
+    }, []);
+
+
+    // Debounced city search handler
+    const handleCitySearchChange = (value) => {
+        setSearchInput(value);
+        
+        // Clear existing timer
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+
+        if (value.trim() === '') {
+            setFilteredCities([]);
+            setShowCitySuggestions(false);
+            return;
+        }
+
+        // Set new timer for debounced search
+        debounceTimerRef.current = setTimeout(() => {
+            const filtered = citiesData.filter(city =>
+                city.name.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredCities(filtered);
+            setShowCitySuggestions(true);
+        }, 300); // 300ms debounce
+    };
+
+    // Handle city selection from dropdown
+    const handleCitySelect = (cityName) => {
+        setSearchInput(cityName);
+        setShowCitySuggestions(false);
+        navigate(`/cities/${encodeURIComponent(cityName)}`);
+    };
+
+    // Get random properties from all available rooms
+    useEffect(() => {
+        const allRooms = Object.values(allRoomsByType).flat();
+        if (allRooms.length > 0) {
+            const shuffled = [...allRooms].sort(() => 0.5 - Math.random());
+            setRandomRooms(shuffled.slice(0, 5));
+        }
+    }, [allRoomsByType]);
+
+    // Aggregate all rooms by type using RTK Query
     useEffect(() => {
         const newRoomsByType = {};
-        let isAnyLoading = false;
-
         PROPERTY_TYPES.forEach(propertyType => {
             const { data } = propertyTypeQueries[propertyType];
             if (data?.rooms) {
@@ -133,9 +185,6 @@ const HomePage = () => {
                 }
             } else {
                 newRoomsByType[propertyType] = [];
-            }
-            if (propertyTypeQueries[propertyType].isLoading) {
-                isAnyLoading = true;
             }
         });
 
@@ -224,14 +273,6 @@ const HomePage = () => {
         return () => clearTimeout(timeoutId);
     }, [allRoomsByType, updateScrollControls]);
 
-    // Initialize on mount
-    useEffect(() => {
-        if (hasInitializedRef.current) return;
-        hasInitializedRef.current = true;
-        
-        // RTK Query hooks automatically fetch cities and rooms
-    }, []);
-
     const handleManualSearch = async () => {
         setSearchError('');
 
@@ -247,47 +288,13 @@ const HomePage = () => {
             return;
         }
 
-        if (!geoApiKey) {
-            setSearchError('Map API is not configured. Please try again later.');
+        // If a city is selected from the search input, navigate to that city
+        if (searchInput && searchInput.trim()) {
+            navigate(`/cities/${encodeURIComponent(searchInput)}`);
             return;
         }
 
-        const effectiveLocation = {
-            ...tempLocation,
-            distance: getSafeDistance(tempLocation.distance)
-        };
-
-        if (hasCoordinates(effectiveLocation)) {
-            handleApplySearch(effectiveLocation);
-            return;
-        }
-
-        if (effectiveLocation.address && !hasCoordinates(effectiveLocation)) {
-            setIsSearching(true);
-            try {
-                const data = await geocodeAddress(effectiveLocation.address, geoApiKey);
-                if (data.features?.length > 0) {
-                    const best = data.features[0];
-                    const loc = {
-                        ...effectiveLocation,
-                        lat: best.properties.lat,
-                        lng: best.properties.lon,
-                        address: best.properties.formatted
-                    };
-                    setTempLocation(loc);
-                    handleApplySearch(loc);
-                } else {
-                    setSearchError('Address not found. Try a different address or use the map.');
-                }
-            } catch (err) {
-                console.error('Geocoding error:', err);
-                setSearchError('Error finding location. Please try again.');
-            } finally {
-                setIsSearching(false);
-            }
-        } else {
-            setSearchError('Please enter an address or select a location on the map.');
-        }
+        setSearchError('Please select a city or location to search.');
     };
 
 
@@ -300,82 +307,78 @@ const HomePage = () => {
     }
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="space-y-6">
-                {/* User input search area */}
-                <div className="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 shadow-lg rounded-2xl p-6 border border-indigo-100 dark:border-gray-700">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Find Your Perfect Stay</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                        {/* Location Input */}
-                        <div className="md:col-span-4">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Where to?</label>
-                            <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-                                    {icons.location}
-                                </div>
-                                <input
-                                    type="text"
-                                    value={tempLocation.address || ''}
-                                    onChange={(e) => setTempLocation((prev) => ({ ...prev, address: e.target.value, lat: null, lng: null }))}
-                                    placeholder="City, address, or neighborhood"
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Check-in and Check-out Container */}
-                        <div className="md:col-span-4 grid grid-cols-2 gap-3">
-                            {/* Check-in Date */}
-                            <div>
-                                <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Check in</label>
+        <main className="w-full">
+            <div className="space-y-10 pb-12">
+                {/* Hero Search Section with Teal Theme */}
+                <div className="relative bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-700 dark:to-cyan-700 w-full py-8 px-0">
+                    <div className="home-content-rail">
+                        <h1 className="text-left text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Find your next favorite stay</h1>
+                        <p className="text-left text-teal-100 text-base mb-5">Discover unique places to stay</p>
+                        
+                        {/* Main Search Bar with Animated Placeholder */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end mb-3">
+                            {/* Location Search */}
+                            <div className="relative md:col-span-1">
+                                <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Where</label>
                                 <div className="relative">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-                                        {icons.calendar}
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-xl">
+                                        {icons.search}
                                     </div>
                                     <input
+                                        type="text"
+                                        value={searchInput}
+                                        onChange={(e) => handleCitySearchChange(e.target.value)}
+                                        placeholder={animatedPlaceholder}
+                                        onFocus={() => searchInput && setShowCitySuggestions(true)}
+                                        className="w-full pl-12 pr-4 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
+                                    />
+                                    
+                                    {/* City Suggestions Dropdown */}
+                                    {showCitySuggestions && filteredCities.length > 0 && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50">
+                                            {filteredCities.map((city) => (
+                                                <button
+                                                    key={city.name}
+                                                    onClick={() => handleCitySelect(city.name)}
+                                                    className="w-full text-left px-4 py-3 text-gray-900 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-gray-600 border-b last:border-b-0 border-gray-200 dark:border-gray-600 transition-colors flex items-center justify-between"
+                                                >
+                                                    <span className="font-medium">{city.name}</span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">{city.count} properties</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Check-in and Check-out */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Check in</label>
+                                    <input
                                         type="date"
+                                        onClick={(event) => event.currentTarget.showPicker?.()}
                                         value={tempCheckInDate}
                                         onChange={(e) => setTempCheckInDate(e.target.value)}
-                                        className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                        className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
                                     />
                                 </div>
-                            </div>
-
-                            {/* Check-out Date */}
-                            <div>
-                                <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Check out</label>
-                                <div className="relative">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-                                        {icons.calendar}
-                                    </div>
+                                <div>
+                                    <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Check out</label>
                                     <input
                                         type="date"
+                                        onClick={(event) => event.currentTarget.showPicker?.()}
                                         value={tempCheckOutDate}
                                         onChange={(e) => setTempCheckOutDate(e.target.value)}
-                                        className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                        className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
                                     />
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Map Button */}
-                        <div className="md:col-span-2">
-                            <button 
-                                onClick={() => setSearchLocationModal(true)} 
-                                className="w-full px-4 py-3 border-2 border-indigo-300 dark:border-indigo-600 rounded-xl text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-700 hover:bg-indigo-50 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2"
-                            >
-                                {icons.map}
-                                <span className="hidden sm:inline">Map</span>
-                            </button>
-                        </div>
-
-                        {/* Search Button */}
-                        <div className="md:col-span-2">
+                            {/* Search Button */}
                             <button 
                                 onClick={handleManualSearch} 
-                                disabled={isSearching} 
-                                className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-indigo-400 disabled:to-indigo-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+                                className="px-6 py-3 bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60"
                             >
                                 {isSearching ? (
                                     <>
@@ -390,16 +393,11 @@ const HomePage = () => {
                                 )}
                             </button>
                         </div>
-                    </div>
 
-                    {/* Helper Text and Error Message */}
-                    <div className="mt-4 space-y-2">
-                        {!hasCoordinates(tempLocation) && !searchError && (
-                            <p className="text-xs text-gray-600 dark:text-gray-400 text-center">💡 Tip: Use the map icon to select a precise location or type a city name</p>
-                        )}
+                        {/* Error Message */}
                         {searchError && (
-                            <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl">
-                                <p className="text-red-700 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+                            <div className="p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl mt-4">
+                                <p className="text-red-700 dark:text-red-400 font-medium flex items-center gap-2">
                                     <span>⚠️</span>
                                     {searchError}
                                 </p>
@@ -408,16 +406,32 @@ const HomePage = () => {
                     </div>
                 </div>
 
+                <div className="home-content-rail space-y-14">
+                {/* Random Properties Section - First Section */}
+                {randomRooms.length > 0 && !filters.propertyType && (
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">Explore unique places to stay</h2>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">Handpicked properties from around the world</p>
+                        <div className="flex w-full gap-5 overflow-x-auto pb-4 no-scrollbar scroll-smooth snap-x">
+                            {randomRooms.map((room) => (
+                                <div key={room._id} className="w-56 flex-shrink-0 snap-start">
+                                    <RoomCard room={room} icons={icons} compact onClick={() => handleRoomClick(room)} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Horizontal Scrollable Sections by Property Type */}
                 {filters.propertyType ? (
                     // Show filtered property type
-                    <div className="space-y-6">
+                    <div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 capitalize">{filters.propertyType}s</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 capitalize">{filters.propertyType}s</h3>
                             {allRoomsByType[filters.propertyType]?.length > 0 ? (
-                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                     {allRoomsByType[filters.propertyType].map((room) => (
-                                        <RoomCard key={room._id} room={room} icons={icons} onClick={() => handleRoomClick(room)} />
+                                        <RoomCard key={room._id} room={room} icons={icons} compact onClick={() => handleRoomClick(room)} />
                                     ))}
                                 </div>
                             ) : (
@@ -427,7 +441,7 @@ const HomePage = () => {
                     </div>
                 ) : (
                     // Show all property types in horizontal scrollable sections
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                         {PROPERTY_TYPES.map((propertyType) => {
                             const roomsInType = allRoomsByType[propertyType] || [];
                             if (!roomsInType || roomsInType.length === 0) return null;
@@ -436,8 +450,8 @@ const HomePage = () => {
 
                             return (
                                 <div key={propertyType}>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 capitalize">{propertyType}s</h3>
-                                    <div className="relative">
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 capitalize">{propertyType}s</h3>
+                                    <div className="relative min-w-0">
                                         {/* Left Chevron */}
                                         <button
                                             type="button"
@@ -445,6 +459,7 @@ const HomePage = () => {
                                             className={`absolute left-2 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${controls.canScrollLeft ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
                                             aria-label={`Scroll ${propertyType} left`}
                                             aria-disabled={!controls.canScrollLeft}
+                                            disabled={!controls.canScrollLeft}
                                         >
                                             {icons.chevronLeft}
                                         </button>
@@ -454,17 +469,17 @@ const HomePage = () => {
                                             ref={(el) => {
                                                 sectionScrollRefs.current[propertyType] = el;
                                             }}
-                                            className="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
+                                            className="flex w-full min-w-0 gap-5 overflow-x-auto pb-4 no-scrollbar scroll-smooth snap-x"
                                         >
                                             {roomsInType.map((room) => (
-                                                <div key={room._id} className="flex-shrink-0 w-80">
-                                                    <RoomCard room={room} icons={icons} onClick={() => handleRoomClick(room)} />
+                                                <div key={room._id} className="w-56 flex-shrink-0">
+                                                    <RoomCard room={room} icons={icons} compact onClick={() => handleRoomClick(room)} />
                                                 </div>
                                             ))}
                                             
                                             {/* Loading indicator */}
                                             {isFetching && (
-                                                <div className="flex-shrink-0 w-80 flex items-center justify-center py-12">
+                                                <div className="w-56 flex-shrink-0 flex items-center justify-center py-12">
                                                     <div className="text-center space-y-3">
                                                         <div className="flex justify-center">
                                                             <div className="relative w-10 h-10">
@@ -485,6 +500,7 @@ const HomePage = () => {
                                             className={`absolute right-2 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${controls.canScrollRight ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
                                             aria-label={`Scroll ${propertyType} right`}
                                             aria-disabled={!controls.canScrollRight}
+                                            disabled={!controls.canScrollRight}
                                         >
                                             {icons.chevronRight}
                                         </button>
@@ -501,14 +517,14 @@ const HomePage = () => {
 
                 {/* Cities Section */}
                 {citiesData.length > 0 && (
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <div className="flex items-center justify-between mb-5">
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Explore by Cities</h2>
+                                <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Explore by Cities</h2>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Discover properties in popular cities</p>
                             </div>
                         </div>
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                             {citiesData.map((city) => (
                                 <CityCard 
                                     key={city.name}
@@ -521,463 +537,10 @@ const HomePage = () => {
                         </div>
                     </div>
                 )}
-
+                </div>
             </div>
-
-            <MapSearchModal
-                isOpen={searchLocationModal}
-                onClose={() => setSearchLocationModal(false)}
-                onApplySearch={(loc) => {
-                    setTempLocation(loc);
-                    handleApplySearch(loc);
-                    setSearchLocationModal(false);
-                }}
-                initialLocation={tempLocation}
-                geoApiKey={geoApiKey}
-                icons={icons}
-            />
         </main>
     );
 };
 
 export default HomePage;
-
-// const HomePage = () => {
-//     const dispatch = useDispatch();
-//     const navigate = useNavigate();
-//     const { publicRooms, publicRoomsLoading, categoryPagination, cities, citiesLoading } = useSelector((state) => state.rooms);
-//     const { filters, geoApiKey, checkInDate, checkOutDate } = useSelector((state) => state.app);
-//     const hasInitializedRef = useRef(false); // Guard to prevent duplicate initial fetch
-//     const [tempLocation, setTempLocation] = useState({ address: '', lat: null, lng: null, distance: 10 });
-//     const [tempCheckInDate, setTempCheckInDate] = useState(checkInDate || '');
-//     const [tempCheckOutDate, setTempCheckOutDate] = useState(checkOutDate || '');
-//     const [isSearching, setIsSearching] = useState(false);
-//     const [searchError, setSearchError] = useState('');
-//     const [searchLocationModal, setSearchLocationModal] = useState(false);
-//     const sectionScrollRefs = useRef({});
-
-//     const handleRoomClick = (room) => navigate(`/rooms/${room._id}`);
-
-//     const handleFilterChange = (k, v) => dispatch(setFilters({ ...filters, [k]: v }));
-//     const handleApplyFilters = () => dispatch(fetchPublicRooms());
-//     const handleClearFilters = () => {
-//         dispatch(setFilters({ propertyType: '', amenities: [] }));
-//         dispatch(fetchPublicRooms());
-//     };
-
-//     const handleApplySearch = (loc) => {
-//         dispatch(setSearchLocation(loc));
-//         dispatch(fetchPublicRooms());
-//     };
-
-//     const handleHorizontalScroll = (propertyType, direction) => {
-//         const section = sectionScrollRefs.current[propertyType];
-//         if (!section) return;
-
-//         const amount = Math.max(280, Math.round(section.clientWidth * 0.8));
-//         section.scrollBy({ left: direction * amount, behavior: 'smooth' });
-//     };
-
-//     // Horizontal infinite scroll listener - loads more items as you scroll right
-//     useEffect(() => {
-//         const handleScrolls = {};
-//         const listeners = [];
-
-//         const attachListeners = () => {
-//             PROPERTY_TYPES.forEach(propertyType => {
-//                 const section = sectionScrollRefs.current[propertyType];
-//                 if (!section) return;
-
-//                 const handleScroll = () => {
-//                     const { scrollLeft, scrollWidth, clientWidth } = section;
-//                     const distanceFromEnd = scrollWidth - (scrollLeft + clientWidth);
-
-//                     // Trigger load when within 200px of the end (more aggressive)
-//                     if (distanceFromEnd < 200) {
-//                         const catPagination = categoryPagination[propertyType];
-//                         if (catPagination?.hasMore && !catPagination?.isLoading) {
-//                             dispatch(fetchMoreRoomsByCategory(propertyType));
-//                         }
-//                     }
-//                 };
-
-//                 handleScrolls[propertyType] = handleScroll;
-//                 section.addEventListener('scroll', handleScroll, { passive: true });
-//                 listeners.push({ section, handler: handleScroll, type: propertyType });
-//             });
-//         };
-
-//         const timeoutId = setTimeout(attachListeners, 0);
-
-//         return () => {
-//             clearTimeout(timeoutId);
-//             listeners.forEach(({ section, handler }) => {
-//                 if (section) {
-//                     section.removeEventListener('scroll', handler);
-//                 }
-//             });
-//         };
-//     }, [categoryPagination, dispatch]);
-
-//     // Fetch cities on component mount (only once)
-//     useEffect(() => {
-//         if (hasInitializedRef.current) return; // Prevent double fetch in Strict Mode
-//         hasInitializedRef.current = true;
-        
-//         dispatch(fetchCities());
-//         dispatch(fetchPublicRooms());
-//     }, []);
-
-//     const handleManualSearch = async () => {
-//         setSearchError('');
-
-//         // Validate dates
-//         if (tempCheckInDate && tempCheckOutDate) {
-//             if (new Date(tempCheckOutDate) <= new Date(tempCheckInDate)) {
-//                 setSearchError('Check-out date must be after check-in date.');
-//                 return;
-//             }
-//             dispatch(setCheckInDate(tempCheckInDate));
-//             dispatch(setCheckOutDate(tempCheckOutDate));
-//         } else if (tempCheckInDate || tempCheckOutDate) {
-//             setSearchError('Please select both check-in and check-out dates or leave both empty.');
-//             return;
-//         }
-
-//         if (!geoApiKey) {
-//             setSearchError('Map API is not configured. Please try again later.');
-//             return;
-//         }
-
-//         const effectiveLocation = {
-//             ...tempLocation,
-//             distance: getSafeDistance(tempLocation.distance)
-//         };
-
-//         if (hasCoordinates(effectiveLocation)) {
-//             handleApplySearch(effectiveLocation);
-//             return;
-//         }
-
-//         if (effectiveLocation.address && !hasCoordinates(effectiveLocation)) {
-//             setIsSearching(true);
-//             try {
-//                 const data = await geocodeAddress(effectiveLocation.address, geoApiKey);
-//                 if (data.features?.length > 0) {
-//                     const best = data.features[0];
-//                     const loc = {
-//                         ...effectiveLocation,
-//                         lat: best.properties.lat,
-//                         lng: best.properties.lon,
-//                         address: best.properties.formatted
-//                     };
-//                     setTempLocation(loc);
-//                     handleApplySearch(loc);
-//                 } else {
-//                     setSearchError('Address not found. Try a different address or use the map.');
-//                 }
-//             } catch (err) {
-//                 console.error('Geocoding error:', err);
-//                 setSearchError('Error finding location. Please try again.');
-//             } finally {
-//                 setIsSearching(false);
-//             }
-//         } else {
-//             setSearchError('Please enter an address or select a location on the map.');
-//         }
-//     };
-
-//     // Group rooms by property type
-//     const roomsByPropertyType = useMemo(() => {
-//         const grouped = {};
-//         PROPERTY_TYPES.forEach(type => {
-//             grouped[type] = publicRooms.filter(room => room.propertyType === type);
-//         });
-//         return grouped;
-//     }, [publicRooms]);
-
-//     // Get unique cities with room count and image
-//     const citiesData = useMemo(() => {
-//         // Use cities from Redux instead of deriving from publicRooms
-//         return cities || [];
-//     }, [cities]);
-
-//     if (publicRoomsLoading) {
-//         return <PageSkeleton />;
-//     }
-
-//     return (
-//         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-//             <div className="space-y-6">
-//                 {/* Property Type Filter Section */}
-//                 {/* <div className="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
-//                     <div className="flex items-center justify-between gap-4 mb-5">
-//                         <div>
-//                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Popular Property Types</h2>
-//                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Find your ideal accommodation style</p>
-//                         </div>
-//                         <button 
-//                             onClick={handleClearFilters} 
-//                             className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all"
-//                         >
-//                             Clear All
-//                         </button>
-//                     </div>
-//                     <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
-//                         {PROPERTY_TYPES.map((type) => (
-//                             <button
-//                                 key={type}
-//                                 type="button"
-//                                 onClick={() => handleFilterChange('propertyType', type === filters.propertyType ? '' : type)}
-//                                 className={`whitespace-nowrap px-5 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
-//                                     filters.propertyType === type 
-//                                         ? 'bg-indigo-600 text-white shadow-lg scale-105' 
-//                                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-indigo-100 dark:hover:bg-gray-600 border-2 border-transparent'
-//                                 }`}
-//                             >
-//                                 <span className="capitalize">{type}</span>
-//                             </button>
-//                         ))}
-//                     </div>
-//                 </div> */}
-                
-//                 {/* User input search area */}
-//                 <div className="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 shadow-lg rounded-2xl p-6 border border-indigo-100 dark:border-gray-700">
-//                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Find Your Perfect Stay</h2>
-                    
-//                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-//                         {/* Location Input */}
-//                         <div className="md:col-span-4">
-//                             <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Where to?</label>
-//                             <div className="relative">
-//                                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-//                                     {icons.location}
-//                                 </div>
-//                                 <input
-//                                     type="text"
-//                                     value={tempLocation.address || ''}
-//                                     onChange={(e) => setTempLocation((prev) => ({ ...prev, address: e.target.value, lat: null, lng: null }))}
-//                                     placeholder="City, address, or neighborhood"
-//                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-//                                 />
-//                             </div>
-//                         </div>
-
-//                         {/* Check-in and Check-out Container */}
-//                         <div className="md:col-span-4 grid grid-cols-2 gap-3">
-//                             {/* Check-in Date */}
-//                             <div>
-//                                 <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Check in</label>
-//                                 <div className="relative">
-//                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-//                                         {icons.calendar}
-//                                     </div>
-//                                     <input
-//                                         type="date"
-//                                         value={tempCheckInDate}
-//                                         onChange={(e) => setTempCheckInDate(e.target.value)}
-//                                         className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-//                                     />
-//                                 </div>
-//                             </div>
-
-//                             {/* Check-out Date */}
-//                             <div>
-//                                 <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide block mb-2">Check out</label>
-//                                 <div className="relative">
-//                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400">
-//                                         {icons.calendar}
-//                                     </div>
-//                                     <input
-//                                         type="date"
-//                                         value={tempCheckOutDate}
-//                                         onChange={(e) => setTempCheckOutDate(e.target.value)}
-//                                         className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-//                                     />
-//                                 </div>
-//                             </div>
-//                         </div>
-
-//                         {/* Map Button */}
-//                         <div className="md:col-span-2">
-//                             <button 
-//                                 onClick={() => setSearchLocationModal(true)} 
-//                                 className="w-full px-4 py-3 border-2 border-indigo-300 dark:border-indigo-600 rounded-xl text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-700 hover:bg-indigo-50 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2"
-//                             >
-//                                 {icons.map}
-//                                 <span className="hidden sm:inline">Map</span>
-//                             </button>
-//                         </div>
-
-//                         {/* Search Button */}
-//                         <div className="md:col-span-2">
-//                             <button 
-//                                 onClick={handleManualSearch} 
-//                                 disabled={isSearching} 
-//                                 className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-indigo-400 disabled:to-indigo-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-//                             >
-//                                 {isSearching ? (
-//                                     <>
-//                                         <div className="animate-spin">⟳</div>
-//                                         <span className="hidden sm:inline">Finding…</span>
-//                                     </>
-//                                 ) : (
-//                                     <>
-//                                         {icons.search}
-//                                         <span className="hidden sm:inline">Search</span>
-//                                     </>
-//                                 )}
-//                             </button>
-//                         </div>
-//                     </div>
-
-//                     {/* Helper Text and Error Message */}
-//                     <div className="mt-4 space-y-2">
-//                         {!hasCoordinates(tempLocation) && !searchError && (
-//                             <p className="text-xs text-gray-600 dark:text-gray-400 text-center">💡 Tip: Use the map icon to select a precise location or type a city name</p>
-//                         )}
-//                         {searchError && (
-//                             <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl">
-//                                 <p className="text-red-700 dark:text-red-400 text-sm font-medium flex items-center gap-2">
-//                                     <span>⚠️</span>
-//                                     {searchError}
-//                                 </p>
-//                             </div>
-//                         )}
-//                     </div>
-//                 </div>
-
-//                 {/* Horizontal Scrollable Sections by Property Type */}
-//                 {filters.propertyType ? (
-//                     // Show filtered property type
-//                     <div className="space-y-6">
-//                         <div>
-//                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 capitalize">{filters.propertyType}s</h3>
-//                             {roomsByPropertyType[filters.propertyType]?.length > 0 ? (
-//                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-//                                     {roomsByPropertyType[filters.propertyType].map((room) => (
-//                                         <RoomCard key={room._id} room={room} icons={icons} onClick={() => handleRoomClick(room)} />
-//                                     ))}
-//                                 </div>
-//                             ) : (
-//                                 <p className="text-center text-gray-500 dark:text-gray-400 py-10">No properties found for this type.</p>
-//                             )}
-//                         </div>
-//                     </div>
-//                 ) : (
-//                     // Show all property types in horizontal scrollable sections
-//                     <div className="space-y-8">
-//                         {PROPERTY_TYPES.map((propertyType) => {
-//                             const roomsInType = roomsByPropertyType[propertyType];
-//                             if (!roomsInType || roomsInType.length === 0) return null;
-//                             const isLoadingMore = categoryPagination[propertyType]?.isLoading;
-//                             const hasMore = categoryPagination[propertyType]?.hasMore;
-
-//                             return (
-//                                 <div key={propertyType}>
-//                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 capitalize">{propertyType}s</h3>
-//                                     <div className="relative">
-//                                         {/* Left Chevron */}
-//                                         <button
-//                                             type="button"
-//                                             onClick={() => handleHorizontalScroll(propertyType, -1)}
-//                                             className="absolute left-2 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800"
-//                                             aria-label={`Scroll ${propertyType} left`}
-//                                         >
-//                                             {icons.chevronLeft}
-//                                         </button>
-
-//                                         {/* Horizontal scroll container */}
-//                                         <div
-//                                             ref={(el) => {
-//                                                 sectionScrollRefs.current[propertyType] = el;
-//                                             }}
-//                                             className="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
-//                                         >
-//                                             {roomsInType.map((room) => (
-//                                                 <div key={room._id} className="flex-shrink-0 w-80">
-//                                                     <RoomCard room={room} icons={icons} onClick={() => handleRoomClick(room)} />
-//                                                 </div>
-//                                             ))}
-                                            
-//                                             {/* Loading indicator */}
-//                                             {isLoadingMore && (
-//                                                 <div className="flex-shrink-0 w-80 flex items-center justify-center py-12">
-//                                                     <div className="text-center space-y-3">
-//                                                         <div className="flex justify-center">
-//                                                             <div className="relative w-10 h-10">
-//                                                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-full opacity-25 animate-pulse"></div>
-//                                                                 <div className="absolute inset-0 border-4 border-transparent border-t-indigo-600 border-r-indigo-600 rounded-full animate-spin"></div>
-//                                                             </div>
-//                                                         </div>
-//                                                         <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Loading more...</p>
-//                                                     </div>
-//                                                 </div>
-//                                             )}
-//                                         </div>
-
-//                                         {/* Right Chevron */}
-//                                         <button
-//                                             type="button"
-//                                             onClick={() => handleHorizontalScroll(propertyType, 1)}
-//                                             className="absolute right-0 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800"
-//                                             aria-label={`Scroll ${propertyType} right`}
-//                                         >
-//                                             {icons.chevronRight}
-//                                         </button>
-//                                     </div>
-//                                 </div>
-//                             );
-//                         })}
-//                     </div>
-//                 )}
-
-//                 {publicRooms.length === 0 && !filters.propertyType && (
-//                     <p className="text-center col-span-full text-gray-500 dark:text-gray-400 py-10">No active properties found. Try adjusting your search.</p>
-//                 )}
-
-
-
-
-//                 {/* Cities Section */}
-//                 {citiesData.length > 0 && (
-//                     <div className="mb-8">
-//                         <div className="flex items-center justify-between mb-4">
-//                             <div>
-//                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Explore by Cities</h2>
-//                                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Discover properties in popular cities</p>
-//                             </div>
-//                         </div>
-//                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-//                             {citiesData.map((city) => (
-//                                 <CityCard 
-//                                     key={city.name}
-//                                     city={city.name}
-//                                     imageUrl={city.imageUrl}
-//                                     roomCount={city.count}
-//                                     onClick={() => navigate(`/cities/${encodeURIComponent(city.name)}`)}
-//                                 />
-//                             ))}
-//                         </div>
-//                     </div>
-//                 )}
-
-//             </div>
-
-//             <MapSearchModal
-//                 isOpen={searchLocationModal}
-//                 onClose={() => setSearchLocationModal(false)}
-//                 onApplySearch={(loc) => {
-//                     setTempLocation(loc);
-//                     handleApplySearch(loc);
-//                     setSearchLocationModal(false);
-//                 }}
-//                 initialLocation={tempLocation}
-//                 geoApiKey={geoApiKey}
-//                 icons={icons}
-//             />
-//         </main>
-//     );
-// };
-
-// export default HomePage;

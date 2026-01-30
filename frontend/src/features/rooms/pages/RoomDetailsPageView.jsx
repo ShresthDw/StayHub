@@ -370,6 +370,7 @@ const RoomDetailsPageView = () => {
     };
 
     const reviews = room?.reviews?.length ? room.reviews : sampleReviews;
+    const galleryImages = room?.images?.slice(1, 4) || [];
 
     if (loading) {
         return <PageSkeleton />;
@@ -388,12 +389,31 @@ const RoomDetailsPageView = () => {
         <main className="min-h-screen bg-white dark:bg-gray-900">
             {message && <div className="mb-6"><Toast message={message} type={msgType} /></div>}
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <section className="lg:col-span-2 space-y-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="mb-4 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold text-teal-700 transition-colors hover:bg-teal-50 dark:text-teal-300 dark:hover:bg-gray-800"
+                >
+                    {icons.chevronLeft}
+                    <span>Back</span>
+                </button>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <section className="lg:col-span-2 space-y-4">
                         <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">
-                            <img src={getImageUrl(room.images?.[0])} alt={room.title} className="w-full h-80 object-cover" />
-                            <div className="p-6">
+                            <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3">
+                                <img src={getImageUrl(room.images?.[0])} alt={room.title} className="block h-full min-h-0 w-full rounded-xl bg-gray-100 object-contain dark:bg-gray-700 sm:col-span-2" />
+                                <div className="grid min-h-0 min-w-0 grid-cols-3 gap-2 overflow-hidden rounded-xl bg-gray-100 p-2 dark:bg-gray-700 sm:grid-cols-1">
+                                    {galleryImages.length > 0 ? galleryImages.map((image, index) => (
+                                        <img key={index} src={getImageUrl(image)} alt={`${room.title} ${index + 2}`} className="h-full min-h-0 w-full rounded-lg object-cover" />
+                                    )) : (
+                                        <span className="col-span-3 flex min-w-0 items-center justify-center break-words px-1 text-center text-[11px] leading-4 font-medium text-gray-500 dark:text-gray-300 sm:col-span-1">
+                                            No more images
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="relative z-10 bg-white p-4 dark:bg-gray-800">
                                 <div className="flex flex-wrap items-center gap-3 mb-3">
                                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 capitalize">{room.propertyType}</span>
                                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200">Daily stays</span>
@@ -401,18 +421,18 @@ const RoomDetailsPageView = () => {
                                     <button
                                         type="button"
                                         onClick={handleToggleWishlist}
-                                        className={`ml-auto rounded-full px-4 py-2 text-sm font-semibold transition-colors ${isWishlisted ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
+                                        className={`ml-auto rounded-full px-4 py-2 text-sm font-semibold transition-colors ${isWishlisted ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
                                     >
                                         {isWishlisted ? '♥ Saved' : '♡ Save'}
                                     </button>
                                 </div>
-                                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">{room.title}</h1>
+                                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">{room.title}</h1>
                                 <p className="mt-2 text-gray-600 dark:text-gray-400">{getAddressLine(room)}</p>
                                 <p className="mt-4 text-gray-700 dark:text-gray-300 leading-7">{room.description}</p>
                             </div>
                         </div>
 
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 space-y-4">
+                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3">
                             <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
                                 <div>
                                     <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Property Type</p>
@@ -461,14 +481,8 @@ const RoomDetailsPageView = () => {
                             </div>
                         </section>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {room.images?.slice(1, 5).map((image, index) => (
-                                <img key={index} src={getImageUrl(image)} alt={`${room.title} ${index + 2}`} className="h-52 w-full object-cover rounded-2xl shadow-md" />
-                            ))}
-                        </div>
-
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Reviews</h2>
+                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Reviews</h2>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Recent guest feedback from similar bookings.</p>
 
                             {/* Review Form - Show to all, but disable if user hasn't stayed there */}
@@ -566,22 +580,22 @@ const RoomDetailsPageView = () => {
                         </section>
                     </section>
 
-                    <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5">
+                    <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 space-y-4">
                             <div>
                                 <p className="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400">Starting from</p>
-                                <p className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">₹{nightlyRate.toLocaleString()}</p>
+                                <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">₹{nightlyRate.toLocaleString()}</p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">per night</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     From
-                                    <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100" />
+                                    <input type="date" value={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setFromDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
                                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     To
-                                    <input type="date" value={toDate} min={fromDate} onChange={(e) => setToDate(e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100" />
+                                    <input type="date" value={toDate} min={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setToDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
                             </div>
 
@@ -605,7 +619,7 @@ const RoomDetailsPageView = () => {
                             </button>
                         </div>
 
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Host details</h3>
                             <div className="mt-4 text-sm text-gray-600 dark:text-gray-300 space-y-1">
                                 <p><span className="font-medium text-gray-900 dark:text-gray-100">Name:</span> {room.hostId?.name || 'N/A'}</p>
@@ -628,7 +642,7 @@ const RoomDetailsPageView = () => {
                             id="room-detail-map"
                             style={{
                                 width: '100%',
-                                height: '500px',
+                                height: '360px',
                                 borderRadius: '1rem',
                                 border: '1px solid rgb(229, 231, 235)',
                                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'

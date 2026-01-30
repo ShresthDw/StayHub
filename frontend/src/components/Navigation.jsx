@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBecomeOwnerMutation } from '../features/profile/services/profileService.js';
 import { setCurrentUser } from '../store/appSlice.js';
 import UserMenu from './UserMenu.jsx';
+import BrandLogo from './BrandLogo.jsx';
 
 const Navigation = ({ currentUser, icons }) => {
     const dispatch = useDispatch();
@@ -42,14 +43,16 @@ const Navigation = ({ currentUser, icons }) => {
         <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <Link to="/" className="text-2xl font-bold text-gray-800 dark:text-gray-100 cursor-pointer">StayHub</Link>
+                    <Link to="/" className="text-teal-700 dark:text-teal-300 cursor-pointer">
+                        <BrandLogo />
+                    </Link>
                     <nav className="flex items-center space-x-3 relative">
 
                         {currentUser?.role === 'owner' ? (
                             <button
                                 type="button"
                                 onClick={() => navigate('/dashboard')}
-                                className="px-4 py-2 text-sm font-medium text-white rounded-full bg-emerald-600 hover:bg-emerald-700"
+                                className="px-4 py-2 text-sm font-semibold text-white rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-sm transition-all"
                             >
                                 List Property
                             </button>
@@ -58,7 +61,7 @@ const Navigation = ({ currentUser, icons }) => {
                                 type="button"
                                 onClick={handleHostProperty}
                                 disabled={upgrading}
-                                className={`px-4 py-2 text-sm font-medium text-white rounded-full ${upgrading ? 'bg-emerald-400' : 'bg-emerald-600 hover:bg-emerald-700'}`}
+                                className={`px-4 py-2 text-sm font-semibold text-white rounded-full shadow-sm transition-all ${upgrading ? 'bg-teal-400' : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700'}`}
                             >
                                 {upgrading ? 'Enabling…' : 'Host Property'}
                             </button>
@@ -67,7 +70,7 @@ const Navigation = ({ currentUser, icons }) => {
                         {currentUser ? (
                             <UserMenu currentUser={currentUser} icons={icons} />
                         ) : (
-                            <Link to="/login" className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full hover:bg-indigo-700">Login</Link>
+                            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-white bg-teal-600 rounded-full hover:bg-teal-700 shadow-sm transition-colors">Login</Link>
                         )}
                         
                     </nav>

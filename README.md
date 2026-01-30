@@ -5,6 +5,9 @@ StayHub is a full-stack property booking and management platform where guests ca
 ## Highlights
 
 - Property discovery with city-based browsing and map-assisted location features
+- Responsive compact card layouts with horizontal property browsing
+- Theme-consistent navigation, menus, date controls, and toast notifications
+- StayHub logo asset served from `frontend/public/stayhub-logo.png`
 - Secure authentication with JWT and protected routes
 - End-to-end booking flow with Razorpay order creation and payment verification
 - Host dashboard for managing listings, bookings, and earnings
@@ -41,7 +44,11 @@ stayhub24/
     models/
     utils/
     server.js
+  local-testing/        # Local-only performance/load-test scripts (git-ignored)
+    backend/
   frontend/
+    public/
+      stayhub-logo.png
     src/
       api/
       components/
@@ -64,6 +71,10 @@ stayhub24/
 Base URL (local):
 - Backend: http://localhost:5000
 - Frontend: http://localhost:5173
+
+Production configuration:
+- Set `VITE_API_URL` in the frontend deployment to the Render backend URL.
+- Set `FRONTEND_URL` (or comma-separated `FRONTEND_URLS`) in Render to the deployed frontend URL.
 
 Main route groups:
 - GET /api/config
@@ -138,11 +149,11 @@ Open the app at http://localhost:5173.
 The project includes additional scripts and documents for testing and optimization, such as pagination/performance tests and implementation reports under:
 
 - mdfiles/
-- backend/performance-test.js
-- backend/test-pagination.js
-- backend/test-search.js
-- test-infinite-scroll.js
-- test-section-infinite-scroll.js
+- local-testing/backend/
+
+The `local-testing/` directory is intentionally excluded from Git. It keeps
+load and performance scripts available locally without including them in the
+application commit.
 
 ## Deployment Notes
 

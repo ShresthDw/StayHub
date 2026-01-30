@@ -3,6 +3,39 @@
 .leaflet-tile-pane { z-index: 0 !important; filter: brightness(0.9) invert(0) contrast(1) saturate(1); }
 .dark .leaflet-tile-pane { filter: brightness(0.6) invert(1) contrast(3) saturate(0.3); }
 
+html, body {
+	margin: 0;
+	font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Shared compact scale across every route at 100% browser zoom. */
+html {
+	font-size: 15px;
+}
+
+input[type='date'] {
+	min-height: 2.75rem;
+	appearance: auto;
+	color-scheme: light;
+	font-variant-numeric: tabular-nums;
+	border: 1px solid rgba(148, 163, 184, .7);
+	background-color: #ffffff;
+	padding-right: .75rem;
+}
+
+.dark input[type='date'] {
+	color-scheme: dark;
+	border-color: rgba(100, 116, 139, .8);
+	background-color: #374151;
+	background-image: none;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+	cursor: pointer;
+	opacity: .72;
+}
+
 /* Hide horizontal/vertical scrollbars while preserving scroll behavior */
 .no-scrollbar {
 	-ms-overflow-style: none;
@@ -13,4 +46,57 @@
 	width: 0;
 	height: 0;
 	display: none;
+}
+
+/* Animated placeholder text */
+@keyframes placeholder-fade {
+	0%, 100% {
+		opacity: 1;
+	}
+	45%, 55% {
+		opacity: 0.6;
+	}
+}
+
+input::placeholder {
+	animation: placeholder-fade 3s ease-in-out infinite;
+}
+
+.room-detail-gallery {
+	height: 15rem;
+	min-height: 15rem;
+}
+
+@keyframes menu-enter {
+	from { opacity: 0; transform: translateY(-6px) scale(.98); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.user-menu-panel {
+	animation: menu-enter 160ms ease-out both;
+}
+
+/* Keep the page's content rhythm predictable across viewports. */
+.home-content-rail {
+	max-width: 80rem;
+	margin-inline: auto;
+	padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+	.home-content-rail { padding-inline: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+	.home-content-rail { padding-inline: 2rem; }
+}
+
+/* Teal theme colors for Tailwind */
+:root {
+	--color-teal-500: #14b8a6;
+	--color-teal-600: #0d9488;
+	--color-teal-700: #0f766e;
+	--color-cyan-500: #06b6d4;
+	--color-cyan-600: #0891b2;
+	--color-cyan-700: #0e7490;
 }
