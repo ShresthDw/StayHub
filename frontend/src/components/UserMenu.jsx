@@ -1,7 +1,7 @@
 ﻿import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { clearFilters, setTheme } from '../store/appSlice.js';
+import { clearFilters, setCurrentUser, setTheme } from '../store/appSlice.js';
 import { useLogoutMutation } from '../api/apiSlice.js';
 
 const UserMenu = ({ currentUser, icons }) => {
@@ -10,6 +10,7 @@ const UserMenu = ({ currentUser, icons }) => {
     const { theme } = useSelector((state) => state.app);
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
+    const [logout] = useLogoutMutation();
     const displayName = currentUser?.name
         ? `${currentUser.name.charAt(0).toUpperCase()}${currentUser.name.slice(1)}`
         : 'User';
@@ -25,9 +26,14 @@ const UserMenu = ({ currentUser, icons }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await logout().unwrap();
+        } catch (err) {
+            console.error('Logout failed:', err);
+        }
         dispatch(clearFilters());
-        dispatch(useLogoutMutation());
+        dispatch(setCurrentUser(null));
         setIsOpen(false);
         navigate('/');
     };

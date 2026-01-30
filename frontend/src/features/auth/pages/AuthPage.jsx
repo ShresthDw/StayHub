@@ -76,10 +76,10 @@ const AuthPage = ({ mode }) => {
                 </p>
 
                 <div className="mt-6 flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                    <Link to="/login" className={`flex-1 py-2 rounded-md text-center text-sm font-medium ${isLoginMode ? 'bg-white dark:bg-gray-800 shadow text-indigo-600 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-300'}`}>
+                    <Link to="/login" className={`flex-1 py-2 rounded-md text-center text-sm font-medium ${isLoginMode ? 'bg-white dark:bg-gray-800 shadow text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-300'}`}>
                         Login
                     </Link>
-                    <Link to="/signup" className={`flex-1 py-2 rounded-md text-center text-sm font-medium ${!isLoginMode ? 'bg-white dark:bg-gray-800 shadow text-indigo-600 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-300'}`}>
+                    <Link to="/signup" className={`flex-1 py-2 rounded-md text-center text-sm font-medium ${!isLoginMode ? 'bg-white dark:bg-gray-800 shadow text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-300'}`}>
                         Signup
                     </Link>
                 </div>
@@ -102,14 +102,14 @@ const AuthPage = ({ mode }) => {
                     <InputField label="Email" name="email" type="email" placeholder="Enter your email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                     <InputField label="Password" name="password" type="password" placeholder={isLoginMode ? 'Enter password' : 'Create password (min 6 chars)'} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
 
-                    <button type="submit" disabled={loading} className={`w-full py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                    <button type="submit" disabled={loading} className={`w-full py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-teal-400' : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700'}`}>
                         {loading ? 'Please wait…' : (isLoginMode ? 'Login' : 'Create Account')}
                     </button>
                 </form>
 
                 <p className="text-sm text-center text-gray-500 dark:text-gray-400 mt-5">
                     {isLoginMode ? 'New to StayHub?' : 'Already have an account?'}{' '}
-                    <Link to={isLoginMode ? '/signup' : '/login'} className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+                    <Link to={isLoginMode ? '/signup' : '/login'} className="text-teal-700 dark:text-teal-300 font-medium hover:underline">
                         {isLoginMode ? 'Signup here' : 'Login here'}
                     </Link>
                 </p>

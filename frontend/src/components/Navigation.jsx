@@ -70,7 +70,7 @@ const Navigation = ({ currentUser, icons }) => {
                         {currentUser ? (
                             <UserMenu currentUser={currentUser} icons={icons} />
                         ) : (
-                            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-white bg-teal-600 rounded-full hover:bg-teal-700 shadow-sm transition-colors">Login</Link>
+                            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-white rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-sm transition-all">Login</Link>
                         )}
                         
                     </nav>
