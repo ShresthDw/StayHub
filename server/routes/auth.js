@@ -1,62 +1,104 @@
 // routes/auth.js
 import express from 'express';
-import User from '../models/User.js';
+import bcrypt  from 'bcryptjs';
+import User    from '../models/User.js';
 
 const router = express.Router();
 
-// @route   POST api/auth/register
-// @desc    Register a user or an owner (simulated verification for owner)
+// ---------- helpers ----------
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+// @route   POST /api/auth/register
+// @desc    Register a guest or owner (owners start unverified)
 router.post('/register', async (req, res) => {
     const { name, email, password, phone, role } = req.body;
 
+    // --- Input validation ---
+    if (!name || !name.trim()) {
+        return res.status(400).json({ msg: 'Name is required' });
+    }
+    if (!email || !validateEmail(email)) {
+        return res.status(400).json({ msg: 'A valid email is required' });
+    }
+    if (!password || password.length < 6) {
+        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+    }
+    if (role && !['guest', 'owner'].includes(role)) {
+        return res.status(400).json({ msg: 'Invalid role' });
+    }
+
     try {
-        let user = await User.findOne({ email });
-        if (user) {
+        const existing = await User.findOne({ email: email.toLowerCase().trim() });
+        if (existing) {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
+        // Hash password
+        const salt      = await bcrypt.genSalt(10);
+        const hashedPwd = await bcrypt.hash(password, salt);
+
+        const effectiveRole = role || 'guest';
+
         const newUser = new User({
-            name,
-            email,
-            // *In a real app, the password must be hashed before saving*
-            password, 
-            phone,
-            role,
-            // Simulate owner verification logic
-            verified: role === 'guest' ? true : false // Owner needs verification
+            name:     name.trim(),
+            email:    email.toLowerCase().trim(),
+            password: hashedPwd,
+            phone:    phone ? phone.trim() : undefined,
+            role:     effectiveRole,
+            // Guests are verified immediately; owners need manual verification
+            verified: effectiveRole === 'guest'
         });
 
         await newUser.save();
 
-        // Respond with created user data (excluding password)
-        const userData = { id: newUser._id, name: newUser.name, role: newUser.role, verified: newUser.verified };
+        const userData = {
+            id:       newUser._id,
+            name:     newUser.name,
+            email:    newUser.email,
+            role:     newUser.role,
+            verified: newUser.verified
+        };
         res.status(201).json({ msg: 'Registration successful', user: userData });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
-// @route   POST api/auth/login
-// @desc    Authenticate user & get user data
+// @route   POST /api/auth/login
+// @desc    Authenticate user & return user data
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    try {
-        let user = await User.findOne({ email });
+    if (!email || !password) {
+        return res.status(400).json({ msg: 'Email and password are required' });
+    }
 
-        if (!user || user.password !== password) { // *In a real app, compare hashed passwords*
+    try {
+        const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+        if (!user) {
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
-        // Respond with user data
-        const userData = { id: user._id, name: user.name, role: user.role, verified: user.verified };
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid Credentials' });
+        }
+
+        const userData = {
+            id:       user._id,
+            name:     user.name,
+            email:    user.email,
+            role:     user.role,
+            verified: user.verified
+        };
         res.json({ msg: 'Login successful', user: userData });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
