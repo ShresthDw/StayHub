@@ -1,4 +1,6 @@
 // RTK Query hooks for profile
+import { API_BASE_URL } from '../../../constants.jsx';
+
 export {
     useUpdateProfileMutation,
     useBecomeOwnerMutation
@@ -7,7 +9,7 @@ export {
 // Direct async function for use in event handlers
 export const updateProfile = async (profileData) => {
     try {
-        const response = await fetch('/api/users/profile', {
+        const response = await fetch(`${API_BASE_URL}/auth/profile`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

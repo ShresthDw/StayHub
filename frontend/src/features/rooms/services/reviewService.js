@@ -1,4 +1,6 @@
 // RTK Query hooks for reviews
+import { API_BASE_URL } from '../../../constants.jsx';
+
 export {
     useSubmitReviewMutation,
     useCheckUserReviewStatusQuery
@@ -7,7 +9,7 @@ export {
 // Direct async functions for use in event handlers
 export const submitReview = async (roomId, reviewData) => {
     try {
-        const response = await fetch(`/api/rooms/${roomId}/reviews`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}/reviews`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +30,7 @@ export const submitReview = async (roomId, reviewData) => {
 
 export const checkUserReviewStatus = async (roomId) => {
     try {
-        const response = await fetch(`/api/rooms/${roomId}/review-status`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}/review-status`, {
             headers: {
                 'x-user-id': localStorage.getItem('userId') || ''
             }

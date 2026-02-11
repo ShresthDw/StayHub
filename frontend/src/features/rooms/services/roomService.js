@@ -1,4 +1,6 @@
 // RTK Query hooks for rooms
+import { API_BASE_URL } from '../../../constants.jsx';
+
 export {
     useGetPublicRoomsQuery,
     useGetPublicRoomsByTypeQuery,
@@ -14,7 +16,7 @@ export {
 // Direct async functions for use in event handlers (not through RTK Query)
 export const createRoom = async (roomData) => {
     try {
-        const response = await fetch('/api/rooms', {
+        const response = await fetch(`${API_BASE_URL}/rooms`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +37,7 @@ export const createRoom = async (roomData) => {
 
 export const updateRoom = async (roomId, roomData) => {
     try {
-        const response = await fetch(`/api/rooms/${roomId}`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +58,7 @@ export const updateRoom = async (roomId, roomData) => {
 
 export const deleteRoom = async (roomId) => {
     try {
-        const response = await fetch(`/api/rooms/${roomId}`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
             method: 'DELETE',
             headers: {
                 'x-user-id': localStorage.getItem('userId') || ''
@@ -75,7 +77,7 @@ export const deleteRoom = async (roomId) => {
 
 export const getRoomById = async (roomId) => {
     try {
-        const response = await fetch(`/api/rooms/${roomId}`);
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`);
         if (!response.ok) throw new Error('Failed to fetch room');
         return await response.json();
     } catch (err) {

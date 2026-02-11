@@ -18,7 +18,27 @@ if (!process.env.GEOAPIFY_API_KEY) {
 
 const app = express();
 
-app.use(cors({ credentials: true }));
+// app.use(cors({ credentials: true }));
+const allowedOrigins = [
+    "http://localhost:5173", // Vite local
+    "http://localhost:3000", // CRA local (if applicable)
+    "https://stay-hub-psi.vercel.app", // Production frontend
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+    })
+);
+
 app.use(compression()); 
 app.use(express.json());
 app.use(cookieParser());

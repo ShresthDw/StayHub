@@ -1,4 +1,6 @@
 // RTK Query hooks for bookings
+import { API_BASE_URL } from '../../../constants.jsx';
+
 export {
     useCreateRazorpayOrderMutation,
     useVerifyRazorpayPaymentMutation,
@@ -11,7 +13,7 @@ export {
 // Direct async functions for use in event handlers
 export const createRazorpayOrder = async (bookingData) => {
     try {
-        const response = await fetch('/api/bookings/razorpay/order', {
+        const response = await fetch(`${API_BASE_URL}/bookings/razorpay/order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +34,7 @@ export const createRazorpayOrder = async (bookingData) => {
 
 export const verifyRazorpayPayment = async (paymentData) => {
     try {
-        const response = await fetch('/api/bookings/razorpay/verify', {
+        const response = await fetch(`${API_BASE_URL}/bookings/razorpay/verify`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
