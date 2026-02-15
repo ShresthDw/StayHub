@@ -2,7 +2,7 @@
 const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
 const isProductionHost = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
 const isLocalApiUrl = configuredApiUrl && /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?/i.test(configuredApiUrl);
-const defaultApiUrl = isProductionHost ? 'https://stayhub-backend-qah8.onrender.com' : 'http://localhost:5000';
+const defaultApiUrl = isProductionHost ? 'https://ratelimiter-c2k4.onrender.com' : 'http://localhost:5000';
 const API_GATEWAY_URL = (
   configuredApiUrl && !(isProductionHost && isLocalApiUrl)
     ? configuredApiUrl

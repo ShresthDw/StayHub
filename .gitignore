@@ -44,5 +44,8 @@ test/
 __tests__/
 /local-testing/
 
+# Local deployment configuration
+render.yaml
+
 # Local documentation and reports (not published with the application source)
 /mdfiles/

@@ -73,8 +73,10 @@ Base URL (local):
 - Frontend: http://localhost:5173
 
 Production configuration:
-- Set `VITE_API_URL` in the frontend deployment to the Render backend URL.
+- Set `VITE_API_URL` in the frontend deployment to `https://ratelimiter-c2k4.onrender.com` (or your current Render backend URL).
 - Set `FRONTEND_URL` (or comma-separated `FRONTEND_URLS`) in Render to the deployed frontend URL.
+- Render backend: use `backend/` as the root directory, `npm install` as the build command, and `npm start` as the start command. The repository also includes `render.yaml` for this setup.
+- Vercel frontend: use `frontend/` as the root directory and set `VITE_API_URL` before building.
 
 Main route groups:
 - GET /api/config
