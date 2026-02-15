@@ -116,6 +116,9 @@ roomSchema.index({ location: "2dsphere" });
 roomSchema.index({ pricePerNight: 1 });
 roomSchema.index({ "address.city": 1 });
 roomSchema.index({ hostId: 1 });
+// Homepage and category listings always filter active rooms by property type.
+// Keeping these fields together avoids a collection scan for each category.
+roomSchema.index({ isActive: 1, propertyType: 1 });
 
 const Room = mongoose.model('Room', roomSchema);
 export default Room;

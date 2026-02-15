@@ -60,7 +60,11 @@ export const getRooms = async (req, res) => {
                 .skip(skip)
                 .lean(); // OPTIMIZATION 2: Use .lean() for read operations (15-20% faster)
             
-            let allRooms = await dbQuery;
+            const [rooms, total] = await Promise.all([
+                dbQuery,
+                Room.countDocuments(query)
+            ]);
+            let allRooms = rooms;
 
             // Filter by date availability if both dates provided
             if (checkInDate && checkOutDate) {
@@ -74,9 +78,6 @@ export const getRooms = async (req, res) => {
                 allRooms = availableRooms;
             }
 
-            // Get total count for pagination info
-            const total = await Room.countDocuments(query);
-            
             return res.status(200).json({
                 rooms: allRooms,
                 pagination: {
