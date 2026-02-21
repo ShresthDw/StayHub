@@ -1,0 +1,16 @@
+.leaflet-container { height: 100%; width: 100%; z-index: 0; }
+.leaflet-pane { z-index: 0 !important; }
+.leaflet-tile-pane { z-index: 0 !important; filter: brightness(0.9) invert(0) contrast(1) saturate(1); }
+.dark .leaflet-tile-pane { filter: brightness(0.6) invert(1) contrast(3) saturate(0.3); }
+
+/* Hide horizontal/vertical scrollbars while preserving scroll behavior */
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+	display: none;
+}
