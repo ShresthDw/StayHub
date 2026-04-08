@@ -1,8 +1,15 @@
 // VITE_API_URL is configured in Vercel. The fallback keeps production working
 // until that environment variable is added in the Vercel dashboard.
-export const API_BASE_URL = `${(
-    import.meta.env.VITE_API_URL || 'https://stayhub-backend-qah8.onrender.com'
-).replace(/\/$/, '')}/api`;
+// export const API_BASE_URL = `${(
+//     import.meta.env.VITE_API_URL || 'https://stayhub-backend-qah8.onrender.com'
+// ).replace(/\/$/, '')}/api`;
+
+const API_GATEWAY_URL = (
+  import.meta.env.VITE_API_URL || 'https://ratelimiter-c2k4.onrender.com'
+).replace(/\/$/, '');
+
+export const API_BASE_URL = `${API_GATEWAY_URL}/api/proxy/api`;
+
 export const PROPERTY_TYPES = ['apartment', 'house', 'resort', 'villa', 'hotel', 'cottage', 'hostel'];
 export const ROOM_TYPES = ['entire_place', 'private_room', 'shared_room'];
 export const STAY_TYPES = ['daily', 'monthly'];
