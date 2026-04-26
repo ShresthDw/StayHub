@@ -68,7 +68,8 @@ export const apiSlice = createApi({
         'Reviews',
         'Cities',
         'Config',
-        'Address'
+        'Address',
+        'Notifications'
     ],
     endpoints: (builder) => ({
         // AUTH ENDPOINTS
@@ -88,7 +89,7 @@ export const apiSlice = createApi({
                     console.error('Login error:', error);
                 }
             },
-            invalidatesTags: ['User']
+            invalidatesTags: ['User', 'Notifications']
         }),
 
         register: builder.mutation({
@@ -107,7 +108,7 @@ export const apiSlice = createApi({
                     console.error('Register error:', error);
                 }
             },
-            invalidatesTags: ['User']
+            invalidatesTags: ['User', 'Notifications']
         }),
 
         getCurrentUser: builder.query({
@@ -130,7 +131,7 @@ export const apiSlice = createApi({
                     console.error('Logout error:', error);
                 }
             },
-            invalidatesTags: ['User']
+            invalidatesTags: ['User', 'Notifications']
         }),
 
         // ============= ROOMS ENDPOINTS =============
@@ -176,7 +177,6 @@ export const apiSlice = createApi({
 
         getPublicRoomsByType: builder.query({
             query: ({ propertyType, filters, searchLocation, checkInDate, checkOutDate, page = 1 }) => {
-                // Load more than the five visible cards so horizontal sections can scroll.
                 const params = { isActive: 'true', page, limit: 10, propertyType };
 
                 if (filters?.amenities?.length > 0) params.amenities = filters.amenities.join(',');
@@ -291,7 +291,7 @@ export const apiSlice = createApi({
                     razorpay_signature: payload.razorpay_signature
                 }
             }),
-            invalidatesTags: ['MyBookings', 'BookedProperties', 'HostEarnings']
+            invalidatesTags: ['MyBookings', 'BookedProperties', 'HostEarnings', 'Notifications']
         }),
 
         getMyBookings: builder.query({
@@ -314,7 +314,7 @@ export const apiSlice = createApi({
                 url: `/bookings/${bookingId}`,
                 method: 'DELETE'
             }),
-            invalidatesTags: ['MyBookings', 'BookedProperties', 'HostEarnings']
+            invalidatesTags: ['MyBookings', 'BookedProperties', 'HostEarnings', 'Notifications']
         }),
 
         // ============= REVIEWS ENDPOINTS =============
@@ -324,12 +324,63 @@ export const apiSlice = createApi({
                 method: 'POST',
                 body: { roomId, rating, comment }
             }),
-            invalidatesTags: ['Reviews', 'MyBookings']
+            invalidatesTags: ['Reviews', 'MyBookings', 'Notifications']
         }),
 
         checkUserReviewStatus: builder.query({
             query: (roomId) => `/bookings/reviews/status/${roomId}`,
             providesTags: (result, error, roomId) => [{ type: 'Reviews', id: roomId }]
+        }),
+
+        // ============= NOTIFICATIONS ENDPOINTS =============
+        getNotifications: builder.query({
+            query: ({ page = 1, limit = 20, unreadOnly = false, type = 'all' } = {}) => ({
+                url: '/notifications',
+                params: {
+                    page,
+                    limit,
+                    ...(unreadOnly && { unreadOnly: 'true' }),
+                    ...(type && type !== 'all' && { type })
+                }
+            }),
+            providesTags: ['Notifications']
+        }),
+
+        getUnreadNotificationCount: builder.query({
+            query: () => '/notifications/unread-count',
+            providesTags: ['Notifications']
+        }),
+
+        markNotificationRead: builder.mutation({
+            query: (notificationId) => ({
+                url: `/notifications/${notificationId}/read`,
+                method: 'PATCH'
+            }),
+            invalidatesTags: ['Notifications']
+        }),
+
+        markAllNotificationsRead: builder.mutation({
+            query: () => ({
+                url: '/notifications/mark-all-read',
+                method: 'PATCH'
+            }),
+            invalidatesTags: ['Notifications']
+        }),
+
+        deleteNotification: builder.mutation({
+            query: (notificationId) => ({
+                url: `/notifications/${notificationId}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Notifications']
+        }),
+
+        clearAllNotifications: builder.mutation({
+            query: () => ({
+                url: '/notifications/clear-all',
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Notifications']
         }),
 
         // ============= PROFILE ENDPOINTS =============
@@ -349,7 +400,7 @@ export const apiSlice = createApi({
                 method: 'POST'
             }),
             transformResponse: (response) => response.user,
-            invalidatesTags: ['User']
+            invalidatesTags: ['User', 'BookedProperties', 'HostEarnings', 'MyRooms']
         }),
 
         // ============= WISHLIST ENDPOINTS =============
@@ -410,9 +461,16 @@ export const {
     // Reviews
     useSubmitReviewMutation,
     useCheckUserReviewStatusQuery,
+    // Notifications
+    useGetNotificationsQuery,
+    useGetUnreadNotificationCountQuery,
+    useMarkNotificationReadMutation,
+    useMarkAllNotificationsReadMutation,
+    useDeleteNotificationMutation,
+    useClearAllNotificationsMutation,
     // Profile
     useUpdateProfileMutation,
-        useBecomeOwnerMutation,
+    useBecomeOwnerMutation,
     // Wishlist
     useGetWishlistQuery,
     useToggleWishlistMutation,

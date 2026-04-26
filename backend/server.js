@@ -1,3 +1,4 @@
+import http from 'http';
 import dotenv from 'dotenv';
 dotenv.config(); 
 
@@ -10,13 +11,16 @@ import authRoutes     from './features/auth/routes.js';
 import roomRoutes     from './features/rooms/routes.js';
 import bookingRoutes  from './features/bookings/routes.js';
 import addressRoutes  from './features/address/routes.js';
+import notificationRoutes from './features/notifications/routes.js';
 import { connectDB }  from './config/database.js';
+import { initSocket } from './config/socket.js';
 
 if (!process.env.GEOAPIFY_API_KEY) {
     console.warn('WARNING: GEOAPIFY_API_KEY is not defined. Distance/search features will not work.');
 }
 
 const app = express();
+const httpServer = http.createServer(app);
 
 // app.use(cors({ credentials: true }));
 const configuredFrontendOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
@@ -48,7 +52,8 @@ app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 
-
+// Initialize Socket.io on the HTTP server
+initSocket(httpServer, allowedOrigins);
 
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -70,6 +75,7 @@ app.use('/api/auth',  authLimiter, authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/address', addressRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 
 // --- Config endpoint (exposes the Geoapify public key for frontend map/geocoding) ---
@@ -86,7 +92,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
     try {
         await connectDB();
-        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     } catch (error) {
         console.error('Failed to start server:', error.message);
         process.exit(1);

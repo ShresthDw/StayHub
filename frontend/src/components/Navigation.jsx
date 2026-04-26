@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBecomeOwnerMutation } from '../features/profile/services/profileService.js';
 import { setCurrentUser } from '../store/appSlice.js';
 import UserMenu from './UserMenu.jsx';
+import NotificationBell from '../features/notifications/components/NotificationBell.jsx';
 import BrandLogo from './BrandLogo.jsx';
 
 const Navigation = ({ currentUser, icons }) => {
@@ -65,6 +66,10 @@ const Navigation = ({ currentUser, icons }) => {
                             >
                                 {upgrading ? 'Enabling…' : 'Host Property'}
                             </button>
+                        )}
+
+                        {currentUser && (
+                            <NotificationBell currentUser={currentUser} />
                         )}
 
                         {currentUser ? (

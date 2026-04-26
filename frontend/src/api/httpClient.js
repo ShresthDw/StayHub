@@ -9,17 +9,6 @@ const httpClient = axios.create({
     }
 });
 
-// Helper functions for auth token management
-export const setAuthToken = (userId) => {
-    if (userId) {
-        localStorage.setItem('userId', userId);
-        httpClient.defaults.headers.common['x-user-id'] = userId;
-    } else {
-        localStorage.removeItem('userId');
-        delete httpClient.defaults.headers.common['x-user-id'];
-    }
-};
-
 export const getAuthToken = () => {
     return localStorage.getItem('userId');
 };

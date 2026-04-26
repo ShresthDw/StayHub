@@ -11,15 +11,15 @@ import AuthPageView from './features/auth/pages/AuthPage.jsx';
 import HomePageView from './features/rooms/pages/HomePage.jsx';
 import CityListingPageView from './features/rooms/pages/CityListingPage.jsx';
 import EarningsPageView from './features/bookings/pages/EarningsPage.jsx';
-import BookingsPageView from './features/bookings/pages/BookingsPage.jsx';
 import MyBookingsPageView from './features/bookings/pages/MyBookingsPage.jsx';
-import BookedPropertiesPageView from './features/bookings/pages/BookedPropertiesPage.jsx';
 import WishlistPageView from './features/wishlist/pages/WishlistPage.jsx';
 import OwnerDashboardView from './features/rooms/pages/OwnerDashboard.jsx';
 import AddRoomPage from './features/rooms/pages/AddRoomPage.jsx';
 import ProfilePageView from './features/profile/pages/ProfilePage.jsx';
-import EditProfilePage from './features/profile/pages/EditProfilePage.jsx';
 import RoomDetailsPageView from './features/rooms/pages/RoomDetailsPageView.jsx';
+import NotificationsPageView from './features/notifications/pages/NotificationsPage.jsx';
+import NotificationToast from './features/notifications/components/NotificationToast.jsx';
+import useNotificationSocket from './features/notifications/hooks/useNotificationSocket.js';
 import {
     clearFilters,
     setFilters,
@@ -46,6 +46,8 @@ const App = () => {
     const { data: userData, error: userError } = useGetCurrentUserQuery();
     const [logout] = useLogoutMutation();
 
+    // Real-time WebSocket connection & live notification toasts
+    const { liveNotification, clearLiveNotification } = useNotificationSocket();
 
     // Initialize app on mount
     useEffect(() => {
@@ -57,16 +59,19 @@ const App = () => {
             dispatch(setRazorpayKeyId(configData.razorpayKeyId || null));
         }
 
+        const configSettled = configData !== undefined || !!configError;
+        const userSettled = userData !== undefined || !!userError;
+
         if (userData) {
             dispatch(setCurrentUser(userData));
+        } else if (userError) {
+            dispatch(setCurrentUser(null));
         }
 
-        // Mark loading as complete when we have config data or when config query has errored
-        // userData may be null/undefined but we still want to proceed
-        if (configData !== undefined || configError) {
+        if (configSettled && userSettled) {
             dispatch(setIsLoading(false));
         }
-    }, [configData, configError, userData, dispatch]);
+    }, [configData, configError, userData, userError, dispatch]);
 
     const handleQuickFilterSelect = (patch) => {
         dispatch(setFilters({ ...filters, ...patch }));
@@ -102,6 +107,11 @@ const App = () => {
                 onQuickFilterSelect={handleQuickFilterSelect}
             />
 
+            <NotificationToast
+                notification={liveNotification}
+                onClose={clearLiveNotification}
+            />
+
             <Routes>
                 <Route path="/" element={<HomePageView />} />
                 <Route path="/cities/:city" element={<CityListingPageView />} />
@@ -113,24 +123,20 @@ const App = () => {
                 </Route>
 
                 <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
+                    <Route path="/my-properties" element={<OwnerDashboardView />} />
                     <Route path="/dashboard" element={<OwnerDashboardView />} />
                     <Route path="/add-property" element={<AddRoomPage />} />
                 </Route>
 
                 <Route element={<ProtectedRoute currentUser={currentUser} />}>
                     <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
-                    <Route path="/profile/edit" element={<EditProfilePage />}  />
+                    <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
+                    <Route path="/notifications" element={<NotificationsPageView />} />
                     <Route path="/my-bookings" element={<MyBookingsPageView />} />
-                    <Route path="/wishlist" element={<WishlistPageView />} />          
-                </Route>
-
-                <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
+                    <Route path="/wishlist" element={<WishlistPageView />} />
                     <Route path="/earnings" element={<EarningsPageView />} />
-                </Route>
-
-                <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
-                    <Route path="/bookings" element={<BookingsPageView />} />
-                    <Route path="/booked-properties" element={<BookedPropertiesPageView />} />
+                    <Route path="/bookings" element={<Navigate to="/earnings" replace />} />
+                    <Route path="/booked-properties" element={<Navigate to="/earnings" replace />} />
                 </Route>
 
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -142,3 +148,4 @@ const App = () => {
 };
 
 export default App;
+

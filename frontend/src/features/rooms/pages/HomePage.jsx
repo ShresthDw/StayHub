@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
 import RoomCard from '../../../components/RoomCard.jsx';
 import CityCard from '../../../components/CityCard.jsx';
+import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
 import { PageSkeleton } from '../../../components/Skeletons.jsx';
 import { setCheckInDate, setCheckOutDate } from '../../../store/appSlice.js';
 import { incrementCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
@@ -309,95 +310,110 @@ const HomePage = () => {
     return (
         <main className="w-full">
             <div className="space-y-10 pb-12">
-                {/* Hero Search Section with Teal Theme */}
-                <div className="relative bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-700 dark:to-cyan-700 w-full py-8 px-0">
-                    <div className="home-content-rail">
-                        <h1 className="text-left text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Find your next favorite stay</h1>
-                        <p className="text-left text-teal-100 text-base mb-5">Discover unique places to stay</p>
+                {/* Hero Search Section with Real-Time Cinematic Animated Background */}
+                <div className="relative w-full py-12 sm:py-16 px-0 shadow-md bg-gray-950 min-h-[380px] flex items-center z-20">
+                    {/* Cinematic Slideshow + Canvas Particle Engine + Cloud Mist (Safely clips its own images) */}
+                    <HeroBackgroundAnimation />
+
+                    <div className="home-content-rail relative z-10 w-full">
+                        {/* Floating Feature Pill Badge */}
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold mb-3.5 border border-white/30 shadow-sm animate-float-badge">
+                            <span>✨</span>
+                            <span>Discover 500+ Verified Stays & Instant Bookings</span>
+                        </div>
+
+                        <h1 className="text-left text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-sm">
+                            Find your next favorite stay
+                        </h1>
+                        <p className="text-left text-teal-50 dark:text-teal-100 text-sm sm:text-base md:text-lg mb-6 font-medium max-w-xl">
+                            Explore extraordinary villas, cozy cottages, luxury apartments, and boutique rooms.
+                        </p>
                         
-                        {/* Main Search Bar with Animated Placeholder */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end mb-3">
-                            {/* Location Search */}
-                            <div className="relative md:col-span-1">
-                                <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Where</label>
-                                <div className="relative">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-xl">
-                                        {icons.search}
-                                    </div>
-                                    <input
-                                        type="text"
-                                        value={searchInput}
-                                        onChange={(e) => handleCitySearchChange(e.target.value)}
-                                        placeholder={animatedPlaceholder}
-                                        onFocus={() => searchInput && setShowCitySuggestions(true)}
-                                        className="w-full pl-12 pr-4 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
-                                    />
-                                    
-                                    {/* City Suggestions Dropdown */}
-                                    {showCitySuggestions && filteredCities.length > 0 && (
-                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50">
-                                            {filteredCities.map((city) => (
-                                                <button
-                                                    key={city.name}
-                                                    onClick={() => handleCitySelect(city.name)}
-                                                    className="w-full text-left px-4 py-3 text-gray-900 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-gray-600 border-b last:border-b-0 border-gray-200 dark:border-gray-600 transition-colors flex items-center justify-between"
-                                                >
-                                                    <span className="font-medium">{city.name}</span>
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">{city.count} properties</span>
-                                                </button>
-                                            ))}
+                        {/* Main Search Bar with Glassmorphic Backdrop & Animated Placeholder */}
+                        <div className="bg-white/20 dark:bg-gray-900/35 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-white/30 dark:border-white/10 shadow-2xl relative z-30">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                                {/* Location Search */}
+                                <div className="relative md:col-span-1">
+                                    <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Where</label>
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 text-xl pointer-events-none">
+                                            {icons.search}
                                         </div>
+                                        <input
+                                            type="text"
+                                            value={searchInput}
+                                            onChange={(e) => handleCitySearchChange(e.target.value)}
+                                            placeholder={animatedPlaceholder}
+                                            onFocus={() => searchInput && setShowCitySuggestions(true)}
+                                            className="w-full pl-12 pr-4 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
+                                        />
+                                        
+                                        {/* City Suggestions Dropdown (Floats above all page sections) */}
+                                        {showCitySuggestions && filteredCities.length > 0 && (
+                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto">
+                                                {filteredCities.map((city) => (
+                                                    <button
+                                                        key={city.name}
+                                                        onClick={() => handleCitySelect(city.name)}
+                                                        className="w-full text-left px-4 py-3 text-gray-900 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-gray-700 border-b last:border-b-0 border-gray-100 dark:border-gray-700 transition-colors flex items-center justify-between"
+                                                    >
+                                                        <span className="font-semibold">{city.name}</span>
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400">{city.count} properties</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Check-in and Check-out */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Check in</label>
+                                        <input
+                                            type="date"
+                                            onClick={(event) => event.currentTarget.showPicker?.()}
+                                            value={tempCheckInDate}
+                                            onChange={(e) => setTempCheckInDate(e.target.value)}
+                                            className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Check out</label>
+                                        <input
+                                            type="date"
+                                            onClick={(event) => event.currentTarget.showPicker?.()}
+                                            value={tempCheckOutDate}
+                                            onChange={(e) => setTempCheckOutDate(e.target.value)}
+                                            className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Search Button */}
+                                <button 
+                                    onClick={handleManualSearch} 
+                                    className="px-6 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 transform active:scale-95"
+                                >
+                                    {isSearching ? (
+                                        <>
+                                            <div className="animate-spin">⟳</div>
+                                            <span className="hidden sm:inline">Finding…</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {icons.search}
+                                            <span className="hidden sm:inline">Search</span>
+                                        </>
                                     )}
-                                </div>
+                                </button>
                             </div>
-
-                            {/* Check-in and Check-out */}
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Check in</label>
-                                    <input
-                                        type="date"
-                                        onClick={(event) => event.currentTarget.showPicker?.()}
-                                        value={tempCheckInDate}
-                                        onChange={(e) => setTempCheckInDate(e.target.value)}
-                                        className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-white uppercase tracking-wide block mb-2">Check out</label>
-                                    <input
-                                        type="date"
-                                        onClick={(event) => event.currentTarget.showPicker?.()}
-                                        value={tempCheckOutDate}
-                                        onChange={(e) => setTempCheckOutDate(e.target.value)}
-                                        className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-lg font-medium"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Search Button */}
-                            <button 
-                                onClick={handleManualSearch} 
-                                className="px-6 py-3 bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60"
-                            >
-                                {isSearching ? (
-                                    <>
-                                        <div className="animate-spin">⟳</div>
-                                        <span className="hidden sm:inline">Finding…</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        {icons.search}
-                                        <span className="hidden sm:inline">Search</span>
-                                    </>
-                                )}
-                            </button>
                         </div>
 
                         {/* Error Message */}
                         {searchError && (
-                            <div className="p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl mt-4">
-                                <p className="text-red-700 dark:text-red-400 font-medium flex items-center gap-2">
+                            <div className="p-4 bg-red-100/90 dark:bg-red-900/50 backdrop-blur-md border border-red-300 dark:border-red-700 rounded-xl mt-4">
+                                <p className="text-red-700 dark:text-red-300 font-medium flex items-center gap-2">
                                     <span>⚠️</span>
                                     {searchError}
                                 </p>

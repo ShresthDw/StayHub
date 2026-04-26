@@ -1,4 +1,3 @@
-
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../../models/User.js';
@@ -6,7 +5,6 @@ import User from '../../models/User.js';
 const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // POST /api/auth/register
-
 export const register = async (req, res) => {
     const { name, email, password, phone, role } = req.body;
 
@@ -29,7 +27,6 @@ export const register = async (req, res) => {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-
         const salt = await bcrypt.genSalt(10);
         const hashedPwd = await bcrypt.hash(password, salt);
 
@@ -39,10 +36,9 @@ export const register = async (req, res) => {
             name: name.trim(),
             email: email.toLowerCase().trim(),
             password: hashedPwd,
-            phone: phone ? phone.trim() : undefined,   // Agar phone number nahi diya, toh use save hi mat karo (instead of saving empty string).
+            phone: phone ? phone.trim() : undefined,
             role: effectiveRole,
-            // Guests are verified immediately; owners need manual verification
-            verified: effectiveRole === 'guest' //user ek Guest hai, toh use turant verified: true kar do (use wait nahi karna padega).
+            verified: effectiveRole === 'guest'
         });
 
         await newUser.save();
@@ -63,9 +59,7 @@ export const register = async (req, res) => {
     }
 };
 
-
 // POST /api/auth/login
-
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -85,7 +79,6 @@ export const login = async (req, res) => {
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
-        
         const token = jwt.sign(
             { id: user._id, email: user.email, role: user.role },
             process.env.JWT_SECRET || 'your-secret-key',
@@ -96,13 +89,14 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Lax',
-            maxAge:  60 * 1000 
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         const userData = {
             id: user._id,
             name: user.name,
             email: user.email,
+            phone: user.phone,
             role: user.role,
             verified: user.verified,
             wishlist: (user.wishlist || []).map(roomId => roomId.toString())
@@ -116,7 +110,6 @@ export const login = async (req, res) => {
 };
 
 // GET /api/auth/me
-
 export const getCurrentUser = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
@@ -141,9 +134,7 @@ export const getCurrentUser = async (req, res) => {
     }
 };
 
-
 // PUT /api/auth/profile
- 
 export const updateProfile = async (req, res) => {
     const { name, phone, newPassword } = req.body;
 
@@ -153,11 +144,9 @@ export const updateProfile = async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        // Update fields that are provided
         if (name !== undefined) user.name = name.trim();
         if (phone !== undefined) user.phone = phone ? phone.trim() : undefined;
 
-        // Handle password change
         if (newPassword) {
             if (newPassword.length < 6) {
                 return res.status(400).json({ msg: 'New password must be at least 6 characters' });
@@ -185,10 +174,7 @@ export const updateProfile = async (req, res) => {
     }
 };
 
-
-
-//POST /api/auth/become-owner
-
+// POST /api/auth/become-owner
 export const becomeOwner = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -201,8 +187,21 @@ export const becomeOwner = async (req, res) => {
         }
 
         user.role = 'owner';
-        user.verified = false; // Unverified until admin approves
+        user.verified = false;
         await user.save();
+
+        const token = jwt.sign(
+            { id: user._id.toString(), role: user.role },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '7d' }
+        );
+
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         const userData = {
             id: user._id.toString(),
@@ -216,15 +215,13 @@ export const becomeOwner = async (req, res) => {
         res.json({ msg: 'Owner role granted (pending verification)', user: userData });
 
     } catch (err) {
-        console.error(err.message);
+        console.error('ERROR in becomeOwner:', err.message);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
 
-//POST /api/auth/logout
-
+// POST /api/auth/logout
 export const logout = async (req, res) => {
-   
     res.clearCookie('authToken', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -233,10 +230,7 @@ export const logout = async (req, res) => {
     res.json({ msg: 'Logout successful' });
 };
 
-
 // GET /api/auth/wishlist
-
-
 export const getWishlist = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
@@ -244,8 +238,7 @@ export const getWishlist = async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        // Send wishlist IDs for Redux store (not full objects)
-        const wishlistIds = user.wishlist.map(item => item._id.toString());
+        const wishlistIds = (user.wishlist || []).map(item => item._id.toString());
 
         const userData = {
             id: user._id.toString(),
@@ -268,9 +261,7 @@ export const getWishlist = async (req, res) => {
     }
 };
 
-
 // POST /api/auth/wishlist/:roomId
-
 export const toggleWishlist = async (req, res) => {
     try {
         const { roomId } = req.params;
@@ -284,25 +275,20 @@ export const toggleWishlist = async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        const wishlistIndex = user.wishlist.findIndex(savedRoomId => savedRoomId.toString() === roomId);
+        const wishlistIndex = (user.wishlist || []).findIndex(savedRoomId => savedRoomId.toString() === roomId);
         let isWishlisted = false;
 
         if (wishlistIndex > -1) {
-            // Room is already in wishlist, remove it
             user.wishlist.splice(wishlistIndex, 1);
         } else {
-            // Room is not in wishlist, add it
             user.wishlist.push(roomId);
             isWishlisted = true;
         }
 
         await user.save();
 
-        // Populate wishlist for response
         const updatedUser = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
-
-        // Send wishlist IDs for Redux store (not full objects)
-        const wishlistIds = updatedUser.wishlist.map(item => item._id.toString());
+        const wishlistIds = (updatedUser.wishlist || []).map(item => item._id.toString());
 
         const userData = {
             id: updatedUser._id.toString(),

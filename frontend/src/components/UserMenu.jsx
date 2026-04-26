@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { clearFilters, setCurrentUser, setTheme } from '../store/appSlice.js';
@@ -43,13 +43,8 @@ const UserMenu = ({ currentUser, icons }) => {
         setIsOpen(false);
     };
 
-    const handleViewEarnings = () => {
-        navigate('/earnings');
-        setIsOpen(false);
-    };
-
-    const handleViewBookings = () => {
-        navigate('/bookings');
+    const handleViewNotifications = () => {
+        navigate('/notifications');
         setIsOpen(false);
     };
 
@@ -60,6 +55,16 @@ const UserMenu = ({ currentUser, icons }) => {
 
     const handleViewMyBookings = () => {
         navigate('/my-bookings');
+        setIsOpen(false);
+    };
+
+    const handleViewMyProperties = () => {
+        navigate('/my-properties');
+        setIsOpen(false);
+    };
+
+    const handleViewHostEarnings = () => {
+        navigate('/earnings');
         setIsOpen(false);
     };
 
@@ -104,6 +109,16 @@ const UserMenu = ({ currentUser, icons }) => {
                         </button>
 
                         <button
+                            onClick={handleViewNotifications}
+                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                        >
+                            <svg className="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span>Notifications</span>
+                        </button>
+
+                        <button
                             onClick={handleViewWishlist}
                             className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                         >
@@ -122,18 +137,20 @@ const UserMenu = ({ currentUser, icons }) => {
                         {currentUser?.role === 'owner' && (
                             <>
                                 <button
-                                    onClick={handleViewEarnings}
+                                    onClick={handleViewMyProperties}
+                                    className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                                >
+                                    <svg className="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                    <span>My Properties</span>
+                                </button>
+                                <button
+                                    onClick={handleViewHostEarnings}
                                     className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                                 >
                                     {icons.trending}
-                                    <span>View Earnings</span>
-                                </button>
-                                <button
-                                    onClick={handleViewBookings}
-                                    className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
-                                >
-                                    {icons.briefcase}
-                                    <span>View Bookings</span>
+                                    <span>Host Earnings & Bookings</span>
                                 </button>
                             </>
                         )}

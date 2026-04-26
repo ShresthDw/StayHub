@@ -20,28 +20,3 @@ export const reverseGeocodeAddress = async (lat, lng) => {
     }
 };
 
-/**
- * Format address object for display
- */
-export const formatAddressForDisplay = (address) => {
-    if (!address) return '';
-    if (typeof address === 'string') return address;
-    
-    const parts = [];
-    if (address.street) parts.push(address.street);
-    if (address.city) parts.push(address.city);
-    if (address.state) parts.push(address.state);
-    if (address.country) parts.push(address.country);
-    if (address.zipCode) parts.push(address.zipCode);
-    
-    return parts.filter(Boolean).join(', ');
-};
-
-/**
- * Extract city name from address object
- */
-export const getCityFromAddress = (address) => {
-    if (!address) return '';
-    if (typeof address === 'string') return address;
-    return address.city || '';
-};

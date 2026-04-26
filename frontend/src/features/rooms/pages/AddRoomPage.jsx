@@ -67,17 +67,6 @@ const AddRoomPage = () => {
         }));
     };
 
-    const handleAddressChange = (e) => {
-        const address = e.target.value;
-        setFormData(prev => ({
-            ...prev,
-            location: {
-                ...prev.location,
-                address
-            }
-        }));
-    };
-
     const handleLocationSelect = (location) => {
         setFormData(prev => ({
             ...prev,

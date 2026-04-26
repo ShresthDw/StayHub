@@ -3,6 +3,12 @@ import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import Booking from '../../models/Booking.js';
 import Room from '../../models/Room.js';
+import User from '../../models/User.js';
+import {
+    notifyBookingConfirmed,
+    notifyBookingCancelled,
+    notifyReviewReceived
+} from '../../services/notificationService.js';
 
 // Lazy initialize Razorpay instance
 let razorpay;
@@ -133,9 +139,17 @@ export const verifyRazorpayPayment = async (req, res) => {
         booking.paymentVerifiedAt = new Date();
         await booking.save();
 
-        
         await booking.populate('hostId', 'name email phone');
         await booking.populate('roomId', 'title address images');
+        await booking.populate('guestId', 'name email phone');
+
+        // Trigger in-app notifications, real-time socket events & emails
+        notifyBookingConfirmed({
+            guest: booking.guestId,
+            host: booking.hostId,
+            room: booking.roomId,
+            booking
+        }).catch(err => console.error('Error dispatching booking confirmed notification:', err));
 
         res.status(200).json({
             msg: 'Payment verified and booking confirmed successfully',
@@ -155,25 +169,33 @@ export const verifyRazorpayPayment = async (req, res) => {
 
 export const getHostEarnings = async (req, res) => {
     try {
-      
         if (req.user.role !== 'owner') {
             return res.status(403).json({ msg: 'Only hosts can view earnings' });
         }
 
-        
+        const myRooms = await Room.find({ hostId: req.user.id }).select('_id');
+        const myRoomIds = myRooms.map(r => r._id);
+
         const bookings = await Booking.find({
-            hostId: req.user.id,
-            status: 'confirmed'
+            $or: [
+                { hostId: req.user.id },
+                { roomId: { $in: myRoomIds } }
+            ],
+            status: { $in: ['confirmed', 'completed'] }
         })
-            .populate('roomId', 'title')
-            .populate('guestId', 'name email')
+            .populate('roomId', 'title address images pricePerNight')
+            .populate('guestId', 'name email phone')
             .sort({ checkInDate: -1 });
 
-      
         const transformedBookings = bookings.map(booking => ({
             _id: booking._id,
-            roomTitle: booking.roomId?.title || 'Unknown Room',
+            roomId: booking.roomId?._id,
+            roomTitle: booking.roomId?.title || 'Unknown Property',
+            roomAddress: booking.roomId?.address?.city || 'Unknown Location',
+            roomImages: booking.roomId?.images || [],
             guestName: booking.guestId?.name || 'Unknown Guest',
+            guestEmail: booking.guestId?.email,
+            guestPhone: booking.guestId?.phone,
             bookingMode: 'daily',
             amount: booking.totalAmount,
             createdAt: booking.createdAt,
@@ -181,10 +203,11 @@ export const getHostEarnings = async (req, res) => {
             checkOutDate: booking.checkOutDate,
             pricePerNight: booking.pricePerNight,
             nights: booking.nights,
-            totalAmount: booking.totalAmount
+            totalAmount: booking.totalAmount,
+            status: booking.status
         }));
 
-        const totalEarnings = bookings.reduce((sum, booking) => sum + booking.totalAmount, 0);
+        const totalEarnings = bookings.reduce((sum, booking) => sum + (booking.totalAmount || 0), 0);
         const totalBookings = bookings.length;
 
         res.status(200).json({
@@ -201,29 +224,32 @@ export const getHostEarnings = async (req, res) => {
 
 /**
  * GET /api/bookings/booked-list
- * Get all confirmed and upcoming bookings for host's properties
+ * Get all confirmed, completed, and upcoming bookings for host's properties
  */
 export const getBookedProperties = async (req, res) => {
     try {
-        // User must be an owner
         if (req.user.role !== 'owner') {
             return res.status(403).json({ msg: 'Only hosts can view booked properties' });
         }
 
-        // Get all confirmed and upcoming bookings for this host's rooms
+        const myRooms = await Room.find({ hostId: req.user.id }).select('_id');
+        const myRoomIds = myRooms.map(r => r._id);
+
         const bookings = await Booking.find({
-            hostId: req.user.id,
-            status: { $in: ['confirmed', 'completed'] }
+            $or: [
+                { hostId: req.user.id },
+                { roomId: { $in: myRoomIds } }
+            ],
+            status: { $in: ['confirmed', 'completed', 'pending_payment'] }
         })
             .populate('roomId', 'title address images pricePerNight')
             .populate('guestId', 'name email phone')
             .sort({ checkInDate: -1 });
 
-        // Transform bookings to match frontend expectations
         const bookedProperties = bookings.map(booking => ({
             _id: booking._id,
             roomId: booking.roomId?._id,
-            roomTitle: booking.roomId?.title || 'Unknown Property',   //Agar kisi wajah se database mein room delete ho gaya ho, toh app crash nahi hogi; wo "Unknown Property" dikha dega
+            roomTitle: booking.roomId?.title || 'Unknown Property',
             roomAddress: booking.roomId?.address?.city || 'Unknown Location',
             roomImages: booking.roomId?.images || [],
             guestName: booking.guestId?.name || 'Unknown Guest',
@@ -242,6 +268,7 @@ export const getBookedProperties = async (req, res) => {
         res.status(200).json(bookedProperties);
 
     } catch (err) {
+        console.error('ERROR in GET /api/bookings/booked-list:', err);
         res.status(500).json({ message: 'Failed to fetch booked properties' });
     }
 };
@@ -305,6 +332,19 @@ export const cancelBooking = async (req, res) => {
 
         booking.status = 'cancelled';
         await booking.save();
+
+        await booking.populate('hostId', 'name email phone');
+        await booking.populate('roomId', 'title address images');
+        await booking.populate('guestId', 'name email phone');
+
+        // Trigger cancellation notifications
+        notifyBookingCancelled({
+            guest: booking.guestId,
+            host: booking.hostId,
+            room: booking.roomId,
+            booking,
+            cancelledBy: 'guest'
+        }).catch(err => console.error('Error dispatching cancellation notification:', err));
 
         res.status(200).json({ msg: 'Booking cancelled', booking });
 
@@ -384,6 +424,15 @@ export const submitReview = async (req, res) => {
         room.reviewCount = room.reviews.length;
 
         await room.save();
+
+        // Trigger review notification to host
+        notifyReviewReceived({
+            guest: { _id: guestId, name: guestName },
+            host: room.hostId ? { _id: room.hostId } : null,
+            room,
+            rating: Number(rating),
+            comment: comment.trim()
+        }).catch(err => console.error('Error dispatching review notification:', err));
 
         res.status(200).json({
             msg: 'Review submitted successfully',

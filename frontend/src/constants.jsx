@@ -3,7 +3,7 @@ const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
 const isProductionHost = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
 const isLocalApiUrl = configuredApiUrl && /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?/i.test(configuredApiUrl);
 const defaultApiUrl = isProductionHost ? 'https://ratelimiter-c2k4.onrender.com' : 'http://localhost:5000';
-const API_GATEWAY_URL = (
+export const API_GATEWAY_URL = (
   configuredApiUrl && !(isProductionHost && isLocalApiUrl)
     ? configuredApiUrl
     : defaultApiUrl
@@ -18,19 +18,6 @@ export const FACILITY_OPTIONS = ['WiFi', 'Parking', 'AC', 'Gym', 'Laundry', 'Bal
 export const ROOM_CATEGORIES = ['apartment', 'house', 'resort', 'villa', 'hotel', 'cottage', 'hostel'];
 
 export const hasCoordinates = (loc) => Number.isFinite(loc?.lat) && Number.isFinite(loc?.lng);
-const getRoomText = (room) => `${room?.propertyType || ''} ${room?.roomType || ''} ${room?.title || ''} ${room?.description || ''}`.toLowerCase();
-
-export const inferRoomCategory = (room) => {
-    if (ROOM_CATEGORIES.includes(room?.propertyType)) {
-        return room.propertyType;
-    }
-
-    return room?.propertyType || 'apartment';
-};
-
-export const inferStayType = (room) => {
-    return STAY_TYPES.includes(room?.stayType) ?  room.stayType : 'monthly';
-};
 
 export const icons = {
     search: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"/></svg>,
