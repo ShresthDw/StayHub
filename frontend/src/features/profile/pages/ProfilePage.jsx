@@ -162,91 +162,15 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                     </div>
                 )}
 
-                {/* HERO PROFILE HEADER */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white shadow-xl shadow-teal-900/10 dark:from-teal-800 dark:via-teal-900 dark:to-cyan-950 border border-teal-500/20">
-                    {/* Ambient glow decorative circles */}
-                    <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
-                    <div className="absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-teal-400/20 blur-3xl pointer-events-none" />
-
-                    <div className="relative p-6 sm:p-8">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                            <div className="flex items-center gap-5">
-                                {/* Avatar */}
-                                <div className="relative shrink-0">
-                                    <div className="h-20 w-20 sm:h-22 sm:w-22 rounded-full bg-white text-teal-700 dark:bg-gray-800 dark:text-teal-300 font-extrabold text-3xl flex items-center justify-center shadow-xl border-4 border-white/30 dark:border-teal-500/30">
-                                        {userInitial}
-                                    </div>
-                                    <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-800 ring-2 ring-emerald-500/30" title="Active Account" />
-                                </div>
-
-                                {/* User Details */}
-                                <div className="space-y-1.5">
-                                    <div className="flex flex-wrap items-center gap-2.5">
-                                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white capitalize">
-                                            {currentUser.name}
-                                        </h1>
-                                        {currentUser.role === 'owner' ? (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/25 border border-amber-300/40 px-2.5 py-0.5 text-xs font-semibold text-amber-200">
-                                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                                Property Host
-                                            </span>
-                                        ) : (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-cyan-400/25 border border-cyan-300/40 px-2.5 py-0.5 text-xs font-semibold text-cyan-100">
-                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
-                                                Verified Guest
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className="text-teal-100/90 text-sm flex items-center gap-1.5">
-                                        <svg className="w-4 h-4 text-teal-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        {currentUser.email}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Header Quick Actions: Theme & Logout */}
-                            <div className="flex flex-wrap items-center gap-2.5 sm:self-center">
-                                <button
-                                    type="button"
-                                    onClick={handleThemeToggle}
-                                    className="flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 px-3.5 py-2 text-xs font-semibold text-white backdrop-blur-sm transition-all"
-                                    title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
-                                >
-                                    {theme === 'dark' ? (
-                                        <>
-                                            <svg className="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                                            </svg>
-                                            <span>Light Mode</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <svg className="w-4 h-4 text-cyan-200" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                                            </svg>
-                                            <span>Dark Mode</span>
-                                        </>
-                                    )}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={onLogout}
-                                    className="flex items-center gap-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-300/30 px-3.5 py-2 text-xs font-semibold text-red-100 backdrop-blur-sm transition-all"
-                                >
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                    <span>Logout</span>
-                                </button>
-                            </div>
-                        </div>
+                {/* PAGE HEADER */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+                            Account & Profile
+                        </h1>
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Manage your personal details, password security, and account preferences.
+                        </p>
                     </div>
                 </div>
 
@@ -490,37 +414,104 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
 
                     {/* Right Side Column (1 Col) */}
                     <div className="space-y-6">
-                        {/* Account Overview Card */}
-                        <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-4">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider">
-                                Account Overview
-                            </h3>
+                        {/* Profile Identity & Account Overview Card */}
+                        <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-5">
+                            {/* User Avatar & Identity */}
+                            <div className="flex items-center gap-4">
+                                <div className="relative shrink-0">
+                                    <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-700 text-white font-extrabold text-2xl flex items-center justify-center shadow-md">
+                                        {userInitial}
+                                    </div>
+                                    <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 ring-2 ring-emerald-500/30" title="Active Account" />
+                                </div>
+                                <div className="min-w-0">
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 truncate capitalize">
+                                        {currentUser.name}
+                                    </h2>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                        {currentUser.email}
+                                    </p>
+                                    <div className="mt-1.5">
+                                        {currentUser.role === 'owner' ? (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 px-2.5 py-0.5 text-[11px] font-semibold">
+                                                <svg className="w-3 h-3 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                                <span>Property Host</span>
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 px-2.5 py-0.5 text-[11px] font-semibold">
+                                                <svg className="w-3 h-3 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                                <span>Verified Guest</span>
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div className="space-y-3 text-sm">
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                            {/* Account Details Breakdown */}
+                            <div className="border-t border-gray-100 dark:border-gray-700/80 pt-3 space-y-2.5 text-xs">
+                                <div className="flex items-center justify-between">
                                     <span className="text-gray-500 dark:text-gray-400">Account Type</span>
                                     <span className="font-semibold text-gray-900 dark:text-gray-100 capitalize">
                                         {currentUser.role === 'owner' ? 'Property Host' : 'Guest'}
                                     </span>
                                 </div>
-
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
-                                    <span className="text-gray-500 dark:text-gray-400">Status</span>
-                                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-500 dark:text-gray-400">Account Status</span>
+                                    <span className="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
                                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                                         Active
                                     </span>
                                 </div>
-
-                                <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center justify-between">
                                     <span className="text-gray-500 dark:text-gray-400">Email Status</span>
-                                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                    <span className="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
                                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                                         </svg>
                                         Verified
                                     </span>
                                 </div>
+                            </div>
+
+                            {/* Actions: Theme Toggle & Logout */}
+                            <div className="border-t border-gray-100 dark:border-gray-700/80 pt-3 flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={handleThemeToggle}
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 py-2.5 px-3 text-xs font-semibold text-gray-700 dark:text-gray-200 transition-all"
+                                    title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+                                >
+                                    {theme === 'dark' ? (
+                                        <>
+                                            <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Light Mode</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4 text-cyan-600 dark:text-cyan-300" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                            </svg>
+                                            <span>Dark Mode</span>
+                                        </>
+                                    )}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={onLogout}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/70 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 py-2.5 px-3.5 text-xs font-semibold text-red-600 dark:text-red-400 transition-all"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                    <span>Logout</span>
+                                </button>
                             </div>
                         </div>
 
