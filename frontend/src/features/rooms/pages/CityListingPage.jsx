@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import RoomCard from '../../../components/RoomCard.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 import { icons } from '../../../constants.jsx';
 import { PageSkeleton } from '../../../components/Skeletons.jsx';
 import Toast from '../../../components/Toast.jsx';
@@ -169,13 +170,7 @@ const CityListingPage = () => {
                 <div className="home-content-rail py-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <button
-                                onClick={() => navigate('/')}
-                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 mb-2"
-                            >
-                                {icons.chevronLeft} Back
-                            </button>
-                            {/* {icons.location} */}
+                            <BackButton to="/" label="Back to Search" className="mb-2" />
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{decodedCity}</h1>
                             <p className="text-gray-600 dark:text-gray-400 mt-1">
                                 {citiesRooms.length} {citiesRooms.length === 1 ? 'property' : 'properties'} available
@@ -185,7 +180,7 @@ const CityListingPage = () => {
                         {/* Filter Button */}
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition"
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition cursor-pointer"
                         >
                             {icons.filter || '⚙️'} Filters
                         </button>
@@ -210,7 +205,7 @@ const CityListingPage = () => {
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters & Sort</h2>
                                 <button
                                     onClick={() => setShowFilters(false)}
-                                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none"
+                                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none cursor-pointer"
                                 >
                                     ×
                                 </button>
@@ -265,21 +260,21 @@ const CityListingPage = () => {
                             <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                                 <button 
                                     onClick={handleApplyDateFilter}
-                                    className="flex-1 px-4 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition"
+                                    className="flex-1 px-4 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition cursor-pointer"
                                 >
                                     Apply Filters
                                 </button>
                                 {(tempCheckInDate || tempCheckOutDate) && (
                                     <button 
                                         onClick={handleClearDateFilter}
-                                        className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                                        className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition cursor-pointer"
                                     >
                                         Clear All
                                     </button>
                                 )}
                                 <button 
                                     onClick={() => setShowFilters(false)}
-                                    className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                                    className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition cursor-pointer"
                                 >
                                     Close
                                 </button>
@@ -363,7 +358,6 @@ const CityListingPage = () => {
             )}
         </main>
     );
-
 };
 
 export default CityListingPage;

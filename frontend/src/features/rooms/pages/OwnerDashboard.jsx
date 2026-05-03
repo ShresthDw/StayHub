@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import AddEditRoomModal from '../../../components/AddEditRoomModal.jsx';
 import RoomCard from '../../../components/RoomCard.jsx';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 import { icons } from '../../../constants.jsx';
 import { deleteRoom } from '../services/roomService.js';
 import { useGetMyRoomsQuery } from '../services/roomService.js';
@@ -53,6 +54,7 @@ const OwnerDashboard = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <BackButton to="/" label="Back to Home" className="mb-4" />
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Properties</h1>

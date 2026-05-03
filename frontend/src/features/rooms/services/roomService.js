@@ -16,12 +16,13 @@ export {
 // Direct async functions for use in event handlers (not through RTK Query)
 export const createRoom = async (roomData) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/rooms`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'x-user-id': localStorage.getItem('userId') || ''
             },
+            credentials: 'include',
             body: JSON.stringify(roomData)
         });
         if (!response.ok) {
@@ -37,12 +38,13 @@ export const createRoom = async (roomData) => {
 
 export const updateRoom = async (roomId, roomData) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/edit/${roomId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'x-user-id': localStorage.getItem('userId') || ''
             },
+            credentials: 'include',
             body: JSON.stringify(roomData)
         });
         if (!response.ok) {
@@ -58,11 +60,12 @@ export const updateRoom = async (roomId, roomData) => {
 
 export const deleteRoom = async (roomId) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+        const response = await fetch(`${API_BASE_URL}/rooms/delete/${roomId}`, {
             method: 'DELETE',
             headers: {
                 'x-user-id': localStorage.getItem('userId') || ''
-            }
+            },
+            credentials: 'include'
         });
         if (!response.ok) {
             const err = await response.json();
@@ -77,7 +80,9 @@ export const deleteRoom = async (roomId) => {
 
 export const getRoomById = async (roomId) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`);
+        const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+            credentials: 'include'
+        });
         if (!response.ok) throw new Error('Failed to fetch room');
         return await response.json();
     } catch (err) {

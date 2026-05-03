@@ -6,6 +6,7 @@ import {
     useBecomeOwnerMutation
 } from '../../../api/apiSlice.js';
 import { ProfileSkeleton } from '../../../components/Skeletons.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 
 const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme }) => {
     const dispatch = useDispatch();
@@ -129,6 +130,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
     return (
         <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
             <div className="max-w-4xl mx-auto space-y-6">
+                <BackButton to="/" label="Back to Home" className="mb-2" />
 
                 {/* Status Toast Alert */}
                 {statusMessage && (

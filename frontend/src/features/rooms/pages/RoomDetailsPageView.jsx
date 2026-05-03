@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 import { icons } from '../../../constants.jsx';
 import { getRoomById } from '../services/roomService.js';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../../bookings/services/bookingService.js';
@@ -381,7 +382,7 @@ const RoomDetailsPageView = () => {
         return (
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 {message && <Toast message={message} type={msgType} />}
-                <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 rounded-md bg-teal-600 text-white">Go Back</button>
+                <BackButton fallback="/" className="mt-4" />
             </main>
         );
     }
@@ -391,14 +392,7 @@ const RoomDetailsPageView = () => {
             {message && <div className="mb-6"><Toast message={message} type={msgType} /></div>}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="mb-4 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold text-teal-700 transition-colors hover:bg-teal-50 dark:text-teal-300 dark:hover:bg-gray-800"
-                >
-                    {icons.chevronLeft}
-                    <span>Back</span>
-                </button>
+                <BackButton fallback="/" className="mb-4" />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <section className="lg:col-span-2 space-y-4">
                         <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">

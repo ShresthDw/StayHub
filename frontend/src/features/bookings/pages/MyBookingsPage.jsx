@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetMyBookingsQuery } from '../services/bookingService.js';
 import { ProfileSkeleton } from '../../../components/Skeletons.jsx';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 
 const MyBookingsPage = () => {
     const navigate = useNavigate();
