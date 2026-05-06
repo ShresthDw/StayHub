@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetHostEarningsQuery, useGetBookedPropertiesQuery } from '../services/bookingService.js';
 import { ProfileSkeleton } from '../../../components/Skeletons.jsx';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 
 const EarningsPage = () => {
     const navigate = useNavigate();
@@ -106,6 +107,7 @@ const EarningsPage = () => {
     return (
         <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
             <div className="max-w-7xl mx-auto space-y-6">
+                <BackButton to="/my-properties" label="Back to My Properties" className="mb-2" />
 
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

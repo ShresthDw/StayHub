@@ -44,6 +44,7 @@ const MyBookingsPage = () => {
     return (
         <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-6 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
             <div className="max-w-6xl mx-auto space-y-6">
+                <BackButton to="/" label="Back to Home" className="mb-2" />
 
                 {/* Header Title & Filter Chips */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

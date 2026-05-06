@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import RoomCard from '../../../components/RoomCard.jsx';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 import { icons } from '../../../constants.jsx';
 import { setCurrentUser } from '../../../store/appSlice.js';
 import { useGetWishlistQuery, useToggleWishlistMutation } from '../services/wishlistService.js';
@@ -39,6 +40,7 @@ const WishlistPage = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <BackButton to="/" label="Back to Home" className="mb-4" />
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Wishlist</h1>

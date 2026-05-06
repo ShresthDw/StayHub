@@ -3,6 +3,7 @@ import { icons } from '../../../constants.jsx';
 import { useGetBookedPropertiesQuery } from '../services/bookingService.js';
 import { ProfileSkeleton } from '../../../components/Skeletons.jsx';
 import Toast from '../../../components/Toast.jsx';
+import BackButton from '../../../components/BackButton.jsx';
 
 const BookedPropertiesPage = () => {
     const { currentUser } = useSelector((state) => state.app);
@@ -22,6 +23,7 @@ const BookedPropertiesPage = () => {
     if (currentUser?.role !== 'owner') {
         return (
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <BackButton to="/my-properties" label="Back to My Properties" className="mb-4" />
                 <div className="mb-8">
                     <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
                 </div>
@@ -34,6 +36,7 @@ const BookedPropertiesPage = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <BackButton to="/my-properties" label="Back to My Properties" className="mb-4" />
             <div className="mb-8">
                 <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">Booked Properties</h1>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">View all your properties that have active or upcoming bookings.</p>
