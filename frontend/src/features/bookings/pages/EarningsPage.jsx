@@ -251,6 +251,16 @@ const EarningsPage = () => {
                         </div>
                     </div>
 
+                    {/* Column Headers (visible on md+) */}
+                    {!isLoading && filteredBookings.length > 0 && (
+                        <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                            <div className="md:col-span-4">Property</div>
+                            <div className="md:col-span-3">Guest Details</div>
+                            <div className="md:col-span-3">Stay Dates</div>
+                            <div className="md:col-span-2 text-right">Payout & Status</div>
+                        </div>
+                    )}
+
                     {/* Bookings Display */}
                     {isLoading ? (
                         <div className="space-y-3">
@@ -272,10 +282,10 @@ const EarningsPage = () => {
                                 return (
                                     <div
                                         key={item._id}
-                                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/40 transition-all gap-4"
+                                        className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 p-4 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/40 transition-all"
                                     >
                                         {/* Property & Thumbnail */}
-                                        <div className="flex items-center gap-3.5 min-w-0">
+                                        <div className="md:col-span-4 flex items-center gap-3.5 min-w-0">
                                             <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
                                                 {mainImage ? (
                                                     <img src={mainImage} alt={item.roomTitle} className="h-full w-full object-cover" />
@@ -289,52 +299,53 @@ const EarningsPage = () => {
                                                 <h3
                                                     onClick={() => item.roomId && navigate(`/rooms/${item.roomId}`)}
                                                     className="font-bold text-sm text-gray-900 dark:text-gray-100 truncate hover:text-teal-600 dark:hover:text-teal-400 cursor-pointer transition-colors"
+                                                    title={item.roomTitle}
                                                 >
                                                     {item.roomTitle}
                                                 </h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5" title={item.roomAddress}>
                                                     {item.roomAddress || 'Location N/A'}
                                                 </p>
                                             </div>
                                         </div>
 
                                         {/* Guest & Contact */}
-                                        <div className="text-xs space-y-0.5 sm:min-w-[160px]">
-                                            <p className="font-semibold text-gray-800 dark:text-gray-200">
-                                                Guest: {item.guestName || 'Guest'}
+                                        <div className="md:col-span-3 text-xs space-y-0.5 min-w-0">
+                                            <p className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                                                {item.guestName || 'Guest'}
                                             </p>
                                             {item.guestEmail && (
-                                                <p className="text-gray-500 dark:text-gray-400 truncate">
+                                                <p className="text-gray-500 dark:text-gray-400 truncate" title={item.guestEmail}>
                                                     {item.guestEmail}
                                                 </p>
                                             )}
                                             {item.guestPhone && (
-                                                <p className="text-gray-500 dark:text-gray-400">
+                                                <p className="text-gray-500 dark:text-gray-400 truncate">
                                                     {item.guestPhone}
                                                 </p>
                                             )}
                                         </div>
 
                                         {/* Schedule & Duration */}
-                                        <div className="text-xs space-y-1 sm:min-w-[170px]">
-                                            <p className="font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                                        <div className="md:col-span-3 text-xs space-y-1 min-w-0">
+                                            <p className="font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1.5 whitespace-nowrap">
                                                 <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <span>{formatDate(item.checkInDate)} → {formatDate(item.checkOutDate)}</span>
                                             </p>
-                                            <p className="text-gray-400 dark:text-gray-500 text-[11px]">
+                                            <p className="text-gray-400 dark:text-gray-500 text-[11px] pl-5">
                                                 {item.nights} {item.nights === 1 ? 'night stay' : 'nights stay'}
                                             </p>
                                         </div>
 
                                         {/* Payout & Status */}
-                                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700">
+                                        <div className="md:col-span-2 flex md:flex-col items-center md:items-end justify-between md:justify-center gap-1 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100 dark:border-gray-700">
                                             <span className="text-base font-extrabold text-teal-700 dark:text-teal-300">
                                                 ₹{item.totalAmount?.toLocaleString() || '0'}
                                             </span>
                                             <span
-                                                className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                                className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                                                     isPast
                                                         ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                                                         : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
