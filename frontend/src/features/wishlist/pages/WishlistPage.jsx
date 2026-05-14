@@ -39,9 +39,9 @@ const WishlistPage = () => {
     const handleRoomClick = (room) => navigate(`/rooms/${room._id}`);
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <BackButton to="/" label="Back to Home" className="mb-4" />
-            <div className="flex items-center justify-between mb-6">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+            <BackButton to="/" label="Back to Home" className="mb-2" />
+            <div className="flex items-center justify-between mb-5">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Wishlist</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Rooms you saved for later.</p>

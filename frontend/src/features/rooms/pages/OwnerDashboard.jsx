@@ -53,9 +53,9 @@ const OwnerDashboard = () => {
     const draftRooms = ownerRooms.filter(room => room.isActive === false);
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <BackButton to="/" label="Back to Home" className="mb-4" />
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+            <BackButton to="/" label="Back to Home" className="mb-2" />
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Properties</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your listings, keep them up to date, and track their performance.</p>

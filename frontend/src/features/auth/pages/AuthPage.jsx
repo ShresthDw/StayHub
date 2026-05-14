@@ -69,9 +69,9 @@ const AuthPage = ({ mode }) => {
     }
 
     return (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-10">
             <div className="max-w-md mx-auto">
-                <BackButton to="/" label="Back to Home" className="mb-4" />
+                <BackButton to="/" label="Back to Home" className="mb-2.5" />
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
                     <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">{title}</h2>
                     <p className="text-sm text-center text-gray-500 dark:text-gray-400 mt-2">

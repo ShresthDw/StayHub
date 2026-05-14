@@ -167,10 +167,10 @@ const CityListingPage = () => {
         <main className="flex flex-col bg-gray-50 dark:bg-gray-900">
             {/* Header Section */}
             <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="home-content-rail py-6">
+                <div className="home-content-rail pt-3.5 pb-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <BackButton to="/" label="Back to Search" className="mb-2" />
+                            <BackButton to="/" label="Back to Search" className="mb-1.5" />
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{decodedCity}</h1>
                             <p className="text-gray-600 dark:text-gray-400 mt-1">
                                 {citiesRooms.length} {citiesRooms.length === 1 ? 'property' : 'properties'} available

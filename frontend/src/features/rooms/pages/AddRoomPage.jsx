@@ -393,10 +393,10 @@ const AddRoomPage = () => {
     const hostEstimatedPayout = Math.round(priceNum * 0.97);
 
     return (
-        <div className="min-h-screen bg-gray-50/70 dark:bg-gray-950 py-10 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50/70 dark:bg-gray-950 pt-5 pb-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
                 {/* Header Context Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-800 gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-5 border-b border-gray-200 dark:border-gray-800 gap-4">
                     <div>
                         <BackButton to="/my-properties" label="Back to My Properties" className="mb-2" />
                         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">

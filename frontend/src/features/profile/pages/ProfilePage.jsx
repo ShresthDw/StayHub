@@ -128,9 +128,8 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
     const userInitial = (currentUser?.name || 'U').charAt(0).toUpperCase();
 
     return (
-        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-            <div className="max-w-4xl mx-auto space-y-6">
-                <BackButton to="/" label="Back to Home" className="mb-2" />
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-4xl mx-auto space-y-5">
 
                 {/* Status Toast Alert */}
                 {statusMessage && (
@@ -165,14 +164,17 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                 )}
 
                 {/* PAGE HEADER */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-                            Account & Profile
-                        </h1>
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            Manage your personal details, password security, and account preferences.
-                        </p>
+                <div>
+                    <BackButton to="/" label="Back to Home" className="mb-2" />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+                                Account & Profile
+                            </h1>
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Manage your personal details, password security, and account preferences.
+                            </p>
+                        </div>
                     </div>
                 </div>
 

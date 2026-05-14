@@ -42,74 +42,76 @@ const MyBookingsPage = () => {
     };
 
     return (
-        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-6 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-            <div className="max-w-6xl mx-auto space-y-6">
-                <BackButton to="/" label="Back to Home" className="mb-2" />
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-6xl mx-auto space-y-5">
+                <div>
+                    <BackButton to="/" label="Back to Home" className="mb-2" />
 
-                {/* Header Title & Filter Chips */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 flex items-center gap-2.5">
-                            <span>My Bookings</span>
-                            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">
-                                {bookings.length} {bookings.length === 1 ? 'Stay' : 'Stays'}
-                            </span>
-                        </h1>
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            Track and manage your reserved stays, payment statuses, and itineraries.
-                        </p>
-                    </div>
+                    {/* Header Title & Filter Chips */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 flex items-center gap-2.5">
+                                <span>My Bookings</span>
+                                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">
+                                    {bookings.length} {bookings.length === 1 ? 'Stay' : 'Stays'}
+                                </span>
+                            </h1>
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Track and manage your reserved stays, payment statuses, and itineraries.
+                            </p>
+                        </div>
 
-                    {/* Filter Tabs */}
-                    <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-gray-200/70 dark:bg-gray-800 self-start sm:self-auto overflow-x-auto text-xs font-semibold">
-                        <button
-                            type="button"
-                            onClick={() => setFilterStatus('all')}
-                            className={`px-3 py-1.5 rounded-xl transition-all ${
-                                filterStatus === 'all'
-                                    ? 'bg-white text-gray-900 shadow-sm dark:bg-teal-600 dark:text-white'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                            }`}
-                        >
-                            All ({bookings.length})
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setFilterStatus('confirmed')}
-                            className={`px-3 py-1.5 rounded-xl transition-all ${
-                                filterStatus === 'confirmed'
-                                    ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600'
-                            }`}
-                        >
-                            Confirmed ({confirmedCount})
-                        </button>
-                        {pendingCount > 0 && (
+                        {/* Filter Tabs */}
+                        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-gray-200/70 dark:bg-gray-800 self-start sm:self-auto overflow-x-auto text-xs font-semibold">
                             <button
                                 type="button"
-                                onClick={() => setFilterStatus('pending')}
+                                onClick={() => setFilterStatus('all')}
                                 className={`px-3 py-1.5 rounded-xl transition-all ${
-                                    filterStatus === 'pending'
-                                        ? 'bg-white text-amber-700 shadow-sm dark:bg-amber-600 dark:text-white'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-amber-600'
+                                    filterStatus === 'all'
+                                        ? 'bg-white text-gray-900 shadow-sm dark:bg-teal-600 dark:text-white'
+                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                             >
-                                Pending ({pendingCount})
+                                All ({bookings.length})
                             </button>
-                        )}
-                        {cancelledCount > 0 && (
                             <button
                                 type="button"
-                                onClick={() => setFilterStatus('cancelled')}
+                                onClick={() => setFilterStatus('confirmed')}
                                 className={`px-3 py-1.5 rounded-xl transition-all ${
-                                    filterStatus === 'cancelled'
-                                        ? 'bg-white text-rose-700 shadow-sm dark:bg-rose-600 dark:text-white'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-rose-600'
+                                    filterStatus === 'confirmed'
+                                        ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
+                                        : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600'
                                 }`}
                             >
-                                Cancelled ({cancelledCount})
+                                Confirmed ({confirmedCount})
                             </button>
-                        )}
+                            {pendingCount > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterStatus('pending')}
+                                    className={`px-3 py-1.5 rounded-xl transition-all ${
+                                        filterStatus === 'pending'
+                                            ? 'bg-white text-amber-700 shadow-sm dark:bg-amber-600 dark:text-white'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-amber-600'
+                                    }`}
+                                >
+                                    Pending ({pendingCount})
+                                </button>
+                            )}
+                            {cancelledCount > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterStatus('cancelled')}
+                                    className={`px-3 py-1.5 rounded-xl transition-all ${
+                                        filterStatus === 'cancelled'
+                                            ? 'bg-white text-rose-700 shadow-sm dark:bg-rose-600 dark:text-white'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-rose-600'
+                                    }`}
+                                >
+                                    Cancelled ({cancelledCount})
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 

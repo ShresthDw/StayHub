@@ -153,10 +153,10 @@ const NotificationsPage = () => {
     };
 
     return (
-        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <BackButton to="/" label="Back to Home" className="mb-4" />
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+            <BackButton to="/" label="Back to Home" className="mb-2" />
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100">

@@ -105,14 +105,15 @@ const EarningsPage = () => {
     };
 
     return (
-        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-            <div className="max-w-7xl mx-auto space-y-6">
-                <BackButton to="/my-properties" label="Back to My Properties" className="mb-2" />
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-7xl mx-auto space-y-5">
+                <div>
+                    <BackButton to="/my-properties" label="Back to My Properties" className="mb-2" />
 
-                {/* Header Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-2.5">
+                    {/* Header Row */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <div className="flex items-center gap-2.5">
                             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
                                 Host Earnings & Bookings
                             </h1>
@@ -138,6 +139,7 @@ const EarningsPage = () => {
                         </button>
                     </div>
                 </div>
+            </div>
 
                 {message && <Toast message={message} type="error" />}
 

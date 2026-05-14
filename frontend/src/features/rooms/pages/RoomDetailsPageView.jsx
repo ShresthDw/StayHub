@@ -389,10 +389,10 @@ const RoomDetailsPageView = () => {
 
     return (
         <main className="min-h-screen bg-white dark:bg-gray-900">
-            {message && <div className="mb-6"><Toast message={message} type={msgType} /></div>}
+            {message && <div className="mb-4"><Toast message={message} type={msgType} /></div>}
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <BackButton fallback="/" className="mb-4" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8">
+                <BackButton fallback="/" className="mb-2.5" />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <section className="lg:col-span-2 space-y-4">
                         <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">
