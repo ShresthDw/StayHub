@@ -616,9 +616,15 @@ const RoomDetailsPageView = () => {
                     <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 space-y-4">
                             <div>
-                                <p className="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400">Starting from</p>
-                                <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">₹{nightlyRate.toLocaleString()}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">per night</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Starting from</p>
+                                <div className="flex items-baseline gap-1.5 mt-1">
+                                    <span className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+                                        ₹{nightlyRate.toLocaleString()}
+                                    </span>
+                                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                        / night
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
