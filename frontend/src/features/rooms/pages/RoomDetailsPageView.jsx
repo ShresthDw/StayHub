@@ -57,6 +57,7 @@ const RoomDetailsPageView = () => {
     const [canReview, setCanReview] = useState(false);
     const [hasReviewed, setHasReviewed] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [copiedAddress, setCopiedAddress] = useState(false);
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
 
@@ -159,38 +160,104 @@ const RoomDetailsPageView = () => {
                 }
             });
 
-            // Add marker for the property
+            // Add custom high-end location marker for the property
+            const escapeHtml = (str) => String(str || '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+            const safeTitle = escapeHtml(room.title || 'Property');
+            const safeType = escapeHtml(room.propertyType ? (room.propertyType.charAt(0).toUpperCase() + room.propertyType.slice(1)) : 'Stay');
+            const formattedPrice = Number(room.pricePerNight || 0).toLocaleString();
+            const safeAddress = escapeHtml(getAddressLine(room));
+            const rawFirstImg = room?.images && room.images.length > 0 ? (typeof room.images[0] === 'string' ? room.images[0] : room.images[0]?.url) : '';
+            const safeImgUrl = rawFirstImg ? escapeHtml(getImageUrl(rawFirstImg)) : '';
+
             const propertyIcon = L.divIcon({
                 html: `
-                    <div style="
-                        background: #0d9488;
-                        color: white;
-                        padding: 10px 14px;
-                        border-radius: 8px;
-                        font-size: 14px;
-                        font-weight: 600;
-                        white-space: nowrap;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 1000;
-                    ">
-                        📍 ${room.title}
+                    <div style="position: relative; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -100%); cursor: pointer; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.35));">
+                        <!-- Floating Location Detail Pill Badge -->
+                        <div style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            background: #0f172a;
+                            color: #ffffff;
+                            padding: 6px 14px 6px 8px;
+                            border-radius: 9999px;
+                            border: 2px solid #ffffff;
+                            font-family: inherit;
+                            white-space: nowrap;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                        ">
+                            <span style="
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                width: 24px;
+                                height: 24px;
+                                border-radius: 50%;
+                                background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+                                color: #ffffff;
+                                flex-shrink: 0;
+                            ">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </span>
+                            <div style="display: flex; align-items: baseline; gap: 5px;">
+                                <span style="font-size: 13px; font-weight: 700; letter-spacing: -0.01em; color: #ffffff;">${safeType}</span>
+                                <span style="font-size: 12px; font-weight: 600; color: #2dd4bf;">₹${formattedPrice}</span>
+                            </div>
+                        </div>
+
+                        <!-- Downward Pin Pointer Stem -->
+                        <div style="
+                            width: 0;
+                            height: 0;
+                            border-left: 7px solid transparent;
+                            border-right: 7px solid transparent;
+                            border-top: 8px solid #0f172a;
+                            margin-top: -1px;
+                        "></div>
+
+                        <!-- Coordinates Anchor Pulse Dot -->
+                        <div style="
+                            width: 9px;
+                            height: 9px;
+                            border-radius: 50%;
+                            background: #0d9488;
+                            border: 2px solid #ffffff;
+                            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.4);
+                            margin-top: 2px;
+                        "></div>
                     </div>
                 `,
-                className: 'property-marker',
-                iconSize: [120, 40],
-                iconAnchor: [60, 40],
-                popupAnchor: [0, -40]
+                className: 'custom-property-pin',
+                iconSize: [0, 0],
+                iconAnchor: [0, 0],
+                popupAnchor: [0, -48]
             });
 
             const marker = L.marker([lat, lng], { icon: propertyIcon, zIndexOffset: 1000 }).addTo(mapInstanceRef.current);
             marker.bindPopup(`
-                <div style="text-align: center; padding: 8px;">
-                    <p style="font-weight: bold; margin: 5px 0; font-size: 14px;">${room.title}</p>
-                    <p style="font-size: 12px; margin: 5px 0; color: #555;">${getAddressLine(room)}</p>
-                    <p style="font-weight: bold; margin: 5px 0; color: #0d9488; font-size: 13px;">₹${room.pricePerNight}/night</p>
+                <div style="font-family: inherit; width: 220px; padding: 3px;">
+                    ${safeImgUrl ? `
+                        <div style="width: 100%; height: 105px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #e2e8f0;">
+                            <img src="${safeImgUrl}" alt="${safeTitle}" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                        </div>
+                    ` : ''}
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
+                        <span style="display: inline-block; padding: 2px 6px; font-size: 10px; font-weight: 700; background: #ccfbf1; color: #0f766e; border-radius: 4px; text-transform: uppercase;">${safeType}</span>
+                        <span style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; color: #0f172a;">
+                            ★ ${room.rating || room.ratingAverage || '4.9'}
+                        </span>
+                    </div>
+                    <p style="font-weight: 700; font-size: 13px; color: #0f172a; margin: 0 0 3px 0; line-height: 1.3;">${safeTitle}</p>
+                    <p style="font-size: 11px; color: #64748b; margin: 0 0 8px 0; line-height: 1.3;">${safeAddress}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 6px;">
+                        <span style="font-weight: 800; font-size: 13px; color: #0d9488;">₹${formattedPrice} <span style="font-size: 10px; font-weight: 500; color: #64748b;">/ night</span></span>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; padding: 3px 8px; font-size: 11px; font-weight: 600; background: #0f172a; color: #ffffff; border-radius: 5px; text-decoration: none;">
+                            Directions ↗
+                        </a>
+                    </div>
                 </div>
             `);
             
@@ -366,6 +433,15 @@ const RoomDetailsPageView = () => {
             setMsgType('error');
         } finally {
             setReviewSubmitting(false);
+        }
+    };
+
+    const handleCopyAddress = () => {
+        const address = getAddressLine(room);
+        if (address && navigator?.clipboard?.writeText) {
+            navigator.clipboard.writeText(address);
+            setCopiedAddress(true);
+            setTimeout(() => setCopiedAddress(false), 2000);
         }
     };
 
@@ -670,26 +746,70 @@ const RoomDetailsPageView = () => {
                 </div>
             </div>
 
-            {/* Full Width Map Section */}
+            {/* Location Section */}
             {room.location?.coordinates?.length === 2 && (
-                <div className="w-screen -ml-px bg-white dark:bg-gray-900 mt-12 py-8 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-7xl mx-auto">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Location</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">{getAddressLine(room)}</p>
-                        <div 
-                            ref={mapRef}
-                            id="room-detail-map"
-                            style={{
-                                width: '100%',
-                                height: '360px',
-                                borderRadius: '1rem',
-                                border: '1px solid rgb(229, 231, 235)',
-                                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                            }}
-                        >
+                <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+                            <div>
+                                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Where you'll be
+                                </h2>
+                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                    {getAddressLine(room)}
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-2.5 shrink-0">
+                                <button
+                                    type="button"
+                                    onClick={handleCopyAddress}
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm cursor-pointer"
+                                >
+                                    {copiedAddress ? (
+                                        <>
+                                            <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span className="text-emerald-600 font-semibold">Address Copied!</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>Copy Address</span>
+                                        </>
+                                    )}
+                                </button>
+
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${room.location.coordinates[1]},${room.location.coordinates[0]}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white transition shadow-sm"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                    <span>Open in Maps</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
+                            <div 
+                                ref={mapRef}
+                                id="room-detail-map"
+                                className="w-full h-[380px] z-0"
+                            />
                         </div>
                     </div>
-                </div>
+                </section>
             )}
         </main>
     );

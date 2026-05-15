@@ -109,31 +109,44 @@ const CityListingPage = () => {
                     const lat = coords[1];
                     const lng = coords[0];
 
+                    const escapeHtml = (str) => String(str || '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+                    const safeTitle = escapeHtml(room.title || 'Property');
+                    const safePrice = Number(room.pricePerNight || 0).toLocaleString();
+
                     // Create custom price badge marker
                     const priceIcon = L.divIcon({
                         html: `
-                            <div style="
-                                background: #5735ff;
-                                color: white;
-                                padding: 8px 12px;
-                                border-radius: 8px;
-                                font-size: 14px;
-                                font-weight: 600;
-                                white-space: nowrap;
-                                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                min-width: 60px;
-                                text-align: center;
-                            ">
-                                ₹${room.pricePerNight}
+                            <div style="position: relative; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -100%); cursor: pointer; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));">
+                                <div style="
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 3px;
+                                    background: #0f172a;
+                                    color: #ffffff;
+                                    padding: 5px 10px;
+                                    border-radius: 9999px;
+                                    font-size: 13px;
+                                    font-weight: 700;
+                                    white-space: nowrap;
+                                    border: 1.5px solid #ffffff;
+                                    transition: transform 0.15s ease;
+                                ">
+                                    <span style="color: #2dd4bf; font-weight: 800;">₹</span>${safePrice}
+                                </div>
+                                <div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left: 5px solid transparent;
+                                    border-right: 5px solid transparent;
+                                    border-top: 6px solid #0f172a;
+                                    margin-top: -1px;
+                                "></div>
                             </div>
                         `,
-                        className: 'price-marker',
-                        iconSize: [80, 40],
-                        iconAnchor: [40, 40],
-                        popupAnchor: [0, -40]
+                        className: 'custom-city-price-marker',
+                        iconSize: [0, 0],
+                        iconAnchor: [0, 0],
+                        popupAnchor: [0, -32]
                     });
 
                     const marker = L.marker(
@@ -141,7 +154,15 @@ const CityListingPage = () => {
                         { icon: priceIcon }
                     ).addTo(mapInstanceRef.current);
                     
-                    marker.bindPopup(`<b>${room.title}</b><br>₹${room.pricePerNight}/night`);
+                    marker.bindPopup(`
+                        <div style="font-family: inherit; width: 190px; padding: 2px;">
+                            <h4 style="font-weight: 700; font-size: 13px; color: #0f172a; margin: 0 0 4px 0; line-height: 1.3;">${safeTitle}</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; border-top: 1px solid #f1f5f9; padding-top: 6px;">
+                                <span style="font-weight: 800; font-size: 13px; color: #0d9488;">₹${safePrice} <span style="font-size: 10px; font-weight: 500; color: #64748b;">/ night</span></span>
+                                <a href="/rooms/${room._id}" style="font-size: 11px; font-weight: 700; color: #0f766e; text-decoration: none; padding: 2px 6px; background: #ccfbf1; border-radius: 4px;">View Stay →</a>
+                            </div>
+                        </div>
+                    `);
                     markersRef.current[room._id] = marker;
                     bounds.extend([lat, lng]);
                 }
