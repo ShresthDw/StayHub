@@ -13,7 +13,7 @@ import CityListingPageView from './features/rooms/pages/CityListingPage.jsx';
 import EarningsPageView from './features/bookings/pages/EarningsPage.jsx';
 import MyBookingsPageView from './features/bookings/pages/MyBookingsPage.jsx';
 import WishlistPageView from './features/wishlist/pages/WishlistPage.jsx';
-import OwnerDashboardView from './features/rooms/pages/OwnerDashboard.jsx';
+import MyPropertiesPageView from './features/rooms/pages/MyPropertiesPage.jsx';
 import AddRoomPage from './features/rooms/pages/AddRoomPage.jsx';
 import ProfilePageView from './features/profile/pages/ProfilePage.jsx';
 import RoomDetailsPageView from './features/rooms/pages/RoomDetailsPageView.jsx';
@@ -123,8 +123,8 @@ const App = () => {
                 </Route>
 
                 <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
-                    <Route path="/my-properties" element={<OwnerDashboardView />} />
-                    <Route path="/dashboard" element={<OwnerDashboardView />} />
+                    <Route path="/my-properties" element={<MyPropertiesPageView />} />
+                    <Route path="/dashboard" element={<MyPropertiesPageView />} />
                     <Route path="/add-property" element={<AddRoomPage />} />
                 </Route>
 
