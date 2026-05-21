@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicRoute from './components/PublicRoute.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import { icons } from './constants.jsx';
 import NavigationComponent from './components/Navigation.jsx';
 import { AppSkeleton } from './components/Skeletons.jsx';
@@ -100,6 +101,7 @@ const App = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <ScrollToTop />
             <NavigationComponent
                 currentUser={currentUser}
                 icons={icons}
