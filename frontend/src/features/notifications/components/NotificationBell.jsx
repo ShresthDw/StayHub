@@ -59,7 +59,7 @@ const getNotificationTypeConfig = (type) => {
     }
 };
 
-const NotificationBell = ({ currentUser }) => {
+const NotificationBell = ({ currentUser, isTransparent = false }) => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('all');
@@ -148,7 +148,11 @@ const NotificationBell = ({ currentUser }) => {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 rounded-full text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-gray-800 transition-colors focus:outline-none"
+                className={`relative p-2 rounded-full transition-all duration-200 focus:outline-none ${
+                    isTransparent
+                        ? 'bg-transparent text-white border border-white/60 hover:bg-white/15'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-gray-750'
+                }`}
                 title="Notifications"
                 aria-label="View notifications"
             >

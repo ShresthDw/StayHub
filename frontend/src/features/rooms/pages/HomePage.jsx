@@ -5,40 +5,21 @@ import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
 import RoomCard from '../../../components/RoomCard.jsx';
 import CityCard from '../../../components/CityCard.jsx';
 import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
+import HeroSearchBar from '../components/HeroSearchBar.jsx';
 import { PageSkeleton } from '../../../components/Skeletons.jsx';
-import { setCheckInDate, setCheckOutDate } from '../../../store/appSlice.js';
 import { incrementCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
 import {
     useGetPublicRoomsByTypeQuery,
     useGetCitiesQuery
 } from '../../../api/apiSlice.js';
 
-// Animated placeholder texts
-const PLACEHOLDER_TEXTS = [
-    'Where to?',
-    'Try "Dehradun"...',
-    'Try "Mussoorie"...',
-    'Try "Haldwani"...',
-    'Try "Devprayag"...',
-    'Try "Chennai"...'
-];
-
 const HomePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { categoryPagination } = useSelector((state) => state.rooms);
     const { filters, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
-    const isSearching = false;
-    const [tempCheckInDate, setTempCheckInDate] = useState(checkInDate || '');
-    const [tempCheckOutDate, setTempCheckOutDate] = useState(checkOutDate || '');
-    const [searchError, setSearchError] = useState('');
     const [scrollControls, setScrollControls] = useState({});
-    const [searchInput, setSearchInput] = useState('');
-    const [filteredCities, setFilteredCities] = useState([]);
-    const [showCitySuggestions, setShowCitySuggestions] = useState(false);
-    const [animatedPlaceholder, setAnimatedPlaceholder] = useState(PLACEHOLDER_TEXTS[0]);
     const [randomRooms, setRandomRooms] = useState([]);
-    const debounceTimerRef = useRef(null);
     const sectionScrollRefs = useRef({});
     
     // Store all rooms by type using RTK Query
@@ -117,49 +98,6 @@ const HomePage = () => {
         cottage: cottageQuery,
         hostel: hostelQuery
     }), [apartmentQuery, houseQuery, resortQuery, villaQuery, hotelQuery, cottageQuery, hostelQuery]);
-
-    // Animated placeholder effect
-    useEffect(() => {
-        let index = 0;
-        const interval = setInterval(() => {
-            index = (index + 1) % PLACEHOLDER_TEXTS.length;
-            setAnimatedPlaceholder(PLACEHOLDER_TEXTS[index]);
-        }, 3000); // Change every 3 seconds
-        return () => clearInterval(interval);
-    }, []);
-
-
-    // Debounced city search handler
-    const handleCitySearchChange = (value) => {
-        setSearchInput(value);
-        
-        // Clear existing timer
-        if (debounceTimerRef.current) {
-            clearTimeout(debounceTimerRef.current);
-        }
-
-        if (value.trim() === '') {
-            setFilteredCities([]);
-            setShowCitySuggestions(false);
-            return;
-        }
-
-        // Set new timer for debounced search
-        debounceTimerRef.current = setTimeout(() => {
-            const filtered = citiesData.filter(city =>
-                city.name.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredCities(filtered);
-            setShowCitySuggestions(true);
-        }, 300); // 300ms debounce
-    };
-
-    // Handle city selection from dropdown
-    const handleCitySelect = (cityName) => {
-        setSearchInput(cityName);
-        setShowCitySuggestions(false);
-        navigate(`/cities/${encodeURIComponent(cityName)}`);
-    };
 
     // Get random properties from all available rooms
     useEffect(() => {
@@ -274,32 +212,6 @@ const HomePage = () => {
         return () => clearTimeout(timeoutId);
     }, [allRoomsByType, updateScrollControls]);
 
-    const handleManualSearch = async () => {
-        setSearchError('');
-
-        if (tempCheckInDate && tempCheckOutDate) {
-            if (new Date(tempCheckOutDate) <= new Date(tempCheckInDate)) {
-                setSearchError('Check-out date must be after check-in date.');
-                return;
-            }
-            dispatch(setCheckInDate(tempCheckInDate));
-            dispatch(setCheckOutDate(tempCheckOutDate));
-        } else if (tempCheckInDate || tempCheckOutDate) {
-            setSearchError('Please select both check-in and check-out dates or leave both empty.');
-            return;
-        }
-
-        // If a city is selected from the search input, navigate to that city
-        if (searchInput && searchInput.trim()) {
-            navigate(`/cities/${encodeURIComponent(searchInput)}`);
-            return;
-        }
-
-        setSearchError('Please select a city or location to search.');
-    };
-
-
-    
     // Check if any query is loading
     const isLoading = Object.values(propertyTypeQueries).some(q => q.isLoading);
 
@@ -310,18 +222,12 @@ const HomePage = () => {
     return (
         <main className="w-full">
             <div className="space-y-10 pb-12">
-                {/* Hero Search Section with Real-Time Cinematic Animated Background */}
-                <div className="relative w-full py-12 sm:py-16 px-0 shadow-md bg-gray-950 min-h-[380px] flex items-center z-20">
+                {/* Hero Search Section with Real-Time Cinematic Animated Background extending behind transparent navbar */}
+                <div className="relative w-full -mt-16 sm:-mt-20 pt-24 sm:pt-28 pb-14 sm:pb-16 px-0 shadow-md bg-gray-950 min-h-[460px] flex items-center z-20">
                     {/* Cinematic Slideshow + Canvas Particle Engine + Cloud Mist (Safely clips its own images) */}
                     <HeroBackgroundAnimation />
 
                     <div className="home-content-rail relative z-10 w-full">
-                        {/* Floating Feature Pill Badge */}
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold mb-3.5 border border-white/30 shadow-sm animate-float-badge">
-                            <span>✨</span>
-                            <span>Discover 500+ Verified Stays & Instant Bookings</span>
-                        </div>
-
                         <h1 className="text-left text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-sm">
                             Find your next favorite stay
                         </h1>
@@ -329,96 +235,8 @@ const HomePage = () => {
                             Explore extraordinary villas, cozy cottages, luxury apartments, and boutique rooms.
                         </p>
                         
-                        {/* Main Search Bar with Glassmorphic Backdrop & Animated Placeholder */}
-                        <div className="bg-white/20 dark:bg-gray-900/35 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-white/30 dark:border-white/10 shadow-2xl relative z-30">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-                                {/* Location Search */}
-                                <div className="relative md:col-span-1">
-                                    <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Where</label>
-                                    <div className="relative">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 text-xl pointer-events-none">
-                                            {icons.search}
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={searchInput}
-                                            onChange={(e) => handleCitySearchChange(e.target.value)}
-                                            placeholder={animatedPlaceholder}
-                                            onFocus={() => searchInput && setShowCitySuggestions(true)}
-                                            className="w-full pl-12 pr-4 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
-                                        />
-                                        
-                                        {/* City Suggestions Dropdown (Floats above all page sections) */}
-                                        {showCitySuggestions && filteredCities.length > 0 && (
-                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto">
-                                                {filteredCities.map((city) => (
-                                                    <button
-                                                        key={city.name}
-                                                        onClick={() => handleCitySelect(city.name)}
-                                                        className="w-full text-left px-4 py-3 text-gray-900 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-gray-700 border-b last:border-b-0 border-gray-100 dark:border-gray-700 transition-colors flex items-center justify-between"
-                                                    >
-                                                        <span className="font-semibold">{city.name}</span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">{city.count} properties</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Check-in and Check-out */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Check in</label>
-                                        <input
-                                            type="date"
-                                            onClick={(event) => event.currentTarget.showPicker?.()}
-                                            value={tempCheckInDate}
-                                            onChange={(e) => setTempCheckInDate(e.target.value)}
-                                            className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-white uppercase tracking-wide block mb-1.5 drop-shadow-xs">Check out</label>
-                                        <input
-                                            type="date"
-                                            onClick={(event) => event.currentTarget.showPicker?.()}
-                                            value={tempCheckOutDate}
-                                            onChange={(e) => setTempCheckOutDate(e.target.value)}
-                                            className="date-input w-full px-3 py-3 border-0 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-600 transition-all shadow-md font-medium"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Search Button */}
-                                <button 
-                                    onClick={handleManualSearch} 
-                                    className="px-6 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 transform active:scale-95"
-                                >
-                                    {isSearching ? (
-                                        <>
-                                            <div className="animate-spin">⟳</div>
-                                            <span className="hidden sm:inline">Finding…</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {icons.search}
-                                            <span className="hidden sm:inline">Search</span>
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Error Message */}
-                        {searchError && (
-                            <div className="p-4 bg-red-100/90 dark:bg-red-900/50 backdrop-blur-md border border-red-300 dark:border-red-700 rounded-xl mt-4">
-                                <p className="text-red-700 dark:text-red-300 font-medium flex items-center gap-2">
-                                    <span>⚠️</span>
-                                    {searchError}
-                                </p>
-                            </div>
-                        )}
+                        {/* Redesigned Search Bar Component */}
+                        <HeroSearchBar citiesData={citiesData} />
                     </div>
                 </div>
 

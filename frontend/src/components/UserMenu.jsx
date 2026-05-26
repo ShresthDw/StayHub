@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { clearFilters, setCurrentUser, setTheme } from '../store/appSlice.js';
 import { useLogoutMutation } from '../api/apiSlice.js';
 
-const UserMenu = ({ currentUser, icons }) => {
+const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { theme } = useSelector((state) => state.app);
@@ -78,10 +78,18 @@ const UserMenu = ({ currentUser, icons }) => {
         <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1.5 text-gray-700 shadow-sm hover:border-teal-300 hover:bg-teal-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-all"
+                className={`flex items-center gap-2 rounded-full px-2.5 py-1.5 transition-all duration-200 ${
+                    isTransparent
+                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
+                        : 'border border-gray-200 bg-white text-gray-800 shadow-sm hover:border-teal-400 hover:bg-teal-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-750'
+                }`}
                 title={currentUser?.name}
             >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-700 dark:bg-teal-900/60 dark:text-teal-200">
+                <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+                    isTransparent
+                        ? 'bg-white/20 text-white border border-white/50'
+                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/60 dark:text-teal-200'
+                }`}>
                     {(currentUser?.name || 'U').charAt(0).toUpperCase()}
                 </span>
                 <span className="hidden max-w-24 truncate text-sm font-semibold sm:block">{displayName}</span>
