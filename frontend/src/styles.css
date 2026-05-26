@@ -5,8 +5,18 @@
 
 html, body {
 	margin: 0;
-	font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+	font-family: 'Plus Jakarta Sans', 'Manrope', ui-sans-serif, system-ui, sans-serif;
 	-webkit-font-smoothing: antialiased;
+}
+
+.font-hero-title {
+	font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+	letter-spacing: -0.025em;
+}
+
+.font-hero-subtitle {
+	font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+	letter-spacing: -0.01em;
 }
 
 /* Shared compact scale across every route at 100% browser zoom. */

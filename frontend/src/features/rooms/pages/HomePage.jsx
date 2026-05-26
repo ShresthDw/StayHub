@@ -228,10 +228,10 @@ const HomePage = () => {
                     <HeroBackgroundAnimation />
 
                     <div className="home-content-rail relative z-10 w-full">
-                        <h1 className="text-left text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-sm">
+                        <h1 className="font-hero-title text-left text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tight text-white mb-2.5 drop-shadow-md leading-[1.12]">
                             Find your next favorite stay
                         </h1>
-                        <p className="text-left text-teal-50 dark:text-teal-100 text-sm sm:text-base md:text-lg mb-6 font-medium max-w-xl">
+                        <p className="font-hero-subtitle text-left text-teal-100/90 dark:text-teal-100 text-sm sm:text-base md:text-lg mb-6 font-medium max-w-2xl leading-relaxed drop-shadow-sm">
                             Explore extraordinary villas, cozy cottages, luxury apartments, and boutique rooms.
                         </p>
                         
