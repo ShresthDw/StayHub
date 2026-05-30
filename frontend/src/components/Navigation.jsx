@@ -67,23 +67,23 @@ const Navigation = ({ currentUser, icons }) => {
             }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
+                <div className="flex items-center justify-between h-11 sm:h-12">
                     <Link to="/" className="cursor-pointer transition-transform duration-200 active:scale-95">
                         <BrandLogo isTransparent={isTransparent} />
                     </Link>
-                    <nav className="flex items-center space-x-3 relative">
+                    <nav className="flex items-center space-x-2 relative">
 
                         {currentUser?.role === 'owner' ? (
                             <button
                                 type="button"
                                 onClick={() => navigate('/my-properties')}
-                                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-200 flex items-center gap-1.5 active:scale-95 ${
+                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center gap-1.5 active:scale-95 ${
                                     isTransparent
-                                        ? 'bg-transparent text-white border border-white hover:bg-white/15'
+                                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
                                         : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'
                                 }`}
                             >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                                 <span>List Property</span>
@@ -93,11 +93,11 @@ const Navigation = ({ currentUser, icons }) => {
                                 type="button"
                                 onClick={handleHostProperty}
                                 disabled={upgrading}
-                                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-200 active:scale-95 ${
+                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center active:scale-95 ${
                                     upgrading
                                         ? 'bg-teal-400 text-white'
                                         : isTransparent
-                                        ? 'bg-transparent text-white border border-white hover:bg-white/15'
+                                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
                                         : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'
                                 }`}
                             >
@@ -114,9 +114,9 @@ const Navigation = ({ currentUser, icons }) => {
                         ) : (
                             <Link
                                 to="/login"
-                                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-200 active:scale-95 ${
+                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center active:scale-95 ${
                                     isTransparent
-                                        ? 'bg-transparent text-white border border-white hover:bg-white/15'
+                                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
                                         : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'
                                 }`}
                             >

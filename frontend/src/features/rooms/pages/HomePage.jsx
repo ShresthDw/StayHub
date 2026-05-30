@@ -223,7 +223,7 @@ const HomePage = () => {
         <main className="w-full">
             <div className="space-y-10 pb-12">
                 {/* Hero Search Section with Real-Time Cinematic Animated Background extending behind transparent navbar */}
-                <div className="relative w-full -mt-16 sm:-mt-20 pt-24 sm:pt-28 pb-14 sm:pb-16 px-0 shadow-md bg-gray-950 min-h-[460px] flex items-center z-20">
+                <div className="relative w-full -mt-11 sm:-mt-12 pt-18 sm:pt-20 pb-10 sm:pb-12 px-0 shadow-md bg-gray-950 min-h-[400px] flex items-center z-20">
                     {/* Cinematic Slideshow + Canvas Particle Engine + Cloud Mist (Safely clips its own images) */}
                     <HeroBackgroundAnimation />
 

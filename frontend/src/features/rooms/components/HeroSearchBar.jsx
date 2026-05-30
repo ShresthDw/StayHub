@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCheckInDate, setCheckOutDate, setFilters } from '../../../store/appSlice.js';
-import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
+import { setCheckInDate, setCheckOutDate } from '../../../store/appSlice.js';
+import { icons } from '../../../constants.jsx';
 
 // Animated placeholder destinations
 const PLACEHOLDER_TEXTS = [
@@ -38,12 +38,11 @@ const formatDateDisplay = (dateString) => {
 const HeroSearchBar = ({ citiesData = [] }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { filters, checkInDate, checkOutDate } = useSelector((state) => state.app);
+    const { checkInDate, checkOutDate } = useSelector((state) => state.app);
 
     const [searchInput, setSearchInput] = useState('');
     const [tempCheckInDate, setTempCheckInDate] = useState(checkInDate || '');
     const [tempCheckOutDate, setTempCheckOutDate] = useState(checkOutDate || '');
-    const [selectedType, setSelectedType] = useState(filters.propertyType || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [filteredCities, setFilteredCities] = useState([]);
     const [animatedPlaceholder, setAnimatedPlaceholder] = useState(PLACEHOLDER_TEXTS[0]);
@@ -82,6 +81,20 @@ const HeroSearchBar = ({ citiesData = [] }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Helper to immediately pop up browser calendar
+    const openDatePicker = (inputRef) => {
+        if (!inputRef?.current) return;
+        try {
+            if (typeof inputRef.current.showPicker === 'function') {
+                inputRef.current.showPicker();
+            } else {
+                inputRef.current.focus();
+            }
+        } catch {
+            inputRef.current?.focus();
+        }
+    };
 
     // Debounced city search filter
     const handleCityInputChange = (value) => {
@@ -135,11 +148,6 @@ const HeroSearchBar = ({ citiesData = [] }) => {
             dispatch(setCheckOutDate(''));
         }
 
-        // Apply property type filter if changed
-        if (selectedType !== filters.propertyType) {
-            dispatch(setFilters({ ...filters, propertyType: selectedType }));
-        }
-
         if (cityToSearch && cityToSearch.trim()) {
             navigate(`/cities/${encodeURIComponent(cityToSearch.trim())}`);
             return;
@@ -164,7 +172,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                     
                     {/* Segment 1: Destination (Where) */}
                     <div
-                        className={`sm:col-span-4 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-3.5 py-1.5 transition-all cursor-pointer ${
+                        className={`sm:col-span-5 md:col-span-6 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-3.5 py-1.5 transition-all cursor-pointer ${
                             activeSection === 'where'
                                 ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
                                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
@@ -221,7 +229,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                             Matching Destinations
                                         </div>
                                         {filteredCities.length > 0 ? (
-                                            filteredCities.map((city) => (
+                                             filteredCities.map((city) => (
                                                 <button
                                                     key={city.name}
                                                     type="button"
@@ -315,15 +323,18 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                     </div>
 
                     {/* Segment 2 & 3: Check-in & Check-out Dates */}
-                    <div className="sm:col-span-3 sm:border-l border-gray-200 dark:border-gray-700/80 grid grid-cols-2 gap-1 px-1.5 py-0.5">
+                    <div className="sm:col-span-4 md:col-span-4 sm:border-l border-gray-200 dark:border-gray-700/80 grid grid-cols-2 gap-1 px-1.5 py-0.5">
                         {/* Check-in */}
                         <div
-                            className={`rounded-xl px-2 py-1 transition-all cursor-pointer relative overflow-hidden group ${
+                            className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
                                 activeSection === 'checkin'
                                     ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
                                     : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
                             }`}
-                            onClick={() => setActiveSection('checkin')}
+                            onClick={() => {
+                                setActiveSection('checkin');
+                                openDatePicker(checkInInputRef);
+                            }}
                         >
                             <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400 leading-none mb-0.5 pointer-events-none">
                                 Check in
@@ -336,6 +347,16 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                 type="date"
                                 min={todayStr}
                                 value={tempCheckInDate}
+                                onClick={(e) => {
+                                    try {
+                                        e.target.showPicker?.();
+                                    } catch {}
+                                }}
+                                onFocus={(e) => {
+                                    try {
+                                        e.target.showPicker?.();
+                                    } catch {}
+                                }}
                                 onChange={(e) => {
                                     setTempCheckInDate(e.target.value);
                                     if (tempCheckOutDate && new Date(tempCheckOutDate) <= new Date(e.target.value)) {
@@ -363,12 +384,15 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
                         {/* Check-out */}
                         <div
-                            className={`rounded-xl px-2 py-1 transition-all cursor-pointer relative overflow-hidden group ${
+                            className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
                                 activeSection === 'checkout'
                                     ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
                                     : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
                             }`}
-                            onClick={() => setActiveSection('checkout')}
+                            onClick={() => {
+                                setActiveSection('checkout');
+                                openDatePicker(checkOutInputRef);
+                            }}
                         >
                             <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400 leading-none mb-0.5 pointer-events-none">
                                 Check out
@@ -381,6 +405,16 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                 type="date"
                                 min={tempCheckInDate || todayStr}
                                 value={tempCheckOutDate}
+                                onClick={(e) => {
+                                    try {
+                                        e.target.showPicker?.();
+                                    } catch {}
+                                }}
+                                onFocus={(e) => {
+                                    try {
+                                        e.target.showPicker?.();
+                                    } catch {}
+                                }}
                                 onChange={(e) => setTempCheckOutDate(e.target.value)}
                                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                                 title="Select check-out date"
@@ -402,41 +436,12 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         </div>
                     </div>
 
-                    {/* Segment 4: Property Type / Category Selector */}
-                    <div className="sm:col-span-2 sm:border-l border-gray-200 dark:border-gray-700/80 px-2.5 py-1 relative">
-                        <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400 leading-none mb-0.5">
-                            Stay Type
-                        </label>
-                        <div className="relative">
-                            <select
-                                value={selectedType}
-                                onChange={(e) => {
-                                    setSelectedType(e.target.value);
-                                    dispatch(setFilters({ ...filters, propertyType: e.target.value }));
-                                }}
-                                className="w-full bg-transparent border-none p-0 pr-4 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0 cursor-pointer capitalize appearance-none leading-tight"
-                            >
-                                <option value="" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">All Stays</option>
-                                {PROPERTY_TYPES.map((type) => (
-                                    <option key={type} value={type} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white capitalize">
-                                        {type}s
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Segment 5: Search Button */}
-                    <div className="sm:col-span-3 flex justify-end pl-1.5">
+                    {/* Segment 3: Search Button */}
+                    <div className="sm:col-span-3 md:col-span-2 flex justify-end pl-1.5">
                         <button
                             type="button"
                             onClick={() => executeSearch()}
-                            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 group"
+                            className="w-full sm:w-auto h-9 sm:h-9.5 px-5 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-1.5 group"
                         >
                             <span className="group-hover:rotate-12 transition-transform duration-200">
                                 {icons.search}
@@ -468,7 +473,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
             )}
 
             {/* Trending Destinations Quick Chips */}
-            <div className="mt-3.5 flex items-center gap-2 text-xs flex-wrap">
+            <div className="mt-3 flex items-center gap-2 text-xs flex-wrap">
                 <span className="text-white font-bold flex items-center gap-1.5 drop-shadow-sm">
                     <svg className="w-3.5 h-3.5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -480,7 +485,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         key={city.name}
                         type="button"
                         onClick={() => handleSelectCity(city.name)}
-                        className="px-3.5 py-1.5 rounded-full bg-white text-gray-800 hover:bg-teal-50 hover:text-teal-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 text-xs font-bold border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+                        className="h-7.5 px-3.5 rounded-full bg-white text-gray-800 hover:bg-teal-50 hover:text-teal-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 text-xs font-bold border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center"
                     >
                         {city.name}
                     </button>
