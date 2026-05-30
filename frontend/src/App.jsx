@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
@@ -6,21 +6,23 @@ import PublicRoute from './components/PublicRoute.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { icons } from './constants.jsx';
 import NavigationComponent from './components/Navigation.jsx';
-import { AppSkeleton } from './components/Skeletons.jsx';
+import { AppSkeleton, PageSkeleton } from './components/Skeletons.jsx';
 import Footer from './components/Footer.jsx';
-import AuthPageView from './features/auth/pages/AuthPage.jsx';
-import HomePageView from './features/rooms/pages/HomePage.jsx';
-import CityListingPageView from './features/rooms/pages/CityListingPage.jsx';
-import EarningsPageView from './features/bookings/pages/EarningsPage.jsx';
-import MyBookingsPageView from './features/bookings/pages/MyBookingsPage.jsx';
-import WishlistPageView from './features/wishlist/pages/WishlistPage.jsx';
-import MyPropertiesPageView from './features/rooms/pages/MyPropertiesPage.jsx';
-import AddRoomPage from './features/rooms/pages/AddRoomPage.jsx';
-import ProfilePageView from './features/profile/pages/ProfilePage.jsx';
-import RoomDetailsPageView from './features/rooms/pages/RoomDetailsPageView.jsx';
-import NotificationsPageView from './features/notifications/pages/NotificationsPage.jsx';
 import NotificationToast from './features/notifications/components/NotificationToast.jsx';
 import useNotificationSocket from './features/notifications/hooks/useNotificationSocket.js';
+import HomePageView from './features/rooms/pages/HomePage.jsx';
+
+// Code-split / Lazy-loaded route components
+const CityListingPageView = lazy(() => import('./features/rooms/pages/CityListingPage.jsx'));
+const RoomDetailsPageView = lazy(() => import('./features/rooms/pages/RoomDetailsPageView.jsx'));
+const AuthPageView = lazy(() => import('./features/auth/pages/AuthPage.jsx'));
+const MyPropertiesPageView = lazy(() => import('./features/rooms/pages/MyPropertiesPage.jsx'));
+const AddRoomPage = lazy(() => import('./features/rooms/pages/AddRoomPage.jsx'));
+const ProfilePageView = lazy(() => import('./features/profile/pages/ProfilePage.jsx'));
+const NotificationsPageView = lazy(() => import('./features/notifications/pages/NotificationsPage.jsx'));
+const MyBookingsPageView = lazy(() => import('./features/bookings/pages/MyBookingsPage.jsx'));
+const WishlistPageView = lazy(() => import('./features/wishlist/pages/WishlistPage.jsx'));
+const EarningsPageView = lazy(() => import('./features/bookings/pages/EarningsPage.jsx'));
 import {
     clearFilters,
     setFilters,
@@ -114,35 +116,37 @@ const App = () => {
                 onClose={clearLiveNotification}
             />
 
-            <Routes>
-                <Route path="/" element={<HomePageView />} />
-                <Route path="/cities/:city" element={<CityListingPageView />} />
-                <Route path="/rooms/:roomId" element={<RoomDetailsPageView />} />
+            <Suspense fallback={<PageSkeleton />}>
+                <Routes>
+                    <Route path="/" element={<HomePageView />} />
+                    <Route path="/cities/:city" element={<CityListingPageView />} />
+                    <Route path="/rooms/:roomId" element={<RoomDetailsPageView />} />
 
-                <Route element={<PublicRoute currentUser={currentUser} />}>
-                    <Route path="/login" element={<AuthPageView mode="login" />} />
-                    <Route path="/signup" element={<AuthPageView mode="signup" />} />
-                </Route>
+                    <Route element={<PublicRoute currentUser={currentUser} />}>
+                        <Route path="/login" element={<AuthPageView mode="login" />} />
+                        <Route path="/signup" element={<AuthPageView mode="signup" />} />
+                    </Route>
 
-                <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
-                    <Route path="/my-properties" element={<MyPropertiesPageView />} />
-                    <Route path="/dashboard" element={<MyPropertiesPageView />} />
-                    <Route path="/add-property" element={<AddRoomPage />} />
-                </Route>
+                    <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
+                        <Route path="/my-properties" element={<MyPropertiesPageView />} />
+                        <Route path="/dashboard" element={<MyPropertiesPageView />} />
+                        <Route path="/add-property" element={<AddRoomPage />} />
+                    </Route>
 
-                <Route element={<ProtectedRoute currentUser={currentUser} />}>
-                    <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
-                    <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
-                    <Route path="/notifications" element={<NotificationsPageView />} />
-                    <Route path="/my-bookings" element={<MyBookingsPageView />} />
-                    <Route path="/wishlist" element={<WishlistPageView />} />
-                    <Route path="/earnings" element={<EarningsPageView />} />
-                    <Route path="/bookings" element={<Navigate to="/earnings" replace />} />
-                    <Route path="/booked-properties" element={<Navigate to="/earnings" replace />} />
-                </Route>
+                    <Route element={<ProtectedRoute currentUser={currentUser} />}>
+                        <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
+                        <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
+                        <Route path="/notifications" element={<NotificationsPageView />} />
+                        <Route path="/my-bookings" element={<MyBookingsPageView />} />
+                        <Route path="/wishlist" element={<WishlistPageView />} />
+                        <Route path="/earnings" element={<EarningsPageView />} />
+                        <Route path="/bookings" element={<Navigate to="/earnings" replace />} />
+                        <Route path="/booked-properties" element={<Navigate to="/earnings" replace />} />
+                    </Route>
 
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Suspense>
 
             <Footer />
         </div>

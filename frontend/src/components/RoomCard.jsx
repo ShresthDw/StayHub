@@ -48,7 +48,15 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                         <span>{room.rating || 'New'}</span>
                     </div>
                 )}
-                <img className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover`} src={imageUrl} srcSet={srcSet} sizes={sizes} alt={room.title}/>
+                <img
+                    className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover`}
+                    src={imageUrl}
+                    srcSet={srcSet}
+                    sizes={sizes}
+                    alt={room.title}
+                    loading="lazy"
+                    decoding="async"
+                />
             </div>
             <div className={compact ? 'flex flex-col p-2.5' : 'p-4'}>
                 <h3 className={`${compact ? 'text-sm' : 'text-lg'} font-semibold text-gray-800 dark:text-gray-100 truncate`}>{room.title}</h3>

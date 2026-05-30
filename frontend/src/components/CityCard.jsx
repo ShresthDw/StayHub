@@ -16,6 +16,8 @@ const CityCard = ({ city, imageUrl, roomCount, onClick }) => {
 				srcSet={srcSet}
 				sizes={sizes}
 				alt={city}
+				loading="lazy"
+				decoding="async"
 				className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
 			/>
 
