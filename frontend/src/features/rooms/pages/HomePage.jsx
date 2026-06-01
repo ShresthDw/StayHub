@@ -7,6 +7,7 @@ import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
 import HeroSearchBar from '../components/HeroSearchBar.jsx';
 import LazySection from '../../../components/LazySection.jsx';
 import CategoryRow from '../components/CategoryRow.jsx';
+import ExploreUniquePlaces from '../components/ExploreUniquePlaces.jsx';
 import { useGetCitiesQuery } from '../../../api/apiSlice.js';
 
 const HomePage = () => {
@@ -22,7 +23,7 @@ const HomePage = () => {
         <main className="w-full">
             <div className="space-y-10 pb-12">
                 {/* Hero Search Section with Real-Time Cinematic Animated Background extending behind transparent navbar */}
-                <div className="relative w-full -mt-11 sm:-mt-12 pt-18 sm:pt-20 pb-10 sm:pb-12 px-0 shadow-md bg-gray-950 min-h-[400px] flex items-center z-20">
+                <div className="relative w-full -mt-12 pt-20 sm:pt-24 md:pt-28 pb-10 sm:pb-12 px-0 shadow-md bg-gray-950 min-h-[400px] flex items-center z-20">
                     {/* Cinematic Slideshow + Canvas Particle Engine + Cloud Mist */}
                     <HeroBackgroundAnimation />
 
@@ -48,19 +49,16 @@ const HomePage = () => {
                             onRoomClick={handleRoomClick}
                         />
                     ) : (
-                        /* All Property Types Lazy-Loaded by Viewport */
-                        <div className="space-y-12">
-                            {PROPERTY_TYPES.map((propertyType, index) => (
-                                index === 0 ? (
-                                    /* First Category Row loads immediately for instant above-the-fold content */
-                                    <CategoryRow
-                                        key={propertyType}
-                                        propertyType={propertyType}
-                                        icons={icons}
-                                        onRoomClick={handleRoomClick}
-                                    />
-                                ) : (
-                                    /* Subsequent Rows lazy load when within 300px of viewport */
+                        <>
+                            {/* Explore Unique Places to Stay (Featured Section) */}
+                            <ExploreUniquePlaces
+                                icons={icons}
+                                onRoomClick={handleRoomClick}
+                            />
+
+                            {/* All Property Types Lazy-Loaded by Viewport */}
+                            <div className="space-y-12">
+                                {PROPERTY_TYPES.map((propertyType) => (
                                     <LazySection key={propertyType} minHeight="280px" rootMargin="300px">
                                         <CategoryRow
                                             propertyType={propertyType}
@@ -68,9 +66,9 @@ const HomePage = () => {
                                             onRoomClick={handleRoomClick}
                                         />
                                     </LazySection>
-                                )
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        </>
                     )}
 
                     {/* Cities Section - Lazy loaded when user scrolls to bottom */}
