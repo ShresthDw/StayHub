@@ -5,7 +5,7 @@ const initialState = {
     theme: 'light',
     geoApiKey: null,
     razorpayKeyId: null,
-    isLoading: true,
+    isLoading: false,
     filters: { propertyType: '', amenities: [] },
     searchLocation: { address: '', lat: null, lng: null, distance: 10 },
     checkInDate: '',

@@ -42,11 +42,11 @@ const App = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const { currentUser, theme, isLoading, filters, geoApiKey, razorpayKeyId } = useSelector((state) => state.app);
+    const { currentUser, theme, filters, geoApiKey, razorpayKeyId } = useSelector((state) => state.app);
 
     // RTK Query hooks for initialization
     const { data: configData, error: configError } = useGetAppConfigQuery();
-    const { data: userData, error: userError } = useGetCurrentUserQuery();
+    const { data: userData, error: userError, isLoading: isUserLoading } = useGetCurrentUserQuery();
     const [logout] = useLogoutMutation();
 
     // Real-time WebSocket connection & live notification toasts
@@ -62,19 +62,12 @@ const App = () => {
             dispatch(setRazorpayKeyId(configData.razorpayKeyId || null));
         }
 
-        const configSettled = configData !== undefined || !!configError;
-        const userSettled = userData !== undefined || !!userError;
-
         if (userData) {
             dispatch(setCurrentUser(userData));
         } else if (userError) {
             dispatch(setCurrentUser(null));
         }
-
-        if (configSettled && userSettled) {
-            dispatch(setIsLoading(false));
-        }
-    }, [configData, configError, userData, userError, dispatch]);
+    }, [configData, userData, userError, dispatch]);
 
     const handleQuickFilterSelect = (patch) => {
         dispatch(setFilters({ ...filters, ...patch }));
@@ -97,10 +90,6 @@ const App = () => {
         dispatch(setTheme(next));
     };
 
-    if (isLoading) {
-        return <AppSkeleton />;
-    }
-
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <ScrollToTop />
@@ -122,18 +111,18 @@ const App = () => {
                     <Route path="/cities/:city" element={<CityListingPageView />} />
                     <Route path="/rooms/:roomId" element={<RoomDetailsPageView />} />
 
-                    <Route element={<PublicRoute currentUser={currentUser} />}>
+                    <Route element={<PublicRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
                         <Route path="/login" element={<AuthPageView mode="login" />} />
                         <Route path="/signup" element={<AuthPageView mode="signup" />} />
                     </Route>
 
-                    <Route element={<ProtectedRoute currentUser={currentUser} requireOwner={true} />}>
+                    <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} requireOwner={true} />}>
                         <Route path="/my-properties" element={<MyPropertiesPageView />} />
                         <Route path="/dashboard" element={<MyPropertiesPageView />} />
                         <Route path="/add-property" element={<AddRoomPage />} />
                     </Route>
 
-                    <Route element={<ProtectedRoute currentUser={currentUser} />}>
+                    <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
                         <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
                         <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
                         <Route path="/notifications" element={<NotificationsPageView />} />
