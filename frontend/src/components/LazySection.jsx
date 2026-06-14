@@ -8,7 +8,7 @@ import useInView from '../hooks/useInView.js';
 const LazySection = ({
     children,
     fallback = null,
-    minHeight = '240px',
+    minHeight = '0px',
     rootMargin = '300px',
     className = ''
 }) => {

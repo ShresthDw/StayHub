@@ -20,9 +20,8 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
         return 'Location not provided';
     };
 
-
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer group" onClick={onClick}>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
             <div className="relative">
                 {isDashboard && !room.isActive && (
                     <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">DRAFT</div>
@@ -43,7 +42,7 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                     </div>
                 )}
                 {compact && (
-                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 rounded-full bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-900/95 dark:text-white">
+                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 rounded-full bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-850 dark:text-gray-100 dark:border dark:border-white/10">
                         {icons.star}
                         <span>{room.rating || 'New'}</span>
                     </div>
@@ -60,27 +59,26 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
             </div>
             <div className={compact ? 'flex flex-col p-2.5' : 'p-4'}>
                 <h3 className={`${compact ? 'text-sm' : 'text-lg'} font-semibold text-gray-800 dark:text-gray-100 truncate`}>{room.title}</h3>
-                <p className={`${compact ? 'text-[11px]' : 'text-xs sm:text-sm'} flex text-gray-600 dark:text-gray-400 mt-1 truncate`}>{icons.location} {getAddressLine(room)}</p>
+                <p className={`${compact ? 'text-[11px]' : 'text-xs sm:text-sm'} flex text-gray-600 dark:text-gray-300 mt-1 truncate`}>{icons.location} {getAddressLine(room)}</p>
                 {(!compact || isDashboard) && <div className="flex items-center justify-between mt-2">
                     {!compact && <div className="flex flex-col">
-                        <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                        <div className="flex items-center text-sm text-gray-700 dark:text-gray-200">
                             {icons.star}<span className="ml-1">{room.rating || 'New'}</span>
                         </div>
-
                     </div>}
                     {isDashboard && (
                         <div className="flex items-center space-x-3">
-                            <button onClick={(e) => { e.stopPropagation(); onEdit(room); }} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center text-sm font-medium">
+                            <button onClick={(e) => { e.stopPropagation(); onEdit(room); }} className="text-indigo-600 dark:text-teal-300 hover:text-indigo-800 dark:hover:text-teal-200 flex items-center text-sm font-medium">
                                 {icons.edit}<span className="ml-1">Edit</span>
                             </button>
-                            <button onClick={(e) => { e.stopPropagation(); onDelete(room); }} className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center text-sm font-medium">
+                            <button onClick={(e) => { e.stopPropagation(); onDelete(room); }} className="text-red-500 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 flex items-center text-sm font-medium">
                                 {icons.trash}<span className="ml-1">Delete</span>
                             </button>
                         </div>
                     )}
                 </div>}
                 <p className={`${compact ? 'mt-2 text-sm' : 'mt-2 text-lg'} font-bold text-gray-900 dark:text-white`}>
-                    ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-sm font-normal text-gray-600 dark:text-gray-400">/ night</span>
+                    ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-sm font-normal text-gray-600 dark:text-gray-300">/ night</span>
                 </p>
             </div>
         </div>

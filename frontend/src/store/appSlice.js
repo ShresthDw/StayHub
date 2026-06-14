@@ -1,8 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const getInitialUser = () => {
+    try {
+        const stored = typeof window !== 'undefined' ? localStorage.getItem('currentUser') : null;
+        return stored ? JSON.parse(stored) : null;
+    } catch {
+        return null;
+    }
+};
+
+const getInitialTheme = () => {
+    try {
+        return (typeof window !== 'undefined' && localStorage.getItem('theme')) || 'light';
+    } catch {
+        return 'light';
+    }
+};
+
 const initialState = {
-    currentUser: null,
-    theme: 'light',
+    currentUser: getInitialUser(),
+    theme: getInitialTheme(),
     geoApiKey: null,
     razorpayKeyId: null,
     isLoading: false,
@@ -18,6 +35,13 @@ const appSlice = createSlice({
     reducers: {
         setCurrentUser(state, action) {
             state.currentUser = action.payload;
+            try {
+                if (action.payload) {
+                    localStorage.setItem('currentUser', JSON.stringify(action.payload));
+                } else {
+                    localStorage.removeItem('currentUser');
+                }
+            } catch (e) {}
         },
         setTheme(state, action) {
             state.theme = action.payload;

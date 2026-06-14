@@ -12,7 +12,7 @@ const Navigation = ({ currentUser, icons }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [upgrading, setUpgrading] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(() => (typeof window !== 'undefined' ? window.scrollY > 20 : false));
 
     const isHomePage = location.pathname === '/';
     const isTransparent = isHomePage && !isScrolled;

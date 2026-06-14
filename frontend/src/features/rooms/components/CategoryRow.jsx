@@ -75,11 +75,18 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
 
     if (isLoading && rooms.length === 0) {
         return (
-            <div className="space-y-3 py-2">
-                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                <div className="flex gap-5 overflow-hidden">
+            <div>
+                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse mb-4" />
+                <div className="flex gap-5 overflow-hidden pb-4">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="w-56 h-64 bg-gray-200/70 dark:bg-gray-800/70 rounded-xl animate-pulse flex-shrink-0" />
+                        <div key={i} className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden flex-shrink-0 animate-pulse border border-gray-100 dark:border-gray-700/60">
+                            <div className="h-36 sm:h-40 w-full bg-gray-200 dark:bg-gray-700" />
+                            <div className="p-2.5 space-y-2">
+                                <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded" />
+                                <div className="h-3 w-1/2 bg-gray-100 dark:bg-gray-700/60 rounded" />
+                                <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded mt-1" />
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>

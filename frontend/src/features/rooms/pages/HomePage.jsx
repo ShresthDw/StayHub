@@ -59,7 +59,7 @@ const HomePage = () => {
                             {/* All Property Types Lazy-Loaded by Viewport */}
                             <div className="space-y-12">
                                 {PROPERTY_TYPES.map((propertyType) => (
-                                    <LazySection key={propertyType} minHeight="280px" rootMargin="300px">
+                                    <LazySection key={propertyType} rootMargin="300px">
                                         <CategoryRow
                                             propertyType={propertyType}
                                             icons={icons}
@@ -73,7 +73,7 @@ const HomePage = () => {
 
                     {/* Cities Section - Lazy loaded when user scrolls to bottom */}
                     {citiesData.length > 0 && (
-                        <LazySection minHeight="240px" rootMargin="300px">
+                        <LazySection rootMargin="300px">
                             <div>
                                 <div className="flex items-center justify-between mb-5">
                                     <div>
