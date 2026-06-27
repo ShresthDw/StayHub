@@ -67,7 +67,7 @@ const WishlistPage = () => {
             ) : wishlist.length > 0 ? (
                 /* Compact Horizontal List Rows Matching Screenshot */
                 <div className="space-y-3">
-                    {wishlist.map((room) => {
+                    {wishlist.map((room, idx) => {
                         const rawImageUrl = Array.isArray(room.images) && room.images.length > 0 
                             ? (typeof room.images[0] === 'string' ? room.images[0] : room.images[0]?.url)
                             : 'https://placehold.co/600x400?text=No+Image';
@@ -78,7 +78,7 @@ const WishlistPage = () => {
                             <div
                                 key={room._id}
                                 onClick={() => handleRoomClick(room)}
-                                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group cursor-pointer"
+                                className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                             >
                                 {/* Thumbnail with Heart Button */}
                                 <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">

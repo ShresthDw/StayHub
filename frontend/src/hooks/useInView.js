@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
  * @param {Object} options IntersectionObserver options (rootMargin, threshold, triggerOnce)
  * @returns [ref, isInView]
  */
-export const useInView = ({ rootMargin = '200px', threshold = 0.01, triggerOnce = true } = {}) => {
+export const useInView = ({ rootMargin = '0px 0px -30px 0px', threshold = 0.02, triggerOnce = true } = {}) => {
     const [isInView, setIsInView] = useState(false);
     const elementRef = useRef(null);
 

@@ -181,7 +181,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                 {/* MAIN UNIFIED PROFILE & EDIT CONTENT */}
                 <div className="grid gap-6 md:grid-cols-3">
                     {/* Left/Center Form Column (2 Cols) */}
-                    <div className="md:col-span-2 space-y-6">
+                    <div className="md:col-span-2 space-y-6 animate-scroll-reveal">
                         <form onSubmit={handleSaveProfile} className="rounded-3xl bg-white dark:bg-gray-800 p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-6">
                             <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
                                 <div>
@@ -417,7 +417,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                     </div>
 
                     {/* Right Side Column (1 Col) */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-scroll-reveal">
                         {/* Profile Identity & Account Overview Card */}
                         <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-5">
                             {/* User Avatar & Identity */}

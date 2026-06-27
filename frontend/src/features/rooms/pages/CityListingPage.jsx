@@ -313,14 +313,15 @@ const CityListingPage = () => {
                         {citiesRooms.length > 0 ? (
                             <>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {citiesRooms.map((room) => (
-                                        <RoomCard 
-                                            key={room._id} 
-                                            room={room} 
-                                            icons={icons} 
-                                            compact
-                                            onClick={() => handleRoomClick(room)}
-                                        />
+                                    {citiesRooms.map((room, idx) => (
+                                        <div key={room._id} className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
+                                            <RoomCard 
+                                                room={room} 
+                                                icons={icons} 
+                                                compact
+                                                onClick={() => handleRoomClick(room)}
+                                            />
+                                        </div>
                                     ))}
                                 </div>
 

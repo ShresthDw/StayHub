@@ -8,14 +8,19 @@ import useInView from '../hooks/useInView.js';
 const LazySection = ({
     children,
     fallback = null,
-    minHeight = '0px',
-    rootMargin = '300px',
+    minHeight = '200px',
+    rootMargin = '0px 0px -30px 0px',
+    threshold = 0.02,
     className = ''
 }) => {
-    const [ref, isInView] = useInView({ rootMargin, triggerOnce: true });
+    const [ref, isInView] = useInView({ rootMargin, threshold, triggerOnce: true });
 
     return (
-        <div ref={ref} className={className} style={!isInView ? { minHeight } : undefined}>
+        <div 
+            ref={ref} 
+            className={`${className} ${isInView ? 'animate-scroll-reveal' : 'opacity-0'}`} 
+            style={!isInView ? { minHeight } : undefined}
+        >
             {isInView ? children : fallback}
         </div>
     );

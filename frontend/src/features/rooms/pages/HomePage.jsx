@@ -28,7 +28,7 @@ const HomePage = () => {
                     <HeroBackgroundAnimation />
 
                     <div className="home-content-rail relative z-10 w-full">
-                        <h1 className="font-hero-title text-left text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tight text-white mb-2.5 drop-shadow-md leading-[1.12]">
+                        <h1 className="font-hero-title text-left text-3xl sm:text-4xl md:text-5xl lg:text-[3.75rem] font-normal text-white mb-2.5 drop-shadow-md leading-[1.25]">
                             Find your next favorite stay
                         </h1>
                         <p className="font-hero-subtitle text-left text-teal-100/90 dark:text-teal-100 text-sm sm:text-base md:text-lg mb-6 font-medium max-w-2xl leading-relaxed drop-shadow-sm">
@@ -51,15 +51,17 @@ const HomePage = () => {
                     ) : (
                         <>
                             {/* Explore Unique Places to Stay (Featured Section) */}
-                            <ExploreUniquePlaces
-                                icons={icons}
-                                onRoomClick={handleRoomClick}
-                            />
+                            <LazySection minHeight="240px">
+                                <ExploreUniquePlaces
+                                    icons={icons}
+                                    onRoomClick={handleRoomClick}
+                                />
+                            </LazySection>
 
                             {/* All Property Types Lazy-Loaded by Viewport */}
                             <div className="space-y-12">
                                 {PROPERTY_TYPES.map((propertyType) => (
-                                    <LazySection key={propertyType} rootMargin="300px">
+                                    <LazySection key={propertyType} minHeight="240px">
                                         <CategoryRow
                                             propertyType={propertyType}
                                             icons={icons}
@@ -73,7 +75,7 @@ const HomePage = () => {
 
                     {/* Cities Section - Lazy loaded when user scrolls to bottom */}
                     {citiesData.length > 0 && (
-                        <LazySection rootMargin="300px">
+                        <LazySection minHeight="260px">
                             <div>
                                 <div className="flex items-center justify-between mb-5">
                                     <div>
@@ -82,14 +84,18 @@ const HomePage = () => {
                                     </div>
                                 </div>
                                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                                    {citiesData.map((city) => (
-                                        <CityCard 
-                                            key={city.name}
-                                            city={city.name}
-                                            imageUrl={city.imageUrl}
-                                            roomCount={city.count}
-                                            onClick={() => navigate(`/cities/${encodeURIComponent(city.name)}`)}
-                                        />
+                                    {citiesData.map((city, idx) => (
+                                        <div 
+                                            key={city.name} 
+                                            className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                        >
+                                            <CityCard 
+                                                city={city.name}
+                                                imageUrl={city.imageUrl}
+                                                roomCount={city.count}
+                                                onClick={() => navigate(`/cities/${encodeURIComponent(city.name)}`)}
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             </div>

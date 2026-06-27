@@ -146,7 +146,7 @@ const EarningsPage = () => {
                 {/* Top KPI Summary Metric Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Total Revenue */}
-                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-600 to-cyan-700 p-6 text-white shadow-lg shadow-teal-900/10 border border-teal-500/30">
+                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-600 to-cyan-700 p-6 text-white shadow-lg shadow-teal-900/10 border border-teal-500/30 animate-card-cascade stagger-1">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-teal-100">Total Net Earnings</p>
@@ -162,7 +162,7 @@ const EarningsPage = () => {
                     </div>
 
                     {/* Total Reservations */}
-                    <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+                    <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 animate-card-cascade stagger-2">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Reservations</p>
@@ -178,7 +178,7 @@ const EarningsPage = () => {
                     </div>
 
                     {/* Average Payout */}
-                    <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 sm:col-span-2 lg:col-span-1">
+                    <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 sm:col-span-2 lg:col-span-1 animate-card-cascade stagger-3">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Average Payout</p>
@@ -272,7 +272,7 @@ const EarningsPage = () => {
                         </div>
                     ) : filteredBookings.length > 0 ? (
                         <div className="space-y-3">
-                            {filteredBookings.map((item) => {
+                            {filteredBookings.map((item, idx) => {
                                 const mainImage = Array.isArray(item.roomImages) && item.roomImages.length > 0
                                     ? (typeof item.roomImages[0] === 'string' ? item.roomImages[0] : item.roomImages[0]?.url)
                                     : null;
@@ -284,7 +284,7 @@ const EarningsPage = () => {
                                 return (
                                     <div
                                         key={item._id}
-                                        className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 p-4 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/40 transition-all"
+                                        className={`grid grid-cols-1 md:grid-cols-12 items-center gap-4 p-4 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/40 transition-all animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                     >
                                         {/* Property & Thumbnail */}
                                         <div className="md:col-span-4 flex items-center gap-3.5 min-w-0">

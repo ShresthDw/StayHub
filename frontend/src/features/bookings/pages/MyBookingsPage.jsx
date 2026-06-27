@@ -130,7 +130,7 @@ const MyBookingsPage = () => {
                 ) : filteredBookings.length > 0 ? (
                     /* Compact Bookings List */
                     <div className="grid gap-3 sm:grid-cols-1 lg:grid-cols-2">
-                        {filteredBookings.map((booking) => {
+                        {filteredBookings.map((booking, idx) => {
                             const mainImage = Array.isArray(booking.roomImages) && booking.roomImages.length > 0
                                 ? (typeof booking.roomImages[0] === 'string' ? booking.roomImages[0] : booking.roomImages[0]?.url)
                                 : null;
@@ -141,7 +141,7 @@ const MyBookingsPage = () => {
                             return (
                                 <div
                                     key={booking._id}
-                                    className="group relative flex flex-col sm:flex-row items-stretch bg-white dark:bg-gray-800 rounded-2xl p-3.5 shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all gap-3.5"
+                                    className={`group relative flex flex-col sm:flex-row items-stretch bg-white dark:bg-gray-800 rounded-2xl p-3.5 shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all gap-3.5 animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                 >
                                     {/* Compact Thumbnail */}
                                     <div className="relative w-full sm:w-36 h-32 sm:h-auto shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700">

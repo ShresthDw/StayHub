@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heroTitle: ['"Calendas Plus"', 'Calendas', 'Playfair Display', 'Georgia', 'serif'],
+        heroTitle: ['Satisfy', '"Dancing Script"', 'Courgette', '"Kaushan Script"', 'Caveat', 'cursive'],
         heroSubtitle: ['Plus Jakarta Sans', 'Manrope', 'sans-serif'],
       },
       colors: {

@@ -422,7 +422,7 @@ const AddRoomPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     
                     {/* LEFT COLUMN: Overview, Map Location & Amenities (7 cols on lg) */}
-                    <div className="lg:col-span-7 space-y-6">
+                    <div className="lg:col-span-7 space-y-6 animate-scroll-reveal">
 
                         {/* 1. Property Type & Category */}
                         <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
@@ -648,7 +648,7 @@ const AddRoomPage = () => {
 
 
                     {/* RIGHT COLUMN: Pricing & Capacity + Photos + Publish Actions (5 cols on lg) */}
-                    <div className="lg:col-span-5 space-y-6">
+                    <div className="lg:col-span-5 space-y-6 animate-scroll-reveal">
 
                         {/* 4. Pricing & Capacity */}
                         <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">

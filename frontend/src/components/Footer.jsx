@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { icons } from '../constants.jsx';
 import BrandLogo from './BrandLogo.jsx';
+import useInView from '../hooks/useInView.js';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
+    const [footerRef, isInView] = useInView({ rootMargin: '0px 0px -20px 0px', threshold: 0.01, triggerOnce: true });
 
     return (
-        <footer className="bg-gray-900 dark:bg-gray-950 text-gray-200 mt-16">
+        <footer ref={footerRef} className={`bg-gray-900 dark:bg-gray-950 text-gray-200 mt-16 transition-opacity ${isInView ? 'animate-scroll-reveal' : 'opacity-0'}`}>
             {/* Main Footer Content */}
             <div className="max-w-7xl mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">

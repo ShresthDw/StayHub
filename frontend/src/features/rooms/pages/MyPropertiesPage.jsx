@@ -157,12 +157,12 @@ const MyPropertiesPage = () => {
                     {/* Properties List Rows */}
                     {filteredRooms.length > 0 ? (
                         <div className="space-y-3">
-                            {filteredRooms.map((room) => {
+                            {filteredRooms.map((room, idx) => {
                                 const isActive = room.isActive !== false;
                                 return (
                                     <div
                                         key={room._id}
-                                        className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group"
+                                        className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                     >
                                         {/* Thumbnail with LIVE / DRAFT Badge */}
                                         <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">

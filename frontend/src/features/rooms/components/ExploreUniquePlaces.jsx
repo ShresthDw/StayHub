@@ -102,8 +102,8 @@ const ExploreUniquePlaces = ({ icons, onRoomClick }) => {
                     ref={scrollRef}
                     className="flex w-full min-w-0 gap-5 overflow-x-auto pb-4 no-scrollbar scroll-smooth snap-x"
                 >
-                    {rooms.map((room) => (
-                        <div key={room._id} className="w-56 flex-shrink-0 snap-start">
+                    {rooms.map((room, idx) => (
+                        <div key={room._id} className={`w-56 flex-shrink-0 snap-start animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
                             <RoomCard room={room} icons={icons} compact onClick={() => onRoomClick?.(room)} />
                         </div>
                     ))}

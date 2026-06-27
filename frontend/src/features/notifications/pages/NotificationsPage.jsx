@@ -267,13 +267,13 @@ const NotificationsPage = () => {
                 </div>
             ) : filteredNotifications.length > 0 ? (
                 <div className="space-y-3.5">
-                    {filteredNotifications.map((item) => {
+                    {filteredNotifications.map((item, idx) => {
                         const typeInfo = getTypeDetails(item.type);
                         return (
                             <div
                                 key={item._id}
                                 onClick={() => handleItemClick(item)}
-                                className={`relative group p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer border-l-4 ${typeInfo.borderClass} ${
+                                className={`relative group p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer border-l-4 ${typeInfo.borderClass} animate-card-cascade stagger-${Math.min(idx + 1, 8)} ${
                                     item.isRead
                                         ? 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700/80 shadow-sm hover:shadow-md'
                                         : 'bg-teal-50/40 dark:bg-teal-950/20 border-teal-100 dark:border-teal-900/40 shadow-sm hover:shadow-md'

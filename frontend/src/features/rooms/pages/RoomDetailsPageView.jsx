@@ -471,7 +471,7 @@ const RoomDetailsPageView = () => {
                 <BackButton fallback="/" className="mb-2.5" />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <section className="lg:col-span-2 space-y-4">
-                        <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                        <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 animate-scroll-reveal">
                             
                             {/* Gallery Section */}
                             <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3 bg-gray-900/10 dark:bg-gray-950/40 p-2 rounded-2xl">
@@ -537,7 +537,7 @@ const RoomDetailsPageView = () => {
                             </div>
                         </div>
 
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3">
+                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3 animate-scroll-reveal">
                             <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
                                 <div>
                                     <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Property Type</p>
@@ -586,17 +586,17 @@ const RoomDetailsPageView = () => {
                             </div>
                         </section>
 
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6">
+                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6 animate-scroll-reveal">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Reviews</h2>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Recent guest feedback from similar bookings.</p>
 
                             {/* Actual User Reviews List */}
                             <div className="mt-5 space-y-4">
-                                {reviews.map((review) => {
+                                {reviews.map((review, idx) => {
                                     const reviewKey = review._id || review.name;
                                     const avatarUrl = review.guestAvatar || `https://i.pravatar.cc/100?img=${Math.floor(Math.random() * 70)}`;
                                     return (
-                                        <article key={reviewKey} className="flex gap-4 rounded-xl bg-gray-50 dark:bg-gray-700/60 p-4">
+                                        <article key={reviewKey} className={`flex gap-4 rounded-xl bg-gray-50 dark:bg-gray-700/60 p-4 animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
                                             <img src={avatarUrl} alt={review.guestName || review.name} className="h-12 w-12 rounded-full object-cover" />
                                             <div className="flex-1">
                                                 <div className="flex items-center justify-between gap-3">
@@ -689,7 +689,7 @@ const RoomDetailsPageView = () => {
                         </section>
                     </section>
 
-                    <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
+                    <aside className="space-y-4 lg:sticky lg:top-24 h-fit animate-scroll-reveal">
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 space-y-4">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Starting from</p>
@@ -748,7 +748,7 @@ const RoomDetailsPageView = () => {
 
             {/* Location Section */}
             {room.location?.coordinates?.length === 2 && (
-                <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+                <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 animate-scroll-reveal">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
                             <div>
