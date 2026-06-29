@@ -449,7 +449,15 @@ export const submitReview = async (req, res) => {
 export const checkUserReviewStatus = async (req, res) => {
     try {
         const { roomId } = req.params;
-        const guestId = req.user.id;
+        const guestId = req.user?.id;
+
+        if (!guestId) {
+            return res.status(200).json({
+                canReview: false,
+                hasReviewed: false,
+                booking: null
+            });
+        }
 
         // Check if user has a booking for this room
         const booking = await Booking.findOne({
@@ -481,7 +489,7 @@ export const checkUserReviewStatus = async (req, res) => {
         });
 
     } catch (err) {
-        console.error('ERROR in GET /api/bookings/reviews/status/:roomId:', err);
+        console.error('ERROR in GET review status:', err);
         res.status(500).json({ msg: 'Failed to check review status' });
     }
 };
