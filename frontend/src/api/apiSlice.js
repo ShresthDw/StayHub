@@ -37,7 +37,9 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
                 (Array.isArray(error.data.errors) ? error.data.errors[0]?.msg : '');
         }
 
-        if (!normalizedMessage && error.status) {
+        if (!normalizedMessage && error.status === 429) {
+            normalizedMessage = 'Too many requests. Please wait a moment before trying again.';
+        } else if (!normalizedMessage && error.status) {
             normalizedMessage = `Request failed (${error.status})`;
         }
 
@@ -69,7 +71,8 @@ export const apiSlice = createApi({
         'Cities',
         'Config',
         'Address',
-        'Notifications'
+        'Notifications',
+        'Health'
     ],
     endpoints: (builder) => ({
         // AUTH ENDPOINTS
@@ -155,7 +158,7 @@ export const apiSlice = createApi({
                 return { url: '/rooms', params };
             },
             transformResponse: (response) => ({
-                rooms: response.rooms || response,
+                rooms: response.rooms || response || [],
                 pagination: response.pagination || null
             }),
             providesTags: (result) => result?.rooms?.length > 0 ? [{ type: 'Rooms', id: 'LIST' }, ...result.rooms.map(room => ({ type: 'Room', id: room._id }))] : [{ type: 'Rooms', id: 'LIST' }],
@@ -164,12 +167,15 @@ export const apiSlice = createApi({
                 return cacheKey;
             },
             merge: (currentCache, newItems, { arg }) => {
+                const newRooms = Array.isArray(newItems?.rooms) ? newItems.rooms : [];
                 if (arg.page === 1) {
-                    currentCache.rooms = newItems.rooms;
-                } else {
-                    currentCache.rooms.push(...newItems.rooms);
+                    currentCache.rooms = newRooms;
+                } else if (newRooms.length > 0) {
+                    const existingIds = new Set((currentCache.rooms || []).map(r => r._id));
+                    const uniqueRooms = newRooms.filter(r => !existingIds.has(r._id));
+                    currentCache.rooms = [...(currentCache.rooms || []), ...uniqueRooms];
                 }
-                currentCache.pagination = newItems.pagination;
+                currentCache.pagination = newItems.pagination || currentCache.pagination;
             },
             forceRefetch: ({ currentArg, previousArg }) => currentArg?.page !== previousArg?.page,
             keepUnusedDataFor: 60
@@ -194,7 +200,7 @@ export const apiSlice = createApi({
                 return { url: '/rooms', params };
             },
             transformResponse: (response) => ({
-                rooms: response.rooms || response,
+                rooms: response.rooms || response || [],
                 pagination: response.pagination || null
             }),
             providesTags: (result, error, arg) => result?.rooms?.length > 0 ? [{ type: 'Rooms', id: `TYPE_${arg.propertyType}` }, ...result.rooms.map(room => ({ type: 'Room', id: room._id }))] : [{ type: 'Rooms', id: `TYPE_${arg.propertyType}` }],
@@ -203,12 +209,15 @@ export const apiSlice = createApi({
                 return cacheKey;
             },
             merge: (currentCache, newItems, { arg }) => {
+                const newRooms = Array.isArray(newItems?.rooms) ? newItems.rooms : [];
                 if (arg.page === 1) {
-                    currentCache.rooms = newItems.rooms;
-                } else {
-                    currentCache.rooms.push(...newItems.rooms);
+                    currentCache.rooms = newRooms;
+                } else if (newRooms.length > 0) {
+                    const existingIds = new Set((currentCache.rooms || []).map(r => r._id));
+                    const uniqueRooms = newRooms.filter(r => !existingIds.has(r._id));
+                    currentCache.rooms = [...(currentCache.rooms || []), ...uniqueRooms];
                 }
-                currentCache.pagination = newItems.pagination;
+                currentCache.pagination = newItems.pagination || currentCache.pagination;
             },
             forceRefetch: ({ currentArg, previousArg }) => currentArg?.page !== previousArg?.page,
             keepUnusedDataFor: 60
@@ -430,6 +439,12 @@ export const apiSlice = createApi({
         getAppConfig: builder.query({
             query: () => '/config',
             providesTags: ['Config']
+        }),
+
+        // ============= HEALTH ENDPOINTS =============
+        getHealth: builder.query({
+            query: () => '/health',
+            providesTags: ['Health']
         })
     })
 });
@@ -476,6 +491,7 @@ export const {
     useToggleWishlistMutation,
     // Address
     useReverseGeocodeAddressQuery,
-    // Config
-    useGetAppConfigQuery
+    // Config & Health
+    useGetAppConfigQuery,
+    useGetHealthQuery
 } = apiSlice;

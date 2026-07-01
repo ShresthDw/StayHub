@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetPublicRoomsByTypeQuery } from '../../../api/apiSlice.js';
-import { incrementCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
+import { incrementCategoryPage, resetCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
 import RoomCard from '../../../components/RoomCard.jsx';
 
 const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
@@ -12,9 +12,12 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
     const scrollRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
+    const requestingPageRef = useRef(1);
 
-    const page = categoryPagination[propertyType]?.page || 1;
-    const { data, isFetching, isLoading } = useGetPublicRoomsByTypeQuery({
+    const catPagination = categoryPagination[propertyType] || { page: 1, hasMore: true };
+    const page = catPagination.page || 1;
+
+    const { data, isFetching, isLoading, isError } = useGetPublicRoomsByTypeQuery({
         propertyType,
         filters,
         searchLocation,
@@ -25,14 +28,31 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
 
     const rooms = data?.rooms || [];
 
+    // Reset pagination back to page 1 whenever search filters or dates change
     useEffect(() => {
-        if (data?.pagination) {
+        dispatch(resetCategoryPage(propertyType));
+        requestingPageRef.current = 1;
+    }, [filters, searchLocation, checkInDate, checkOutDate, propertyType, dispatch]);
+
+    // Sync hasMore state from pagination response or cease requests on error
+    useEffect(() => {
+        if (isError) {
+            // Stop pagination requests on error (e.g. rate limit 429) to prevent infinite loops
             dispatch(setCategoryHasMore({
                 category: propertyType,
-                hasMore: data.pagination.page < data.pagination.pages
+                hasMore: false
+            }));
+            return;
+        }
+
+        if (data?.pagination) {
+            const hasMore = data.pagination.page < data.pagination.pages;
+            dispatch(setCategoryHasMore({
+                category: propertyType,
+                hasMore
             }));
         }
-    }, [data, propertyType, dispatch]);
+    }, [data, isError, propertyType, dispatch]);
 
     const updateScrollControls = useCallback(() => {
         const section = scrollRef.current;
@@ -53,21 +73,46 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
         const section = scrollRef.current;
         if (!section) return;
 
+        let scrollTimeout;
         const handleScroll = () => {
             updateScrollControls();
-            const { scrollLeft, scrollWidth, clientWidth } = section;
-            const distanceFromEnd = scrollWidth - (scrollLeft + clientWidth);
-            const catPagination = categoryPagination[propertyType];
-            if (distanceFromEnd < 200 && catPagination?.hasMore && !isFetching) {
-                dispatch(incrementCategoryPage(propertyType));
-            }
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (!section) return;
+                const { scrollLeft, scrollWidth, clientWidth } = section;
+                // Only paginate if user actually scrolled and container has scrollable content
+                if (scrollLeft <= 10 || scrollWidth <= clientWidth) return;
+
+                const distanceFromEnd = scrollWidth - (scrollLeft + clientWidth);
+                const currentCat = categoryPagination[propertyType];
+                
+                if (
+                    distanceFromEnd < 150 &&
+                    currentCat?.hasMore &&
+                    !isFetching &&
+                    !isError &&
+                    requestingPageRef.current === page
+                ) {
+                    requestingPageRef.current = page + 1;
+                    dispatch(incrementCategoryPage(propertyType));
+                }
+            }, 120);
         };
 
         section.addEventListener('scroll', handleScroll, { passive: true });
         updateScrollControls();
 
-        return () => section.removeEventListener('scroll', handleScroll);
-    }, [categoryPagination, propertyType, isFetching, dispatch, updateScrollControls]);
+        return () => {
+            clearTimeout(scrollTimeout);
+            section.removeEventListener('scroll', handleScroll);
+        };
+    }, [categoryPagination, propertyType, isFetching, isError, page, dispatch, updateScrollControls]);
+
+    // Keep requestingPageRef aligned with current page
+    useEffect(() => {
+        requestingPageRef.current = page;
+    }, [page]);
 
     useEffect(() => {
         updateScrollControls();

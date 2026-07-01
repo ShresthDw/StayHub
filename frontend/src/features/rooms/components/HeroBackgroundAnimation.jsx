@@ -125,14 +125,6 @@ const HeroBackgroundAnimation = () => {
             {/* Interactive Particle Canvas */}
             <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-            {/* Drifting Clouds / Atmospheric Mist Animation */}
-            <div className="absolute top-0 left-0 w-[200%] h-32 opacity-20 bg-repeat-x animate-drift-slow"
-                style={{
-                    backgroundImage: `radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 70%)`,
-                    backgroundSize: '400px 100px'
-                }}
-            />
-
             {/* Slide Indicator Dots on bottom right */}
             <div className="absolute bottom-4 right-8 z-20 flex items-center gap-1.5 opacity-75">
                 {HERO_SLIDES.map((_, idx) => (

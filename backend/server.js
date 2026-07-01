@@ -12,8 +12,10 @@ import roomRoutes     from './features/rooms/routes.js';
 import bookingRoutes  from './features/bookings/routes.js';
 import addressRoutes  from './features/address/routes.js';
 import notificationRoutes from './features/notifications/routes.js';
-import { connectDB }  from './config/database.js';
-import { initSocket } from './config/socket.js';
+import healthRoutes       from './features/health/routes.js';
+import { connectDB }      from './config/database.js';
+import { initSocket }     from './config/socket.js';
+import { initKeepAlive }  from './services/keepAliveService.js';
 
 if (!process.env.GEOAPIFY_API_KEY) {
     console.warn('WARNING: GEOAPIFY_API_KEY is not defined. Distance/search features will not work.');
@@ -70,7 +72,13 @@ const authLimiter = rateLimit({
 });
 
 
-app.get('/', (req, res) => res.send('StayHub API Running'));
+app.get('/', (req, res) => res.json({ 
+    message: 'StayHub API is Running',
+    health: '/api/health',
+    status: 'online'
+}));
+app.use('/health', healthRoutes);
+app.use('/api/health', healthRoutes);
 app.use('/api/auth',  authLimiter, authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -92,7 +100,10 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
     try {
         await connectDB();
-        httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        httpServer.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+            initKeepAlive();
+        });
     } catch (error) {
         console.error('Failed to start server:', error.message);
         process.exit(1);
