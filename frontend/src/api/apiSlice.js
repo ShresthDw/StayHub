@@ -268,6 +268,11 @@ export const apiSlice = createApi({
             providesTags: ['Cities']
         }),
 
+        getHomeFeed: builder.query({
+            query: () => '/rooms/home-feed',
+            providesTags: ['Rooms', 'Cities']
+        }),
+
         getRoomsByCity: builder.query({
             query: ({ cityName, checkInDate, checkOutDate }) => ({
                 url: '/rooms',
@@ -466,6 +471,7 @@ export const {
     useDeleteRoomMutation,
     useGetCitiesQuery,
     useGetRoomsByCityQuery,
+    useGetHomeFeedQuery,
     // Bookings
     useCreateRazorpayOrderMutation,
     useVerifyRazorpayPaymentMutation,

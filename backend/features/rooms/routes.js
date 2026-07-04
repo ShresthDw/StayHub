@@ -1,13 +1,14 @@
 // features/rooms/routes.js
 import express from 'express';
 import mockAuth from '../../middleware/auth.js';
-import { getRooms, getRoomById, getMyRooms, addRoom, editRoom, deleteRoom, getCities } from './roomController.js';
+import { getRooms, getRoomById, getMyRooms, addRoom, editRoom, deleteRoom, getCities, getHomeFeed } from './roomController.js';
 import { submitReview, checkUserReviewStatus } from '../bookings/bookingController.js';
 
 const router = express.Router();
 
 // Public routes
 router.get('/', getRooms);
+router.get('/home-feed', getHomeFeed);    // Ultra-fast home page feed
 router.get('/cities/list', getCities);  // Must come before /:id
 router.get('/mine', mockAuth, getMyRooms);  // Must come before /:id
 

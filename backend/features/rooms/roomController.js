@@ -2,36 +2,43 @@
 import Room from '../../models/Room.js';
 import Booking from '../../models/Booking.js';
 
+// In-memory cache for home feed (TTL: 45s)
+let homeFeedCache = null;
+let homeFeedCacheTime = 0;
+const CACHE_TTL_MS = 45 * 1000;
+
+export const invalidateHomeFeedCache = () => {
+    homeFeedCache = null;
+    homeFeedCacheTime = 0;
+};
+
 // Helper function to check if a room is available for a date range
 const isRoomAvailable = async (roomId, checkInDate, checkOutDate) => {
     try {
-        // Parse dates (format: YYYY-MM-DD)
         const checkIn = new Date(checkInDate);
         const checkOut = new Date(checkOutDate);
 
-        // Find confirmed bookings that overlap with the requested date range
         const conflictingBooking = await Booking.findOne({
             roomId,
             status: 'confirmed',
             $expr: {
                 $not: {
                     $or: [
-                        { $lt: [new Date('$checkOutDate'), checkIn] },  // Booking ends before check-in
-                        { $gte: [new Date('$checkInDate'), checkOut] }   // Booking starts on or after check-out
+                        { $lt: [new Date('$checkOutDate'), checkIn] },
+                        { $gte: [new Date('$checkInDate'), checkOut] }
                     ]
                 }
             }
         });
 
-        return !conflictingBooking;  // Room is available if no conflicting booking
+        return !conflictingBooking;
     } catch (err) {
         console.error('Error checking room availability:', err);
-        return true;  // Return true (available) if error occurs
+        return true;
     }
 };
 
 // GET /api/rooms
-
 export const getRooms = async (req, res) => {
     const { page = 1, limit = 10, lat, lng, maxDistance, propertyType, amenities, isActive, hostId, checkInDate, checkOutDate, city } = req.query;
 
@@ -40,25 +47,22 @@ export const getRooms = async (req, res) => {
     if (propertyType) query.propertyType = propertyType;
     if (amenities) query.amenities = { $all: amenities.split(',') };
     if (hostId) query.hostId = hostId;
-    if (city) query['address.city'] = { $regex: city, $options: 'i' };  // Case-insensitive city search
+    if (city) query['address.city'] = { $regex: city, $options: 'i' };
 
     try {
         const pageNum = Math.max(1, parseInt(page) || 1);
-        const pageSize = Math.min(100, Math.max(1, parseInt(limit) || 20)); // Cap at 100
+        const pageSize = Math.min(100, Math.max(1, parseInt(limit) || 20));
         const skip = (pageNum - 1) * pageSize;
 
-        // OPTIMIZATION 1: Use field projection to select only needed fields for list view
         const projectionFields = 'title propertyType address location images pricePerNight rating reviewCount maxGuests hostId';
         
-        // If no location filter, apply pagination at database level
         if (!lat || !lng || !maxDistance) {
-            // Build and execute query with pagination at database level
             let dbQuery = Room.find(query)
                 .select(projectionFields)
                 .populate('hostId', 'name email phone avatar')
                 .limit(pageSize)
                 .skip(skip)
-                .lean(); // OPTIMIZATION 2: Use .lean() for read operations (15-20% faster)
+                .lean();
             
             const [rooms, total] = await Promise.all([
                 dbQuery,
@@ -66,7 +70,6 @@ export const getRooms = async (req, res) => {
             ]);
             let allRooms = rooms;
 
-            // Filter by date availability if both dates provided
             if (checkInDate && checkOutDate) {
                 const availableRooms = [];
                 for (const room of allRooms) {
@@ -146,8 +149,7 @@ export const getRooms = async (req, res) => {
     }
 };
 
-// GET /api/rooms/:id
-
+// POST /api/rooms/add
 export const addRoom = async (req, res) => {
     if (req.user.role !== 'owner') {
         return res.status(403).json({ msg: 'Only owners can add rooms' });
@@ -163,13 +165,10 @@ export const addRoom = async (req, res) => {
             return res.status(400).json({ msg: 'Missing required fields: title, description, pricePerNight, propertyType' });
         }
 
-        // Get coordinates from either location field or latitude/longitude
         let locationData;
         if (location && location.coordinates && Array.isArray(location.coordinates) && location.coordinates.length === 2) {
-            // Use provided location (GeoJSON format)
             locationData = location;
         } else if (typeof latitude === 'number' && typeof longitude === 'number') {
-            // Create location from latitude/longitude
             locationData = { type: 'Point', coordinates: [longitude, latitude] };
         } else {
             return res.status(400).json({ msg: 'Valid coordinates are required (either location or latitude/longitude)' });
@@ -199,10 +198,10 @@ export const addRoom = async (req, res) => {
         });
 
         await room.save();
+        invalidateHomeFeedCache();
         res.status(201).json({ msg: 'Room added', room });
 
     } catch (err) {
-        // Surface Mongoose validation errors clearly
         if (err.name === 'ValidationError') {
             const messages = Object.values(err.errors).map(e => e.message);
             return res.status(400).json({ msg: messages.join('; ') });
@@ -213,7 +212,6 @@ export const addRoom = async (req, res) => {
 };
 
 // PUT /api/rooms/edit/:id
-
 export const editRoom = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
@@ -221,14 +219,12 @@ export const editRoom = async (req, res) => {
             return res.status(404).json({ msg: 'Room not found' });
         }
         
-        // Ownership check: compare stringified ObjectIds from DB — no header trust
         if (String(room.hostId) !== String(req.user.id)) {
             return res.status(403).json({ msg: 'Not authorized to edit this room' });
         }
 
         const { title, description, pricePerNight, address, latitude, longitude, maxGuests, bedrooms, beds, bathrooms, images, propertyType, roomType, amenities, availabilityType, isActive } = req.body;
 
-        // Build update object — only include fields that were actually sent
         const update = {};
         if (title !== undefined) update.title = title;
         if (description !== undefined) update.description = description;
@@ -245,7 +241,6 @@ export const editRoom = async (req, res) => {
         if (availabilityType !== undefined) update.availabilityType = availabilityType;
         if (isActive !== undefined) update.isActive = isActive;
 
-        // Only update location if both coordinates are provided
         if (latitude !== undefined && longitude !== undefined) {
             update.location = { type: 'Point', coordinates: [longitude, latitude] };
         }
@@ -253,9 +248,10 @@ export const editRoom = async (req, res) => {
         const updatedRoom = await Room.findByIdAndUpdate(
             req.params.id,
             { $set: update },
-            { new: true, runValidators: true } // runValidators ensures schema validators fire on update
+            { new: true, runValidators: true }
         );
 
+        invalidateHomeFeedCache();
         res.status(200).json({ msg: 'Room updated', room: updatedRoom });
 
     } catch (err) {
@@ -269,7 +265,6 @@ export const editRoom = async (req, res) => {
 };
 
 // DELETE /api/rooms/delete/:id
-
 export const deleteRoom = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
@@ -281,6 +276,7 @@ export const deleteRoom = async (req, res) => {
         }
 
         await Room.findByIdAndDelete(req.params.id);
+        invalidateHomeFeedCache();
         res.status(200).json({ msg: 'Room deleted' });
 
     } catch (err) {
@@ -289,9 +285,7 @@ export const deleteRoom = async (req, res) => {
     }
 };
 
-
 // GET /api/rooms/:id
-
 export const getRoomById = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id)
@@ -311,7 +305,6 @@ export const getRoomById = async (req, res) => {
 };
 
 // GET /api/rooms/mine
-
 export const getMyRooms = async (req, res) => {
     try {
         const rooms = await Room.find({ hostId: req.user.id })
@@ -327,7 +320,6 @@ export const getMyRooms = async (req, res) => {
 };
 
 // GET /api/rooms/cities/list
-
 export const getCities = async (req, res) => {
     try {
         const cities = await Room.aggregate([
@@ -365,5 +357,87 @@ export const getCities = async (req, res) => {
     } catch (err) {
         console.error('ERROR in GET /api/rooms/cities/list:', err);
         res.status(500).json({ message: 'Failed to fetch cities' });
+    }
+};
+
+// GET /api/rooms/home-feed - Ultra-fast consolidated feed endpoint
+export const getHomeFeed = async (req, res) => {
+    const now = Date.now();
+    if (homeFeedCache && (now - homeFeedCacheTime < CACHE_TTL_MS)) {
+        res.setHeader('X-Cache', 'HIT');
+        res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+        return res.status(200).json(homeFeedCache);
+    }
+
+    try {
+        const projectionFields = 'title propertyType address location images pricePerNight rating reviewCount maxGuests hostId';
+        const PROPERTY_TYPES = ["apartment", "house", "villa", "hotel", "resort", "cottage", "hostel"];
+
+        const [featured, categoryResults, cities] = await Promise.all([
+            // Featured listings (limit 6)
+            Room.find({ isActive: true })
+                .select(projectionFields)
+                .populate('hostId', 'name avatar')
+                .sort({ rating: -1, createdAt: -1 })
+                .limit(6)
+                .lean(),
+
+            // Top rooms per property type in parallel
+            Promise.all(
+                PROPERTY_TYPES.map(async (type) => {
+                    const rooms = await Room.find({ isActive: true, propertyType: type })
+                        .select(projectionFields)
+                        .populate('hostId', 'name avatar')
+                        .limit(8)
+                        .lean();
+                    return { type, rooms };
+                })
+            ),
+
+            // Top cities
+            Room.aggregate([
+                { $match: { isActive: true } },
+                {
+                    $group: {
+                        _id: '$address.city',
+                        count: { $sum: 1 },
+                        firstImage: { $first: '$images' }
+                    }
+                },
+                { $match: { _id: { $ne: null } } },
+                { $sort: { count: -1 } },
+                { $limit: 8 }
+            ])
+        ]);
+
+        const categories = {};
+        categoryResults.forEach(item => {
+            categories[item.type] = item.rooms;
+        });
+
+        const formattedCities = cities.map(city => ({
+            name: city._id,
+            count: city.count,
+            imageUrl: city.firstImage && city.firstImage.length > 0 
+                ? city.firstImage[0].url 
+                : `https://placehold.co/400x300?text=${encodeURIComponent(city._id)}`
+        }));
+
+        const result = {
+            featured,
+            categories,
+            cities: formattedCities
+        };
+
+        homeFeedCache = result;
+        homeFeedCacheTime = Date.now();
+
+        res.setHeader('X-Cache', 'MISS');
+        res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error('ERROR in GET /api/rooms/home-feed:', err);
+        res.status(500).json({ message: 'Failed to fetch home feed' });
     }
 };

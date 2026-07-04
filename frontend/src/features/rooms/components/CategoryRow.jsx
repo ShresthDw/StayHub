@@ -4,7 +4,7 @@ import { useGetPublicRoomsByTypeQuery } from '../../../api/apiSlice.js';
 import { incrementCategoryPage, resetCategoryPage, setCategoryHasMore } from '../../../store/roomsSlice.js';
 import RoomCard from '../../../components/RoomCard.jsx';
 
-const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
+const CategoryRow = ({ propertyType, icons, onRoomClick, initialRooms = null }) => {
     const dispatch = useDispatch();
     const { categoryPagination } = useSelector((state) => state.rooms);
     const { filters, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
@@ -17,6 +17,19 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
     const catPagination = categoryPagination[propertyType] || { page: 1, hasMore: true };
     const page = catPagination.page || 1;
 
+    // Check if custom filters/search are active
+    const hasCustomFilters = Boolean(
+        filters.propertyType ||
+        (filters.amenities && filters.amenities.length > 0) ||
+        searchLocation?.lat ||
+        searchLocation?.address ||
+        checkInDate ||
+        checkOutDate
+    );
+
+    // Skip individual category query if we already received initial feed data for page 1
+    const canUseInitialData = Boolean(initialRooms && initialRooms.length > 0 && page === 1 && !hasCustomFilters);
+
     const { data, isFetching, isLoading, isError } = useGetPublicRoomsByTypeQuery({
         propertyType,
         filters,
@@ -24,9 +37,11 @@ const CategoryRow = ({ propertyType, icons, onRoomClick }) => {
         checkInDate,
         checkOutDate,
         page
+    }, {
+        skip: canUseInitialData
     });
 
-    const rooms = data?.rooms || [];
+    const rooms = canUseInitialData ? initialRooms : (data?.rooms || []);
 
     // Reset pagination back to page 1 whenever search filters or dates change
     useEffect(() => {

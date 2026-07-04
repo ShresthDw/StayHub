@@ -3,11 +3,22 @@ import { useSelector } from 'react-redux';
 import { useGetPublicRoomsQuery } from '../../../api/apiSlice.js';
 import RoomCard from '../../../components/RoomCard.jsx';
 
-const ExploreUniquePlaces = ({ icons, onRoomClick }) => {
+const ExploreUniquePlaces = ({ icons, onRoomClick, initialRooms = null }) => {
     const { filters, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
     const scrollRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const hasCustomFilters = Boolean(
+        filters.propertyType ||
+        (filters.amenities && filters.amenities.length > 0) ||
+        searchLocation?.lat ||
+        searchLocation?.address ||
+        checkInDate ||
+        checkOutDate
+    );
+
+    const canUseInitialData = Boolean(initialRooms && initialRooms.length > 0 && !hasCustomFilters);
 
     const { data, isLoading } = useGetPublicRoomsQuery({
         filters,
@@ -15,9 +26,11 @@ const ExploreUniquePlaces = ({ icons, onRoomClick }) => {
         checkInDate,
         checkOutDate,
         page: 1
+    }, {
+        skip: canUseInitialData
     });
 
-    const rooms = data?.rooms || [];
+    const rooms = canUseInitialData ? initialRooms : (data?.rooms || []);
 
     const updateScrollControls = useCallback(() => {
         const section = scrollRef.current;

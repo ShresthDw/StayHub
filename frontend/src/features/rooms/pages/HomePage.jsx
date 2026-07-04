@@ -7,16 +7,34 @@ import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
 import HeroSearchBar from '../components/HeroSearchBar.jsx';
 import CategoryRow from '../components/CategoryRow.jsx';
 import ExploreUniquePlaces from '../components/ExploreUniquePlaces.jsx';
-import { useGetCitiesQuery } from '../../../api/apiSlice.js';
+import { useGetHomeFeedQuery, useGetCitiesQuery } from '../../../api/apiSlice.js';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { filters } = useSelector((state) => state.app);
+    const { filters, checkInDate, checkOutDate, searchLocation } = useSelector((state) => state.app);
 
     const handleRoomClick = (room) => navigate(`/rooms/${room._id}`);
 
-    // Fetch cities data for quick destination chips & city exploration
-    const { data: citiesData = [] } = useGetCitiesQuery();
+    const hasActiveFilters = Boolean(
+        filters.propertyType ||
+        (filters.amenities && filters.amenities.length > 0) ||
+        searchLocation?.lat ||
+        searchLocation?.address ||
+        checkInDate ||
+        checkOutDate
+    );
+
+    // Fetch consolidated home feed in a single ultra-fast network request
+    const { data: homeFeed } = useGetHomeFeedQuery(undefined, {
+        skip: hasActiveFilters
+    });
+
+    // Fallback cities query if homeFeed is skipped due to active filters
+    const { data: fallbackCities = [] } = useGetCitiesQuery(undefined, {
+        skip: !hasActiveFilters && Boolean(homeFeed?.cities?.length)
+    });
+
+    const citiesData = homeFeed?.cities || fallbackCities || [];
 
     return (
         <main className="w-full">
@@ -46,6 +64,7 @@ const HomePage = () => {
                             propertyType={filters.propertyType}
                             icons={icons}
                             onRoomClick={handleRoomClick}
+                            initialRooms={homeFeed?.categories?.[filters.propertyType]}
                         />
                     ) : (
                         <>
@@ -53,9 +72,10 @@ const HomePage = () => {
                             <ExploreUniquePlaces
                                 icons={icons}
                                 onRoomClick={handleRoomClick}
+                                initialRooms={homeFeed?.featured}
                             />
 
-                            {/* All Property Types Loaded Concurrently */}
+                            {/* All Property Types Loaded Instantly via Home Feed */}
                             <div className="space-y-12">
                                 {PROPERTY_TYPES.map((propertyType) => (
                                     <CategoryRow
@@ -63,6 +83,7 @@ const HomePage = () => {
                                         propertyType={propertyType}
                                         icons={icons}
                                         onRoomClick={handleRoomClick}
+                                        initialRooms={homeFeed?.categories?.[propertyType]}
                                     />
                                 ))}
                             </div>
