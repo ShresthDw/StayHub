@@ -5,7 +5,6 @@ import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
 import CityCard from '../../../components/CityCard.jsx';
 import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
 import HeroSearchBar from '../components/HeroSearchBar.jsx';
-import LazySection from '../../../components/LazySection.jsx';
 import CategoryRow from '../components/CategoryRow.jsx';
 import ExploreUniquePlaces from '../components/ExploreUniquePlaces.jsx';
 import { useGetCitiesQuery } from '../../../api/apiSlice.js';
@@ -51,55 +50,50 @@ const HomePage = () => {
                     ) : (
                         <>
                             {/* Explore Unique Places to Stay (Featured Section) */}
-                            <LazySection minHeight="240px">
-                                <ExploreUniquePlaces
-                                    icons={icons}
-                                    onRoomClick={handleRoomClick}
-                                />
-                            </LazySection>
+                            <ExploreUniquePlaces
+                                icons={icons}
+                                onRoomClick={handleRoomClick}
+                            />
 
-                            {/* All Property Types Lazy-Loaded by Viewport */}
+                            {/* All Property Types Loaded Concurrently */}
                             <div className="space-y-12">
                                 {PROPERTY_TYPES.map((propertyType) => (
-                                    <LazySection key={propertyType} minHeight="240px">
-                                        <CategoryRow
-                                            propertyType={propertyType}
-                                            icons={icons}
-                                            onRoomClick={handleRoomClick}
-                                        />
-                                    </LazySection>
+                                    <CategoryRow
+                                        key={propertyType}
+                                        propertyType={propertyType}
+                                        icons={icons}
+                                        onRoomClick={handleRoomClick}
+                                    />
                                 ))}
                             </div>
                         </>
                     )}
 
-                    {/* Cities Section - Lazy loaded when user scrolls to bottom */}
+                    {/* Cities Section */}
                     {citiesData.length > 0 && (
-                        <LazySection minHeight="260px">
-                            <div>
-                                <div className="flex items-center justify-between mb-5">
-                                    <div>
-                                        <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Explore by Cities</h2>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Discover properties in popular cities</p>
-                                    </div>
-                                </div>
-                                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                                    {citiesData.map((city, idx) => (
-                                        <div 
-                                            key={city.name} 
-                                            className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
-                                        >
-                                            <CityCard 
-                                                city={city.name}
-                                                imageUrl={city.imageUrl}
-                                                roomCount={city.count}
-                                                onClick={() => navigate(`/cities/${encodeURIComponent(city.name)}`)}
-                                            />
-                                        </div>
-                                    ))}
+                        <div>
+                            <div className="flex items-center justify-between mb-5">
+                                <div>
+                                    <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Explore by Cities</h2>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Discover properties in popular cities</p>
                                 </div>
                             </div>
-                        </LazySection>
+                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                                {citiesData.map((city, idx) => (
+                                    <div 
+                                        key={city.name} 
+                                        className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                    >
+                                        <CityCard 
+                                            city={city.name}
+                                            imageUrl={city.imageUrl}
+                                            roomCount={city.count}
+                                            onClick={() => navigate(`/cities/${encodeURIComponent(city.name)}`)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
