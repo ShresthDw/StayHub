@@ -1,21 +1,21 @@
 import http from 'http';
 import dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
 
-import express        from 'express';
-import cors           from 'cors';
-import compression    from 'compression';
-import cookieParser   from 'cookie-parser';
-import rateLimit      from 'express-rate-limit';
-import authRoutes     from './features/auth/routes.js';
-import roomRoutes     from './features/rooms/routes.js';
-import bookingRoutes  from './features/bookings/routes.js';
-import addressRoutes  from './features/address/routes.js';
+import express from 'express';
+import cors from 'cors';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
+import authRoutes from './features/auth/routes.js';
+import roomRoutes from './features/rooms/routes.js';
+import bookingRoutes from './features/bookings/routes.js';
+import addressRoutes from './features/address/routes.js';
 import notificationRoutes from './features/notifications/routes.js';
-import healthRoutes       from './features/health/routes.js';
-import { connectDB }      from './config/database.js';
-import { initSocket }     from './config/socket.js';
-import { initKeepAlive }  from './services/keepAliveService.js';
+import healthRoutes from './features/health/routes.js';
+import { connectDB } from './config/database.js';
+import { initSocket } from './config/socket.js';
+import { initKeepAlive } from './services/keepAliveService.js';
 
 if (!process.env.GEOAPIFY_API_KEY) {
     console.warn('WARNING: GEOAPIFY_API_KEY is not defined. Distance/search features will not work.');
@@ -31,6 +31,7 @@ const configuredFrontendOrigins = (process.env.FRONTEND_URLS || process.env.FRON
     .filter(Boolean);
 
 const allowedOrigins = [
+    "http://localhost:5174",
     "http://localhost:5173", // Vite local
     "http://localhost:3000", // CRA local (if applicable)
     "https://stay-hub-psi.vercel.app", // Production frontend
@@ -50,7 +51,7 @@ app.use(
     })
 );
 
-app.use(compression()); 
+app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -59,27 +60,27 @@ initSocket(httpServer, allowedOrigins);
 
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max:      30000,
-    message:  { msg: 'Too many requests, please try again later.' }
+    max: 30000,
+    message: { msg: 'Too many requests, please try again later.' }
 });
 app.use(globalLimiter);
 
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max:      500,
-    message:  { msg: 'Too many auth attempts, please try again later.' }
+    max: 500,
+    message: { msg: 'Too many auth attempts, please try again later.' }
 });
 
 
-app.get('/', (req, res) => res.json({ 
+app.get('/', (req, res) => res.json({
     message: 'StayHub API is Running',
     health: '/api/health',
     status: 'online'
 }));
 app.use('/health', healthRoutes);
 app.use('/api/health', healthRoutes);
-app.use('/api/auth',  authLimiter, authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/address', addressRoutes);
@@ -89,7 +90,7 @@ app.use('/api/notifications', notificationRoutes);
 // --- Config endpoint (exposes the Geoapify public key for frontend map/geocoding) ---
 // Note: In production, proxy geocoding calls server-side instead of exposing the key.
 app.get('/api/config', (req, res) => {
-    res.json({ 
+    res.json({
         geoApiKey: process.env.GEOAPIFY_API_KEY,
         razorpayKeyId: process.env.RAZORPAY_KEY_ID
     });

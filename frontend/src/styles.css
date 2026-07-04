@@ -33,9 +33,15 @@ html, body {
 }
 
 .font-hero-title {
-	font-family: 'Satisfy', 'Dancing Script', 'Courgette', cursive;
-	letter-spacing: normal;
-	word-spacing: normal;
+	font-family: 'Plus Jakarta Sans', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0.05) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent !important;
+	-webkit-text-fill-color: transparent !important;
+	-webkit-text-stroke: 1.25px rgba(255, 255, 255, 0.85);
+	paint-order: stroke fill;
+	letter-spacing: -0.01em;
 }
 
 .font-hero-subtitle {

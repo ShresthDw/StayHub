@@ -45,7 +45,7 @@ const HomePage = () => {
                     <HeroBackgroundAnimation />
 
                     <div className="home-content-rail relative z-10 w-full">
-                        <h1 className="font-hero-title text-left text-3xl sm:text-4xl md:text-5xl lg:text-[3.75rem] font-normal text-white mb-2.5 drop-shadow-md leading-[1.25]">
+                        <h1 className="font-hero-title w-fit text-left text-3xl sm:text-4xl md:text-5xl lg:text-[3.75rem] font-bold mb-2.5 drop-shadow-md leading-[1.25]">
                             Find your next favorite stay
                         </h1>
                         <p className="font-hero-subtitle text-left text-teal-100/90 dark:text-teal-100 text-sm sm:text-base md:text-lg mb-6 font-medium max-w-2xl leading-relaxed drop-shadow-sm">

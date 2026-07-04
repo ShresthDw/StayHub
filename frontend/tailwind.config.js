@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heroTitle: ['Satisfy', '"Dancing Script"', 'Courgette', '"Kaushan Script"', 'Caveat', 'cursive'],
+        heroTitle: ['Plus Jakarta Sans', 'Manrope', 'sans-serif'],
         heroSubtitle: ['Plus Jakarta Sans', 'Manrope', 'sans-serif'],
       },
       colors: {
