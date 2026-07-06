@@ -114,6 +114,25 @@ export const apiSlice = createApi({
             invalidatesTags: ['User', 'Notifications']
         }),
 
+        googleAuth: builder.mutation({
+            query: (payload) => ({
+                url: '/auth/google',
+                method: 'POST',
+                body: payload
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    if (data.user?.id) {
+                        localStorage.setItem('userId', data.user.id);
+                    }
+                } catch (error) {
+                    console.error('Google auth error:', error);
+                }
+            },
+            invalidatesTags: ['User', 'Notifications']
+        }),
+
         getCurrentUser: builder.query({
             query: () => '/auth/me',
             transformResponse: (response) => response.user,
@@ -459,6 +478,7 @@ export const {
     // Auth
     useLoginMutation,
     useRegisterMutation,
+    useGoogleAuthMutation,
     useGetCurrentUserQuery,
     useLogoutMutation,
     // Rooms

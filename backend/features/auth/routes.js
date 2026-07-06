@@ -1,13 +1,14 @@
 
 import express from 'express';
 import mockAuth from '../../middleware/auth.js';
-import { register, login, getCurrentUser, updateProfile, becomeOwner, logout, getWishlist, toggleWishlist } from './authController.js';
+import { register, login, googleAuth, getCurrentUser, updateProfile, becomeOwner, logout, getWishlist, toggleWishlist } from './authController.js';
 
 const router = express.Router();
 
 // Public routes
 router.post('/register', register);
 router.post('/login', login);
+router.post('/google', googleAuth);
 
 // Protected routes (require authentication)
 router.get('/me', mockAuth, getCurrentUser);

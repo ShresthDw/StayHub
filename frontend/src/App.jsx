@@ -23,6 +23,7 @@ const NotificationsPageView = lazy(() => import('./features/notifications/pages/
 const MyBookingsPageView = lazy(() => import('./features/bookings/pages/MyBookingsPage.jsx'));
 const WishlistPageView = lazy(() => import('./features/wishlist/pages/WishlistPage.jsx'));
 const EarningsPageView = lazy(() => import('./features/bookings/pages/EarningsPage.jsx'));
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import {
     clearFilters,
     setFilters,
@@ -30,6 +31,7 @@ import {
     setCurrentUser,
     setGeoApiKey,
     setRazorpayKeyId,
+    setGoogleClientId,
     setIsLoading
 } from './store/appSlice.js';
 import {
@@ -42,7 +44,7 @@ const App = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const { currentUser, theme, filters, geoApiKey, razorpayKeyId } = useSelector((state) => state.app);
+    const { currentUser, theme, filters, geoApiKey, razorpayKeyId, googleClientId } = useSelector((state) => state.app);
 
     // RTK Query hooks for initialization
     const { data: configData, error: configError } = useGetAppConfigQuery();
@@ -60,6 +62,9 @@ const App = () => {
         if (configData) {
             dispatch(setGeoApiKey(configData.geoApiKey || null));
             dispatch(setRazorpayKeyId(configData.razorpayKeyId || null));
+            if (configData.googleClientId) {
+                dispatch(setGoogleClientId(configData.googleClientId));
+            }
         }
 
         if (userData) {
@@ -90,55 +95,59 @@ const App = () => {
         dispatch(setTheme(next));
     };
 
+    const effectiveGoogleClientId = googleClientId || import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <ScrollToTop />
-            <NavigationComponent
-                currentUser={currentUser}
-                icons={icons}
-                filters={filters}
-                onQuickFilterSelect={handleQuickFilterSelect}
-            />
+        <GoogleOAuthProvider clientId={effectiveGoogleClientId || 'placeholder-client-id'}>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <ScrollToTop />
+                <NavigationComponent
+                    currentUser={currentUser}
+                    icons={icons}
+                    filters={filters}
+                    onQuickFilterSelect={handleQuickFilterSelect}
+                />
 
-            <NotificationToast
-                notification={liveNotification}
-                onClose={clearLiveNotification}
-            />
+                <NotificationToast
+                    notification={liveNotification}
+                    onClose={clearLiveNotification}
+                />
 
-            <Suspense fallback={<PageSkeleton />}>
-                <Routes>
-                    <Route path="/" element={<HomePageView />} />
-                    <Route path="/cities/:city" element={<CityListingPageView />} />
-                    <Route path="/rooms/:roomId" element={<RoomDetailsPageView />} />
+                <Suspense fallback={<PageSkeleton />}>
+                    <Routes>
+                        <Route path="/" element={<HomePageView />} />
+                        <Route path="/cities/:city" element={<CityListingPageView />} />
+                        <Route path="/rooms/:roomId" element={<RoomDetailsPageView />} />
 
-                    <Route element={<PublicRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
-                        <Route path="/login" element={<AuthPageView mode="login" />} />
-                        <Route path="/signup" element={<AuthPageView mode="signup" />} />
-                    </Route>
+                        <Route element={<PublicRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
+                            <Route path="/login" element={<AuthPageView mode="login" />} />
+                            <Route path="/signup" element={<AuthPageView mode="signup" />} />
+                        </Route>
 
-                    <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} requireOwner={true} />}>
-                        <Route path="/my-properties" element={<MyPropertiesPageView />} />
-                        <Route path="/dashboard" element={<MyPropertiesPageView />} />
-                        <Route path="/add-property" element={<AddRoomPage />} />
-                    </Route>
+                        <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} requireOwner={true} />}>
+                            <Route path="/my-properties" element={<MyPropertiesPageView />} />
+                            <Route path="/dashboard" element={<MyPropertiesPageView />} />
+                            <Route path="/add-property" element={<AddRoomPage />} />
+                        </Route>
 
-                    <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
-                        <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
-                        <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
-                        <Route path="/notifications" element={<NotificationsPageView />} />
-                        <Route path="/my-bookings" element={<MyBookingsPageView />} />
-                        <Route path="/wishlist" element={<WishlistPageView />} />
-                        <Route path="/earnings" element={<EarningsPageView />} />
-                        <Route path="/bookings" element={<Navigate to="/earnings" replace />} />
-                        <Route path="/booked-properties" element={<Navigate to="/earnings" replace />} />
-                    </Route>
+                        <Route element={<ProtectedRoute currentUser={currentUser} isAuthLoading={isUserLoading} />}>
+                            <Route path="/profile" element={<ProfilePageView onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />} />
+                            <Route path="/profile/edit" element={<Navigate to="/profile" replace />} />
+                            <Route path="/notifications" element={<NotificationsPageView />} />
+                            <Route path="/my-bookings" element={<MyBookingsPageView />} />
+                            <Route path="/wishlist" element={<WishlistPageView />} />
+                            <Route path="/earnings" element={<EarningsPageView />} />
+                            <Route path="/bookings" element={<Navigate to="/earnings" replace />} />
+                            <Route path="/booked-properties" element={<Navigate to="/earnings" replace />} />
+                        </Route>
 
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-            </Suspense>
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                </Suspense>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </GoogleOAuthProvider>
     );
 };
 

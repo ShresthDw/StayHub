@@ -87,12 +87,12 @@ app.use('/api/address', addressRoutes);
 app.use('/api/notifications', notificationRoutes);
 
 
-// --- Config endpoint (exposes the Geoapify public key for frontend map/geocoding) ---
-// Note: In production, proxy geocoding calls server-side instead of exposing the key.
+// --- Config endpoint (exposes public keys for frontend map, payment & auth) ---
 app.get('/api/config', (req, res) => {
     res.json({
         geoApiKey: process.env.GEOAPIFY_API_KEY,
-        razorpayKeyId: process.env.RAZORPAY_KEY_ID
+        razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+        googleClientId: process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || ''
     });
 });
 

@@ -22,6 +22,7 @@ const initialState = {
     theme: getInitialTheme(),
     geoApiKey: null,
     razorpayKeyId: null,
+    googleClientId: null,
     isLoading: false,
     filters: { propertyType: '', amenities: [] },
     searchLocation: { address: '', lat: null, lng: null, distance: 10 },
@@ -73,6 +74,9 @@ const appSlice = createSlice({
         setRazorpayKeyId(state, action) {
             state.razorpayKeyId = action.payload;
         },
+        setGoogleClientId(state, action) {
+            state.googleClientId = action.payload;
+        },
         setIsLoading(state, action) {
             state.isLoading = action.payload;
         }
@@ -89,6 +93,7 @@ export const {
     clearFilters,
     setGeoApiKey,
     setRazorpayKeyId,
+    setGoogleClientId,
     setIsLoading
 } = appSlice.actions;
 

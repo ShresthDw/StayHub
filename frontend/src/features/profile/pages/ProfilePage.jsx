@@ -423,9 +423,17 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                             {/* User Avatar & Identity */}
                             <div className="flex items-center gap-4">
                                 <div className="relative shrink-0">
-                                    <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-700 text-white font-extrabold text-2xl flex items-center justify-center shadow-md">
-                                        {userInitial}
-                                    </div>
+                                    {currentUser?.avatar || currentUser?.profilePicture ? (
+                                        <img
+                                            src={currentUser.avatar || currentUser.profilePicture}
+                                            alt={currentUser.name}
+                                            className="h-16 w-16 rounded-2xl object-cover shadow-md ring-2 ring-teal-500/30"
+                                        />
+                                    ) : (
+                                        <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-700 text-white font-extrabold text-2xl flex items-center justify-center shadow-md">
+                                            {userInitial}
+                                        </div>
+                                    )}
                                     <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 ring-2 ring-emerald-500/30" title="Active Account" />
                                 </div>
                                 <div className="min-w-0">
@@ -435,7 +443,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
                                         {currentUser.email}
                                     </p>
-                                    <div className="mt-1.5">
+                                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                                         {currentUser.role === 'owner' ? (
                                             <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 px-2.5 py-0.5 text-[11px] font-semibold">
                                                 <svg className="w-3 h-3 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -451,6 +459,11 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                                 <span>Verified Guest</span>
                                             </span>
                                         )}
+                                        {currentUser.authProvider === 'google' || currentUser.googleId ? (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 text-[11px] font-medium border border-blue-200/60 dark:border-blue-800/60">
+                                                Google Account
+                                            </span>
+                                        ) : null}
                                     </div>
                                 </div>
                             </div>
@@ -461,6 +474,12 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     <span className="text-gray-500 dark:text-gray-400">Account Type</span>
                                     <span className="font-semibold text-gray-900 dark:text-gray-100 capitalize">
                                         {currentUser.role === 'owner' ? 'Property Host' : 'Guest'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-500 dark:text-gray-400">Sign-in Method</span>
+                                    <span className="font-semibold text-gray-900 dark:text-gray-100">
+                                        {currentUser.authProvider === 'google' || currentUser.googleId ? 'Google Sign-In' : 'Email & Password'}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">

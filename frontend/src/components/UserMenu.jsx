@@ -106,9 +106,17 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
             {isOpen && (
                 <div className="user-menu-panel absolute right-0 mt-3 w-72 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-900/10 z-50 dark:border-gray-700 dark:bg-gray-800">
                     <div className="flex items-center gap-3 bg-gradient-to-br from-teal-50 to-cyan-50 p-4 dark:from-teal-900/40 dark:to-cyan-900/30">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal-600 text-lg font-bold text-white shadow-sm">
-                            {(currentUser?.name || 'U').charAt(0).toUpperCase()}
-                        </div>
+                        {currentUser?.avatar || currentUser?.profilePicture ? (
+                            <img
+                                src={currentUser.avatar || currentUser.profilePicture}
+                                alt={displayName}
+                                className="h-11 w-11 shrink-0 rounded-full object-cover shadow-sm ring-2 ring-white/80 dark:ring-gray-700"
+                            />
+                        ) : (
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal-600 text-lg font-bold text-white shadow-sm">
+                                {(currentUser?.name || 'U').charAt(0).toUpperCase()}
+                            </div>
+                        )}
                         <div className="min-w-0">
                             <p className="truncate text-sm font-bold text-gray-900 dark:text-gray-100">{displayName}</p>
                             <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
