@@ -8,7 +8,7 @@ const CityCard = ({ city, imageUrl, roomCount, onClick }) => {
 	return (
 		<div
 			onClick={onClick}
-			className="relative rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+			className="relative rounded-none overflow-hidden shadow-md hover:shadow-xl w-full transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
 		>
 			{/* Background Image */}
 			<img
@@ -22,9 +22,9 @@ const CityCard = ({ city, imageUrl, roomCount, onClick }) => {
 			/>
 
 			{/* Overlay */}
-			<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
-				<h3 className="text-2xl font-bold text-white">{city}</h3>
-				<p className="text-sm text-gray-100 mt-1">{roomCount} {roomCount === 1 ? 'property' : 'properties'}</p>
+			<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent flex flex-col justify-end p-4">
+				<h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{city}</h3>
+				<p className="text-xs sm:text-sm text-gray-200 mt-0.5 font-medium">{roomCount} {roomCount === 1 ? 'property' : 'properties'}</p>
 			</div>
 		</div>
 	);

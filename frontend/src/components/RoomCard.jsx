@@ -2,15 +2,15 @@ import React from 'react';
 import { getRoomCardThumbnail, getRoomCardSrcSet, getRoomCardSizes } from '../utils/imageKitOptimizer.js';
 
 const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, onDelete, onClick, showWishlistAction = false, isWishlisted = false, onWishlistToggle }) => {
-    const rawImageUrl = Array.isArray(room.images) && room.images.length > 0 
-        ? (room.images[0]?.url || room.images[0]) 
+    const rawImageUrl = Array.isArray(room.images) && room.images.length > 0
+        ? (room.images[0]?.url || room.images[0])
         : 'https://placehold.co/600x400?text=No+Image';
     const imageUrl = getRoomCardThumbnail(rawImageUrl);
     const srcSet = getRoomCardSrcSet(rawImageUrl);
     const sizes = getRoomCardSizes();
-    
+
     const displayLocation = room.address?.city || (typeof room.location === 'string' ? room.location : 'Location not specified');
-    
+
     const getAddressLine = (room) => {
         const parts = [room?.address?.street, room?.address?.city, room?.address?.state, room?.address?.country]
             .filter(Boolean);
@@ -21,34 +21,34 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
-            <div className="relative">
+        <div className="bg-white dark:bg-gray-800 rounded-none shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
+            <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-750">
                 {isDashboard && !room.isActive && (
-                    <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">DRAFT</div>
+                    <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 z-10">DRAFT</div>
                 )}
                 {showWishlistAction && (
                     <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); onWishlistToggle?.(room); }}
-                        className={`absolute top-2 right-2 z-10 rounded-full p-2 shadow-md transition-colors ${isWishlisted ? 'bg-green-600 text-white' : 'bg-white/90 text-gray-700 hover:bg-white'}`}
+                        className={`absolute top-2 right-2 z-10 p-2 shadow-md transition-colors ${isWishlisted ? 'bg-green-600 text-white' : 'bg-white/90 text-gray-700 hover:bg-white'}`}
                         aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                     >
                         <span className="text-sm font-bold">{isWishlisted ? '♥' : '♡'}</span>
                     </button>
                 )}
                 {!isDashboard && (
-                    <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
+                    <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 z-10">
                         {room.propertyType ? room.propertyType.charAt(0).toUpperCase() + room.propertyType.slice(1) : 'Property'}
                     </div>
                 )}
                 {compact && (
-                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 rounded-full bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-850 dark:text-gray-100 dark:border dark:border-white/10">
+                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-850 dark:text-gray-100 dark:border dark:border-white/10">
                         {icons.star}
                         <span>{room.rating || 'New'}</span>
                     </div>
                 )}
                 <img
-                    className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover`}
+                    className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover group-hover:scale-105 transition-transform duration-300`}
                     src={imageUrl}
                     srcSet={srcSet}
                     sizes={sizes}
