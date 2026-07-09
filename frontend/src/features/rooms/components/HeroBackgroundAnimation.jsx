@@ -3,20 +3,16 @@ import { useEffect, useRef, useState } from 'react';
 
 const HERO_SLIDES = [
     {
-        url: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=2000&q=85',
-        title: 'Luxury Villa & Pool'
+        url: '/noonBG.png',
+        title: 'Scenic Afternoon Stay'
     },
     {
-        url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85',
-        title: 'Scenic Mountain Resort'
-    },
-    {
-        url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=2000&q=85',
+        url: '/sunsetBG.png',
         title: 'Coastal Sunset Stay'
     },
     {
-        url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85',
-        title: 'Boutique Hotel Suite'
+        url: '/cottageBG.png',
+        title: 'Cozy Cottage Retreat'
     }
 ];
 

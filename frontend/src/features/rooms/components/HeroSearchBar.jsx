@@ -166,16 +166,16 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
     return (
         <div className="w-full max-w-5xl mx-auto relative z-30" ref={searchContainerRef}>
-            {/* Main Search Bar Capsule (Compact Sleek Height) */}
-            <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-full border border-gray-200 dark:border-gray-700 shadow-2xl p-1 sm:p-1.5 transition-all">
+            {/* Main Search Bar Capsule (Consistent Clean White) */}
+            <div className="bg-white rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl p-1 sm:p-1.5">
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-0 items-center">
                     
                     {/* Segment 1: Destination (Where) */}
                     <div
                         className={`sm:col-span-5 md:col-span-6 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-3.5 py-1.5 transition-all cursor-pointer ${
                             activeSection === 'where'
-                                ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
-                                : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
+                                : 'hover:bg-gray-50'
                         }`}
                         onClick={() => {
                             setActiveSection('where');
@@ -183,11 +183,11 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         }}
                     >
                         <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-full bg-teal-100 dark:bg-teal-900/60 text-teal-600 dark:text-teal-300 flex items-center justify-center flex-shrink-0">
+                            <div className="w-7 h-7 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center flex-shrink-0">
                                 {icons.location || icons.mapPin}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <label className="block text-[9px] font-extrabold uppercase tracking-wider text-teal-700 dark:text-teal-400 leading-none mb-0.5">
+                                <label className="block text-[9px] font-extrabold uppercase tracking-wider text-teal-700 leading-none mb-0.5">
                                     Where
                                 </label>
                                 <div className="flex items-center">
@@ -200,7 +200,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                             setShowSuggestions(true);
                                         }}
                                         placeholder={animatedPlaceholder}
-                                        className="w-full bg-transparent border-none p-0 text-xs font-semibold text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 truncate leading-tight"
+                                        className="w-full bg-transparent border-none p-0 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 truncate leading-tight"
                                     />
                                     {searchInput && (
                                         <button
@@ -210,7 +210,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                 setSearchInput('');
                                                 setFilteredCities([]);
                                             }}
-                                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-0.5 text-xs ml-1"
+                                            className="text-gray-400 hover:text-gray-600 p-0.5 text-xs ml-1"
                                         >
                                             ✕
                                         </button>
@@ -221,11 +221,11 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
                         {/* Dropdown Suggestions Menu */}
                         {showSuggestions && (
-                            <div className="absolute top-full left-0 right-0 sm:left-0 sm:w-96 mt-2 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
+                            <div className="absolute top-full left-0 right-0 sm:left-0 sm:w-96 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
                                 {searchInput.trim() ? (
                                     /* Search Match Results */
                                     <div>
-                                        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-100 dark:border-gray-700 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                                             Matching Destinations
                                         </div>
                                         {filteredCities.length > 0 ? (
@@ -234,17 +234,17 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                     key={city.name}
                                                     type="button"
                                                     onClick={() => handleSelectCity(city.name)}
-                                                    className="w-full px-4 py-2.5 text-left hover:bg-teal-50 dark:hover:bg-gray-700/60 border-b last:border-b-0 border-gray-100 dark:border-gray-700 flex items-center justify-between transition-colors"
+                                                    className="w-full px-4 py-2.5 text-left hover:bg-teal-50 border-b last:border-b-0 border-gray-100 flex items-center justify-between transition-colors"
                                                 >
                                                     <div className="flex items-center gap-2.5">
-                                                        <span className="p-1 rounded bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400">
+                                                        <span className="p-1 rounded bg-teal-50 text-teal-600">
                                                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             </svg>
                                                         </span>
                                                         <div>
-                                                            <div className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                                                            <div className="text-xs font-bold text-gray-900">
                                                                 {city.name}
                                                             </div>
                                                             <div className="text-[11px] text-gray-400">
@@ -253,7 +253,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                         </div>
                                                     </div>
                                                     {city.count !== undefined && (
-                                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300">
+                                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
                                                             {city.count} {city.count === 1 ? 'stay' : 'stays'}
                                                         </span>
                                                     )}
@@ -263,11 +263,11 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleSelectCity(searchInput.trim())}
-                                                className="w-full p-3.5 text-left hover:bg-teal-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                                                className="w-full p-3.5 text-left hover:bg-teal-50 transition-colors flex items-center gap-2"
                                             >
-                                                <span className="text-teal-600 dark:text-teal-400">{icons.search}</span>
+                                                <span className="text-teal-600">{icons.search}</span>
                                                 <div>
-                                                    <div className="text-xs font-bold text-teal-600 dark:text-teal-400">
+                                                    <div className="text-xs font-bold text-teal-600">
                                                         Search stays in &quot;{searchInput}&quot;
                                                     </div>
                                                     <div className="text-[11px] text-gray-400">Explore matching accommodations</div>
@@ -278,68 +278,68 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                 ) : (
                                     /* Popular Destinations Header & List */
                                     <div>
-                                        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                                            <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                                        <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                                            <span className="text-xs font-bold text-gray-900">
                                                 Popular Destinations
                                             </span>
-                                            <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-400">
+                                            <span className="text-[10px] font-semibold text-teal-600">
                                                 Quick pick
                                             </span>
                                         </div>
-                                        <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                                        <div className="divide-y divide-gray-100">
                                             {(citiesData.length > 0 ? citiesData.slice(0, 6) : POPULAR_DESTINATIONS).map((city) => (
                                                 <button
                                                     key={city.name}
                                                     type="button"
                                                     onClick={() => handleSelectCity(city.name)}
-                                                    className="w-full px-4 py-2 text-left hover:bg-teal-50 dark:hover:bg-gray-700/60 flex items-center justify-between transition-colors group"
+                                                    className="w-full px-4 py-2 text-left hover:bg-teal-50 flex items-center justify-between transition-colors group"
                                                 >
                                                     <div className="flex items-center gap-2.5">
-                                                        <span className="p-1.5 rounded-lg bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center flex-shrink-0">
-                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            </svg>
-                                                        </span>
-                                                        <div>
-                                                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200 block group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                                                                {city.name}
-                                                            </span>
-                                                            <span className="text-[10px] text-gray-400 block">
-                                                                {city.state || city.tag || 'Popular Destination'}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:translate-x-0.5 transition-transform">
-                                                        Explore →
-                                                    </span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                                                         <span className="p-1.5 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0">
+                                                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                             </svg>
+                                                         </span>
+                                                         <div>
+                                                             <span className="text-xs font-bold text-gray-800 block group-hover:text-teal-600 transition-colors">
+                                                                 {city.name}
+                                                             </span>
+                                                             <span className="text-[10px] text-gray-400 block">
+                                                                 {city.state || city.tag || 'Popular Destination'}
+                                                             </span>
+                                                         </div>
+                                                     </div>
+                                                     <span className="text-xs font-semibold text-teal-600 group-hover:translate-x-0.5 transition-transform">
+                                                         Explore →
+                                                     </span>
+                                                 </button>
+                                             ))}
+                                         </div>
+                                     </div>
+                                 )}
+                             </div>
+                         )}
+                     </div>
 
-                    {/* Segment 2 & 3: Check-in & Check-out Dates */}
-                    <div className="sm:col-span-4 md:col-span-4 sm:border-l border-gray-200 dark:border-gray-700/80 grid grid-cols-2 gap-1 px-1.5 py-0.5">
+                    {/* Segment 2 & 3: Check-in & Check-out Dates (With Separation Line on Mobile and Desktop) */}
+                    <div className="sm:col-span-4 md:col-span-4 border-t sm:border-t-0 sm:border-l border-gray-200 grid grid-cols-2 divide-x divide-gray-200 px-1.5 py-1 sm:py-0.5">
                         {/* Check-in */}
                         <div
                             className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
                                 activeSection === 'checkin'
-                                    ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
-                                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                    ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
+                                    : 'hover:bg-gray-50'
                             }`}
                             onClick={() => {
                                 setActiveSection('checkin');
                                 openDatePicker(checkInInputRef);
                             }}
                         >
-                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400 leading-none mb-0.5 pointer-events-none">
+                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
                                 Check in
                             </label>
-                            <div className="text-xs font-bold text-gray-900 dark:text-gray-100 truncate pointer-events-none">
+                            <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
                                 {tempCheckInDate ? formatDateDisplay(tempCheckInDate) : <span className="text-gray-400 font-normal">Add date</span>}
                             </div>
                             <input
@@ -374,7 +374,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                         e.preventDefault();
                                         setTempCheckInDate('');
                                     }}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs p-0.5"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
                                     title="Clear date"
                                 >
                                     ✕
@@ -386,18 +386,18 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         <div
                             className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
                                 activeSection === 'checkout'
-                                    ? 'bg-teal-50 dark:bg-teal-950/40 ring-1 ring-teal-500/40 shadow-inner'
-                                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                    ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
+                                    : 'hover:bg-gray-50'
                             }`}
                             onClick={() => {
                                 setActiveSection('checkout');
                                 openDatePicker(checkOutInputRef);
                             }}
                         >
-                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400 leading-none mb-0.5 pointer-events-none">
+                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
                                 Check out
                             </label>
-                            <div className="text-xs font-bold text-gray-900 dark:text-gray-100 truncate pointer-events-none">
+                            <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
                                 {tempCheckOutDate ? formatDateDisplay(tempCheckOutDate) : <span className="text-gray-400 font-normal">Add date</span>}
                             </div>
                             <input
@@ -427,7 +427,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                         e.preventDefault();
                                         setTempCheckOutDate('');
                                     }}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs p-0.5"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
                                     title="Clear date"
                                 >
                                     ✕
@@ -437,7 +437,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                     </div>
 
                     {/* Segment 3: Search Button */}
-                    <div className="sm:col-span-3 md:col-span-2 flex justify-end pl-1.5">
+                    <div className="sm:col-span-3 md:col-span-2 flex justify-end pl-1.5 pt-1 sm:pt-0">
                         <button
                             type="button"
                             onClick={() => executeSearch()}
@@ -474,8 +474,8 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
             {/* Trending Destinations Quick Chips */}
             <div className="mt-3 flex items-center gap-2 text-xs flex-wrap">
-                <span className="text-white font-bold flex items-center gap-1.5 drop-shadow-sm">
-                    <svg className="w-3.5 h-3.5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <span className="text-white/90 font-semibold flex items-center gap-1.5 drop-shadow-sm">
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     <span className="hidden sm:inline">Popular:</span>
@@ -485,7 +485,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         key={city.name}
                         type="button"
                         onClick={() => handleSelectCity(city.name)}
-                        className="h-7.5 px-3.5 rounded-full bg-white text-gray-800 hover:bg-teal-50 hover:text-teal-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 text-xs font-bold border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center"
+                        className="h-7 px-3 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white backdrop-blur-md text-xs font-medium border border-white/20 hover:border-white/40 shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center justify-center"
                     >
                         {city.name}
                     </button>
