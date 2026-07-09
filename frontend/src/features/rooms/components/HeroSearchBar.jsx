@@ -166,13 +166,119 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
     return (
         <div className="w-full max-w-5xl mx-auto relative z-30" ref={searchContainerRef}>
-            {/* Main Search Bar Capsule (Consistent Clean White) */}
-            <div className="bg-white rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl p-1 sm:p-1.5">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-0 items-center">
-                    
-                    {/* Segment 1: Destination (Where) */}
+            {/* Main Search Bar Capsule */}
+            <div className="bg-white rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl p-1.5 sm:p-2">
+                <div className="flex flex-wrap sm:flex-nowrap items-center w-full">
+
+                    {/* TOP ROW (Mobile) / MIDDLE-LEFT (Desktop): Check-in */}
                     <div
-                        className={`sm:col-span-5 md:col-span-6 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-3.5 py-1.5 transition-all cursor-pointer ${
+                        className={`order-1 sm:order-2 w-1/2 sm:w-32 md:w-36 flex-shrink-0 sm:border-l border-gray-300 rounded-l-xl rounded-r-none sm:rounded-xl px-3 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
+                            activeSection === 'checkin'
+                                ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
+                                : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => {
+                            setActiveSection('checkin');
+                            openDatePicker(checkInInputRef);
+                        }}
+                    >
+                        <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
+                            Check in
+                        </label>
+                        <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
+                            {tempCheckInDate ? formatDateDisplay(tempCheckInDate) : <span className="text-gray-400 font-normal">Add date</span>}
+                        </div>
+                        <input
+                            ref={checkInInputRef}
+                            type="date"
+                            min={todayStr}
+                            value={tempCheckInDate}
+                            onClick={(e) => {
+                                try { e.target.showPicker?.(); } catch {}
+                            }}
+                            onFocus={(e) => {
+                                try { e.target.showPicker?.(); } catch {}
+                            }}
+                            onChange={(e) => {
+                                setTempCheckInDate(e.target.value);
+                                if (tempCheckOutDate && new Date(tempCheckOutDate) <= new Date(e.target.value)) {
+                                    setTempCheckOutDate('');
+                                }
+                            }}
+                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                            title="Select check-in date"
+                        />
+                        {tempCheckInDate && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setTempCheckInDate('');
+                                }}
+                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
+                                title="Clear date"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    {/* TOP ROW (Mobile) / MIDDLE-RIGHT (Desktop): Check-out */}
+                    <div
+                        className={`order-2 sm:order-3 w-1/2 sm:w-32 md:w-36 flex-shrink-0 border-l border-gray-300 rounded-r-xl rounded-l-none sm:rounded-xl px-3 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
+                            activeSection === 'checkout'
+                                ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
+                                : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => {
+                            setActiveSection('checkout');
+                            openDatePicker(checkOutInputRef);
+                        }}
+                    >
+                        <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
+                            Check out
+                        </label>
+                        <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
+                            {tempCheckOutDate ? formatDateDisplay(tempCheckOutDate) : <span className="text-gray-400 font-normal">Add date</span>}
+                        </div>
+                        <input
+                            ref={checkOutInputRef}
+                            type="date"
+                            min={tempCheckInDate || todayStr}
+                            value={tempCheckOutDate}
+                            onClick={(e) => {
+                                try { e.target.showPicker?.(); } catch {}
+                            }}
+                            onFocus={(e) => {
+                                try { e.target.showPicker?.(); } catch {}
+                            }}
+                            onChange={(e) => setTempCheckOutDate(e.target.value)}
+                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                            title="Select check-out date"
+                        />
+                        {tempCheckOutDate && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setTempCheckOutDate('');
+                                }}
+                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
+                                title="Clear date"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    {/* HORIZONTAL DIVIDER on Mobile separating Dates from Destination */}
+                    <div className="order-3 w-full border-t border-gray-200 sm:hidden my-1" />
+
+                    {/* BOTTOM-LEFT (Mobile) / LEFTMOST (Desktop): Where Input */}
+                    <div
+                        className={`order-4 sm:order-1 flex-1 min-w-0 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-2.5 sm:px-4 py-1.5 sm:py-2 transition-all cursor-pointer ${
                             activeSection === 'where'
                                 ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
                                 : 'hover:bg-gray-50'
@@ -200,7 +306,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                             setShowSuggestions(true);
                                         }}
                                         placeholder={animatedPlaceholder}
-                                        className="w-full bg-transparent border-none p-0 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 truncate leading-tight"
+                                        className="w-full bg-transparent border-none p-0 text-xs sm:text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 truncate leading-tight"
                                     />
                                     {searchInput && (
                                         <button
@@ -210,7 +316,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                 setSearchInput('');
                                                 setFilteredCities([]);
                                             }}
-                                            className="text-gray-400 hover:text-gray-600 p-0.5 text-xs ml-1"
+                                            className="text-gray-400 hover:text-gray-600 p-0.5 text-xs ml-1 flex-shrink-0"
                                         >
                                             ✕
                                         </button>
@@ -221,7 +327,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
                         {/* Dropdown Suggestions Menu */}
                         {showSuggestions && (
-                            <div className="absolute top-full left-0 right-0 sm:left-0 sm:w-96 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
+                            <div className="absolute top-full left-0 w-full sm:w-96 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
                                 {searchInput.trim() ? (
                                     /* Search Match Results */
                                     <div>
@@ -322,131 +428,19 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                          )}
                      </div>
 
-                    {/* Segment 2 & 3: Check-in & Check-out Dates (With Separation Line on Mobile and Desktop) */}
-                    <div className="sm:col-span-4 md:col-span-4 border-t sm:border-t-0 sm:border-l border-gray-200 grid grid-cols-2 divide-x divide-gray-200 px-1.5 py-1 sm:py-0.5">
-                        {/* Check-in */}
-                        <div
-                            className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
-                                activeSection === 'checkin'
-                                    ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
-                                    : 'hover:bg-gray-50'
-                            }`}
-                            onClick={() => {
-                                setActiveSection('checkin');
-                                openDatePicker(checkInInputRef);
-                            }}
-                        >
-                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
-                                Check in
-                            </label>
-                            <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
-                                {tempCheckInDate ? formatDateDisplay(tempCheckInDate) : <span className="text-gray-400 font-normal">Add date</span>}
-                            </div>
-                            <input
-                                ref={checkInInputRef}
-                                type="date"
-                                min={todayStr}
-                                value={tempCheckInDate}
-                                onClick={(e) => {
-                                    try {
-                                        e.target.showPicker?.();
-                                    } catch {}
-                                }}
-                                onFocus={(e) => {
-                                    try {
-                                        e.target.showPicker?.();
-                                    } catch {}
-                                }}
-                                onChange={(e) => {
-                                    setTempCheckInDate(e.target.value);
-                                    if (tempCheckOutDate && new Date(tempCheckOutDate) <= new Date(e.target.value)) {
-                                        setTempCheckOutDate('');
-                                    }
-                                }}
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                                title="Select check-in date"
-                            />
-                            {tempCheckInDate && (
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setTempCheckInDate('');
-                                    }}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
-                                    title="Clear date"
-                                >
-                                    ✕
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Check-out */}
-                        <div
-                            className={`rounded-xl px-2.5 py-1 transition-all cursor-pointer relative overflow-hidden group ${
-                                activeSection === 'checkout'
-                                    ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
-                                    : 'hover:bg-gray-50'
-                            }`}
-                            onClick={() => {
-                                setActiveSection('checkout');
-                                openDatePicker(checkOutInputRef);
-                            }}
-                        >
-                            <label className="block text-[9px] font-extrabold uppercase tracking-wider text-gray-500 leading-none mb-0.5 pointer-events-none">
-                                Check out
-                            </label>
-                            <div className="text-xs font-bold text-gray-900 truncate pointer-events-none">
-                                {tempCheckOutDate ? formatDateDisplay(tempCheckOutDate) : <span className="text-gray-400 font-normal">Add date</span>}
-                            </div>
-                            <input
-                                ref={checkOutInputRef}
-                                type="date"
-                                min={tempCheckInDate || todayStr}
-                                value={tempCheckOutDate}
-                                onClick={(e) => {
-                                    try {
-                                        e.target.showPicker?.();
-                                    } catch {}
-                                }}
-                                onFocus={(e) => {
-                                    try {
-                                        e.target.showPicker?.();
-                                    } catch {}
-                                }}
-                                onChange={(e) => setTempCheckOutDate(e.target.value)}
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                                title="Select check-out date"
-                            />
-                            {tempCheckOutDate && (
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setTempCheckOutDate('');
-                                    }}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
-                                    title="Clear date"
-                                >
-                                    ✕
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Segment 3: Search Button */}
-                    <div className="sm:col-span-3 md:col-span-2 flex justify-end pl-1.5 pt-1 sm:pt-0">
+                    {/* SEARCH BUTTON: Bottom-Right on Mobile beside Where (order-5), Far-Right on Desktop (sm:order-4) */}
+                    <div className="order-5 sm:order-4 flex-shrink-0 pl-2 pr-0.5 sm:pr-0">
                         <button
                             type="button"
                             onClick={() => executeSearch()}
-                            className="w-full sm:w-auto h-9 sm:h-9.5 px-5 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-1.5 group"
+                            className="w-10 h-10 sm:w-auto sm:h-11 sm:px-6 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-2 group flex-shrink-0"
+                            title="Search stays"
+                            aria-label="Search"
                         >
-                            <span className="group-hover:rotate-12 transition-transform duration-200">
+                            <span className="group-hover:rotate-12 transition-transform duration-200 flex items-center justify-center flex-shrink-0">
                                 {icons.search}
                             </span>
-                            <span>Search</span>
+                            <span className="hidden sm:inline font-bold tracking-wide">Search</span>
                         </button>
                     </div>
 
