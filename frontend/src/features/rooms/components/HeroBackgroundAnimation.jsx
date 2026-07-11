@@ -3,15 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 
 const HERO_SLIDES = [
     {
-        url: '/noonBG.png',
+        url: 'https://ik.imagekit.io/shresthdw/stahub_bg/noonBG.png',
         title: 'Scenic Afternoon Stay'
     },
     {
-        url: '/sunsetBG.png',
+        url: 'https://ik.imagekit.io/shresthdw/stahub_bg/sunsetBG.png',
         title: 'Coastal Sunset Stay'
     },
     {
-        url: '/cottageBG.png',
+        url: 'https://ik.imagekit.io/shresthdw/stahub_bg/cottageBG.png',
         title: 'Cozy Cottage Retreat'
     }
 ];
