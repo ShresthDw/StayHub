@@ -54,12 +54,12 @@ export const getRooms = async (req, res) => {
         const pageSize = Math.min(100, Math.max(1, parseInt(limit) || 20));
         const skip = (pageNum - 1) * pageSize;
 
-        const projectionFields = 'title propertyType address location images pricePerNight rating reviewCount maxGuests hostId';
+        const projectionFields = 'title propertyType address location images pricePerNight rating reviewCount';
         
         if (!lat || !lng || !maxDistance) {
             let dbQuery = Room.find(query)
                 .select(projectionFields)
-                .populate('hostId', 'name email phone avatar')
+                .slice('images', 1)
                 .limit(pageSize)
                 .skip(skip)
                 .lean();
@@ -116,7 +116,7 @@ export const getRooms = async (req, res) => {
 
         let nearbyRooms = await Room.find(geoQuery)
             .select(projectionFields)
-            .populate('hostId', 'name email phone avatar')
+            .slice('images', 1)
             .lean();
 
         if (checkInDate && checkOutDate) {
@@ -370,14 +370,14 @@ export const getHomeFeed = async (req, res) => {
     }
 
     try {
-        const projectionFields = 'title propertyType address location images pricePerNight rating reviewCount maxGuests hostId';
+        const projectionFields = 'title propertyType address location images pricePerNight rating';
         const PROPERTY_TYPES = ["apartment", "house", "villa", "hotel", "resort", "cottage", "hostel"];
 
         const [featured, categoryResults, cities] = await Promise.all([
             // Featured listings (limit 6)
             Room.find({ isActive: true })
                 .select(projectionFields)
-                .populate('hostId', 'name avatar')
+                .slice('images', 1)
                 .sort({ rating: -1, createdAt: -1 })
                 .limit(6)
                 .lean(),
@@ -387,7 +387,7 @@ export const getHomeFeed = async (req, res) => {
                 PROPERTY_TYPES.map(async (type) => {
                     const rooms = await Room.find({ isActive: true, propertyType: type })
                         .select(projectionFields)
-                        .populate('hostId', 'name avatar')
+                        .slice('images', 1)
                         .limit(8)
                         .lean();
                     return { type, rooms };
