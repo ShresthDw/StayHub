@@ -307,8 +307,9 @@ export const getRoomById = async (req, res) => {
 // GET /api/rooms/mine
 export const getMyRooms = async (req, res) => {
     try {
+        const projectionFields = 'title description propertyType roomType pricePerNight address location maxGuests bedrooms beds bathrooms amenities images availabilityType isActive rating';
         const rooms = await Room.find({ hostId: req.user.id })
-            .populate('hostId', 'name email phone')
+            .select(projectionFields)
             .lean();
 
         res.status(200).json(rooms);

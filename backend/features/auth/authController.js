@@ -225,7 +225,7 @@ export const googleAuth = async (req, res) => {
 // GET /api/auth/me
 export const getCurrentUser = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await User.findById(req.user.id).select('-password').lean();
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
@@ -325,7 +325,14 @@ export const logout = async (req, res) => {
 // GET /api/auth/wishlist
 export const getWishlist = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
+        const user = await User.findById(req.user.id)
+            .populate({
+                path: 'wishlist',
+                select: 'title images pricePerNight rating location address propertyType roomType',
+                options: { slice: { images: 1 } }
+            })
+            .lean();
+
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
@@ -367,7 +374,13 @@ export const toggleWishlist = async (req, res) => {
 
         await user.save();
 
-        const updatedUser = await User.findById(req.user.id).populate('wishlist', 'title images pricePerNight location address propertyType roomType');
+        const updatedUser = await User.findById(req.user.id)
+            .populate({
+                path: 'wishlist',
+                select: 'title images pricePerNight rating location address propertyType roomType',
+                options: { slice: { images: 1 } }
+            })
+            .lean();
 
         res.json({ 
             msg: isWishlisted ? 'Room added to wishlist' : 'Room removed from wishlist',

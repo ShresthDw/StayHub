@@ -173,7 +173,7 @@ export const getHostEarnings = async (req, res) => {
             return res.status(403).json({ msg: 'Only hosts can view earnings' });
         }
 
-        const myRooms = await Room.find({ hostId: req.user.id }).select('_id');
+        const myRooms = await Room.find({ hostId: req.user.id }).select('_id').lean();
         const myRoomIds = myRooms.map(r => r._id);
 
         const bookings = await Booking.find({
@@ -183,16 +183,18 @@ export const getHostEarnings = async (req, res) => {
             ],
             status: { $in: ['confirmed', 'completed'] }
         })
-            .populate('roomId', 'title address images pricePerNight')
+            .select('roomId guestId totalAmount pricePerNight nights checkInDate checkOutDate status createdAt')
+            .populate('roomId', 'title address.city images')
             .populate('guestId', 'name email phone')
-            .sort({ checkInDate: -1 });
+            .sort({ checkInDate: -1 })
+            .lean();
 
         const transformedBookings = bookings.map(booking => ({
             _id: booking._id,
             roomId: booking.roomId?._id,
             roomTitle: booking.roomId?.title || 'Unknown Property',
             roomAddress: booking.roomId?.address?.city || 'Unknown Location',
-            roomImages: booking.roomId?.images || [],
+            roomImages: booking.roomId?.images?.slice(0, 1) || [],
             guestName: booking.guestId?.name || 'Unknown Guest',
             guestEmail: booking.guestId?.email,
             guestPhone: booking.guestId?.phone,
@@ -232,7 +234,7 @@ export const getBookedProperties = async (req, res) => {
             return res.status(403).json({ msg: 'Only hosts can view booked properties' });
         }
 
-        const myRooms = await Room.find({ hostId: req.user.id }).select('_id');
+        const myRooms = await Room.find({ hostId: req.user.id }).select('_id').lean();
         const myRoomIds = myRooms.map(r => r._id);
 
         const bookings = await Booking.find({
@@ -242,16 +244,18 @@ export const getBookedProperties = async (req, res) => {
             ],
             status: { $in: ['confirmed', 'completed', 'pending_payment'] }
         })
-            .populate('roomId', 'title address images pricePerNight')
+            .select('roomId guestId totalAmount pricePerNight nights checkInDate checkOutDate status createdAt updatedAt')
+            .populate('roomId', 'title address.city images')
             .populate('guestId', 'name email phone')
-            .sort({ checkInDate: -1 });
+            .sort({ checkInDate: -1 })
+            .lean();
 
         const bookedProperties = bookings.map(booking => ({
             _id: booking._id,
             roomId: booking.roomId?._id,
             roomTitle: booking.roomId?.title || 'Unknown Property',
             roomAddress: booking.roomId?.address?.city || 'Unknown Location',
-            roomImages: booking.roomId?.images || [],
+            roomImages: booking.roomId?.images?.slice(0, 1) || [],
             guestName: booking.guestId?.name || 'Unknown Guest',
             guestEmail: booking.guestId?.email,
             guestPhone: booking.guestId?.phone,
@@ -278,9 +282,11 @@ export const getBookedProperties = async (req, res) => {
 export const getMyBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ guestId: req.user.id })
-            .populate('roomId', 'title images location address pricePerNight')
+            .select('roomId hostId totalAmount pricePerNight nights checkInDate checkOutDate status paymentId razorpayOrderId createdAt updatedAt')
+            .populate('roomId', 'title images address.city location')
             .populate('hostId', 'name email phone')
-            .sort({ checkInDate: -1 });
+            .sort({ checkInDate: -1 })
+            .lean();
 
         // Transform bookings to include payment status and formatted data
         const transformedBookings = bookings.map(booking => ({
@@ -288,7 +294,7 @@ export const getMyBookings = async (req, res) => {
             roomId: booking.roomId?._id,
             roomTitle: booking.roomId?.title || 'Unknown Property',
             roomAddress: booking.roomId?.address?.city || 'Unknown Location',
-            roomImages: booking.roomId?.images || [],
+            roomImages: booking.roomId?.images?.slice(0, 1) || [],
             hostName: booking.hostId?.name || 'Unknown Host',
             hostEmail: booking.hostId?.email,
             hostPhone: booking.hostId?.phone,
@@ -464,7 +470,7 @@ export const checkUserReviewStatus = async (req, res) => {
             guestId,
             roomId,
             status: { $in: ['confirmed', 'completed', 'cancelled'] }
-        });
+        }).select('_id checkOutDate status').lean();
 
         // Check if checkout date has passed
         let canReview = false;
@@ -479,7 +485,7 @@ export const checkUserReviewStatus = async (req, res) => {
         }
 
         // Check if user already reviewed
-        const room = await Room.findById(roomId);
+        const room = await Room.findById(roomId).select('reviews.guestId').lean();
         const hasReviewed = room?.reviews?.some(r => String(r.guestId) === String(guestId));
 
         res.status(200).json({

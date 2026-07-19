@@ -24,6 +24,7 @@ export const getNotifications = async (req, res) => {
 
         const [notifications, totalCount, unreadCount] = await Promise.all([
             Notification.find(filter)
+                .select('-recipient -__v')
                 .sort({ createdAt: -1 })
                 .skip((page - 1) * limit)
                 .limit(limit)
