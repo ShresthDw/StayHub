@@ -464,173 +464,182 @@ const RoomDetailsPageView = () => {
     }
 
     return (
-        <main className="min-h-screen bg-white dark:bg-gray-900">
-            {message && <div className="mb-4"><Toast message={message} type={msgType} /></div>}
+        <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            {message && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4"><Toast message={message} type={msgType} /></div>}
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8">
-                <BackButton fallback="/" className="mb-2.5" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <BackButton fallback="/" className="mb-4" />
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Column (2 cols): Original position of Gallery, Title, Description, Specs, Amenities, Reviews - Unboxed */}
                     <section className="lg:col-span-2 space-y-4">
-                        <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 animate-scroll-reveal">
-                            
-                            {/* Gallery Section */}
-                            <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3 bg-gray-900/10 dark:bg-gray-950/40 p-2 rounded-2xl">
-                                
-                                {/* Main Image Box - Complete uncropped view with ambient blurred fill on left/right */}
-                                <div className={`relative overflow-hidden rounded-xl bg-gray-900/80 dark:bg-gray-950 flex items-center justify-center h-full ${hasMultipleImages ? 'sm:col-span-2' : 'col-span-full'}`}>
-                                    {/* Ambient backdrop that naturally fills empty space on sides without zooming the main photo */}
-                                    <img
-                                        src={getImageUrl(mainImage)}
-                                        alt=""
-                                        aria-hidden="true"
-                                        className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
-                                    />
-                                    {/* Full uncropped crisp image */}
-                                    <img
-                                        src={getImageUrl(mainImage)}
-                                        alt={room.title}
-                                        className="relative z-10 block max-h-full max-w-full w-auto h-auto object-contain transition-all duration-200"
-                                    />
-                                </div>
-
-                                {/* Thumbnail Stack if multiple images */}
-                                {hasMultipleImages && (
-                                    <div className="grid min-h-0 min-w-0 grid-cols-3 sm:grid-cols-1 gap-2 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800/80 p-2">
-                                        {allImages.slice(0, 3).map((img, idx) => (
-                                            <button
-                                                key={idx}
-                                                type="button"
-                                                onClick={() => setSelectedImageIndex(idx)}
-                                                className={`relative w-full h-full min-h-0 rounded-lg overflow-hidden border-2 transition-all group ${
-                                                    selectedImageIndex === idx
-                                                        ? 'border-teal-500 shadow-md ring-2 ring-teal-500/30'
-                                                        : 'border-transparent opacity-75 hover:opacity-100 hover:border-teal-300'
-                                                }`}
-                                            >
-                                                <img
-                                                    src={getImageUrl(img)}
-                                                    alt={`${room.title} thumbnail ${idx + 1}`}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
+                        {/* Gallery Section */}
+                        <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3 bg-gray-900/10 dark:bg-gray-950/40 p-2 rounded-2xl">
+                            {/* Main Image Box */}
+                            <div className={`relative overflow-hidden rounded-xl bg-gray-900/80 dark:bg-gray-950 flex items-center justify-center h-full min-h-[260px] sm:min-h-[340px] ${hasMultipleImages ? 'sm:col-span-2' : 'col-span-full'}`}>
+                                <img
+                                    src={getImageUrl(mainImage)}
+                                    alt=""
+                                    aria-hidden="true"
+                                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+                                />
+                                <img
+                                    src={getImageUrl(mainImage)}
+                                    alt={room.title}
+                                    className="relative z-10 block max-h-full max-w-full w-auto h-auto object-contain transition-all duration-200"
+                                />
                             </div>
 
-                            <div className="relative z-10 bg-white p-4 sm:p-6 dark:bg-gray-800">
-                                <div className="flex flex-wrap items-center gap-3 mb-3">
-                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-200 capitalize">{room.propertyType}</span>
-                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">Daily stays</span>
-                                    <span className="flex items-center text-sm text-gray-700 dark:text-gray-300">{icons.star}<span className="ml-1 font-medium">{room.rating || room.ratingAverage || '4.9'}</span></span>
-                                    <button
-                                        type="button"
-                                        onClick={handleToggleWishlist}
-                                        className={`ml-auto rounded-full px-4 py-2 text-sm font-semibold transition-colors ${isWishlisted ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
-                                    >
-                                        {isWishlisted ? '♥ Saved' : '♡ Save'}
-                                    </button>
+                            {/* Thumbnail Stack if multiple images */}
+                            {hasMultipleImages && (
+                                <div className="grid min-h-0 min-w-0 grid-cols-3 sm:grid-cols-1 gap-2 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800/80 p-2">
+                                    {allImages.slice(0, 3).map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => setSelectedImageIndex(idx)}
+                                            className={`relative w-full h-full min-h-0 rounded-lg overflow-hidden border-2 transition-all cursor-pointer group ${
+                                                selectedImageIndex === idx
+                                                    ? 'border-teal-500 shadow-md ring-2 ring-teal-500/30'
+                                                    : 'border-transparent opacity-75 hover:opacity-100 hover:border-teal-300'
+                                            }`}
+                                        >
+                                            <img
+                                                src={getImageUrl(img)}
+                                                alt={`${room.title} thumbnail ${idx + 1}`}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                            />
+                                        </button>
+                                    ))}
                                 </div>
-                                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">{room.title}</h1>
-                                <p className="mt-2 text-gray-600 dark:text-gray-400">{getAddressLine(room)}</p>
-                                <p className="mt-4 text-gray-700 dark:text-gray-300 leading-7">{room.description}</p>
+                            )}
+                        </div>
+
+                        {/* Title & Description Section (Unboxed) */}
+                        <div className="pt-2 space-y-3">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-200 capitalize">{room.propertyType}</span>
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">Daily stays</span>
+                                <span className="flex items-center text-sm text-gray-700 dark:text-gray-300">{icons.star}<span className="ml-1 font-medium">{room.rating || room.ratingAverage || '4.9'}</span></span>
+                                <button
+                                    type="button"
+                                    onClick={handleToggleWishlist}
+                                    className={`ml-auto rounded-full px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${isWishlisted ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'}`}
+                                >
+                                    {isWishlisted ? '♥ Saved' : '♡ Save to wishlist'}
+                                </button>
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{room.title}</h1>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                                <svg className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{getAddressLine(room)}</span>
+                            </p>
+                            <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{room.description}</p>
+                        </div>
+
+                        {/* Property Specs (Unboxed) */}
+                        <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
+                            <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Property Type</p>
+                                    <p className="font-medium capitalize text-gray-900 dark:text-gray-100">{room.propertyType || '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Room Type</p>
+                                    <p className="font-medium capitalize text-gray-900 dark:text-gray-100">{room.roomType?.replace('_', ' ') || '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Guests</p>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{room.maxGuests || '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Availability</p>
+                                    <p className="font-medium capitalize text-gray-900 dark:text-gray-100">{room.availabilityType?.replace('_', ' ') || 'Instant'}</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Bedrooms</p>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{room.bedrooms ?? '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Beds</p>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{room.beds ?? '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Bathrooms</p>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{room.bathrooms ?? '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Timings</p>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{room.checkInTime || '14:00'} / {room.checkOutTime || '11:00'}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3 animate-scroll-reveal">
-                            <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Property Type</p>
-                                    <p className="font-medium capitalize">{room.propertyType || '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Room Type</p>
-                                    <p className="font-medium capitalize">{room.roomType?.replace('_', ' ') || '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Guests</p>
-                                    <p className="font-medium">{room.maxGuests || '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Availability</p>
-                                    <p className="font-medium capitalize">{room.availabilityType?.replace('_', ' ') || 'instant'}</p>
-                                </div>
+                        {/* Amenities (Unboxed) */}
+                        <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">What this place offers</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {room.amenities?.length > 0 ? room.amenities.map((facility) => (
+                                    <span key={facility} className="rounded-xl bg-gray-100 dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200/60 dark:border-gray-700/60">
+                                        {facility}
+                                    </span>
+                                )) : <span className="text-sm text-gray-500 dark:text-gray-400">No listed amenities</span>}
+                            </div>
+                        </div>
+
+                        {/* Reviews & Review Form (Unboxed) */}
+                        <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-4">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Guest Reviews</h3>
+                                <span className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    ★ {room.rating || room.ratingAverage || '4.9'}
+                                </span>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300 md:grid-cols-4">
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Bedrooms</p>
-                                    <p className="font-medium">{room.bedrooms ?? '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Beds</p>
-                                    <p className="font-medium">{room.beds ?? '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Bathrooms</p>
-                                    <p className="font-medium">{room.bathrooms ?? '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Check-in / out</p>
-                                    <p className="font-medium">{room.checkInTime || '-'} / {room.checkOutTime || '-'}</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Amenities</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {room.amenities?.length > 0 ? room.amenities.map((facility) => (
-                                        <span key={facility} className="rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-200">{facility}</span>
-                                    )) : <span className="text-sm text-gray-500 dark:text-gray-400">No listed amenities</span>}
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6 animate-scroll-reveal">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Reviews</h2>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Recent guest feedback from similar bookings.</p>
-
-                            {/* Actual User Reviews List */}
-                            <div className="mt-5 space-y-4">
+                            <div className="space-y-3">
                                 {reviews.map((review, idx) => {
                                     const reviewKey = review._id || review.name;
                                     const avatarUrl = review.guestAvatar || `https://i.pravatar.cc/100?img=${Math.floor(Math.random() * 70)}`;
                                     return (
-                                        <article key={reviewKey} className={`flex gap-4 rounded-xl bg-gray-50 dark:bg-gray-700/60 p-4 animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
-                                            <img src={avatarUrl} alt={review.guestName || review.name} className="h-12 w-12 rounded-full object-cover" />
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">{review.guestName || review.name}</h3>
-                                                    <span className="flex items-center text-sm text-gray-700 dark:text-gray-300">{icons.star}<span className="ml-1">{review.rating}.0</span></span>
+                                        <div key={reviewKey} className="flex gap-3 py-3 border-b border-gray-100 dark:border-gray-800/80 last:border-b-0">
+                                            <img src={avatarUrl} alt={review.guestName || review.name} className="h-10 w-10 rounded-full object-cover shrink-0" />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100">{review.guestName || review.name}</h4>
+                                                    <span className="flex items-center text-xs text-gray-600 dark:text-gray-400">{icons.star}<span className="ml-1">{review.rating}.0</span></span>
                                                 </div>
-                                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                                    {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
-                                                </p>
-                                                <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">{review.comment}</p>
+                                                <p className="text-[11px] text-gray-400 dark:text-gray-500">{review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}</p>
+                                                <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{review.comment}</p>
                                             </div>
-                                        </article>
+                                        </div>
                                     );
                                 })}
                             </div>
 
-                            {/* Review Form - Positioned below actual user reviews */}
+                            {/* Review Form (Outlined Box) */}
                             {!hasReviewed && (
-                                <form onSubmit={handleReviewSubmit} className="mt-8 p-4 sm:p-5 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-800/20 rounded-2xl border border-teal-200 dark:border-teal-700/50">
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Share Your Experience</h3>
+                                <form onSubmit={handleReviewSubmit} className="mt-6 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
+                                    <h4 className="text-base font-bold text-gray-900 dark:text-gray-100">Share Your Experience</h4>
                                     
-                                    <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label>
-                                        <div className="flex gap-2">
+                                    <div>
+                                        <label className="block text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300 font-semibold mb-1.5">Rating</label>
+                                        <div className="flex gap-1">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
                                                     type="button"
                                                     onClick={() => setReviewRating(star)}
                                                     disabled={!canReview}
-                                                    className={`text-3xl transition-transform ${
+                                                    className={`text-2xl transition-transform ${
                                                         canReview ? 'hover:scale-110 cursor-pointer' : 'cursor-not-allowed opacity-50'
                                                     } ${
-                                                        star <= reviewRating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
+                                                        star <= reviewRating ? 'text-amber-400' : 'text-gray-300 dark:text-gray-600'
                                                     }`}
                                                 >
                                                     ★
@@ -639,8 +648,8 @@ const RoomDetailsPageView = () => {
                                         </div>
                                     </div>
 
-                                    <div className="mb-4">
-                                        <label htmlFor="review-comment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    <div>
+                                        <label htmlFor="review-comment" className="block text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300 font-semibold mb-1.5">
                                             Your Review (minimum 10 characters)
                                         </label>
                                         <textarea
@@ -649,107 +658,94 @@ const RoomDetailsPageView = () => {
                                             onChange={(e) => setReviewComment(e.target.value)}
                                             disabled={!canReview}
                                             placeholder={canReview ? 'Tell us about your stay...' : 'Available after checkout date'}
-                                            className={`w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 ${
+                                            className={`w-full bg-white dark:bg-gray-800/80 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                                                 !canReview ? 'opacity-50 cursor-not-allowed' : ''
                                             }`}
-                                            rows="4"
+                                            rows="3"
                                         />
                                     </div>
 
-                                    <div className="flex flex-col gap-3">
+                                    <div className="flex flex-col items-center justify-center gap-2 pt-1">
                                         <button
                                             type="submit"
                                             disabled={!canReview || reviewSubmitting || reviewComment.trim().length < 10}
-                                            className={`w-full py-2 px-4 rounded-lg font-medium text-white transition-colors ${
+                                            className={`py-2 px-6 rounded-xl font-semibold text-xs uppercase tracking-wider text-white transition-all cursor-pointer ${
                                                 !canReview || reviewSubmitting || reviewComment.trim().length < 10
                                                     ? 'bg-gray-400 cursor-not-allowed'
-                                                    : 'bg-teal-600 dark:bg-teal-500 hover:bg-teal-700 dark:hover:bg-teal-600'
+                                                    : 'bg-teal-600 hover:bg-teal-700'
                                             }`}
                                         >
                                             {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
                                         </button>
-                                        
                                         {!canReview && (
-                                            <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-teal-50/80 dark:bg-teal-950/40 border border-teal-200/60 dark:border-teal-800/40 text-xs font-semibold text-teal-700 dark:text-teal-300">
-                                                <svg className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span>You can review after your checkout date</span>
-                                            </div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                                                Reviews unlock after your reservation checkout date
+                                            </p>
                                         )}
                                     </div>
                                 </form>
                             )}
 
                             {hasReviewed && (
-                                <div className="mt-8 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700/50">
-                                    <p className="text-sm text-green-700 dark:text-green-400">✓ You have already reviewed this property</p>
+                                <div className="mt-4 p-3.5 rounded-xl border border-emerald-500/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                                    ✓ You have reviewed this property
                                 </div>
                             )}
-                        </section>
+                        </div>
                     </section>
 
-                    <aside className="space-y-4 lg:sticky lg:top-24 h-fit animate-scroll-reveal">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 space-y-4">
+                    {/* Right Column: Sticky Booking Component (The ONLY Boxed Component) */}
+                    <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-5 space-y-4">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Starting from</p>
-                                <div className="flex items-baseline gap-1.5 mt-1">
-                                    <span className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-                                        ₹{nightlyRate.toLocaleString()}
-                                    </span>
-                                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                        / night
-                                    </span>
-                                </div>
+                                <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">₹{nightlyRate.toLocaleString()}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">per night</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
-                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    From
-                                    <input type="date" value={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setFromDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
+                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                    Check-in
+                                    <input type="date" value={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setFromDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
-                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    To
-                                    <input type="date" value={toDate} min={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setToDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
+                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                    Check-out
+                                    <input type="date" value={toDate} min={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setToDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
                             </div>
 
-                            <div className="rounded-xl bg-gray-50 dark:bg-gray-700/50 p-4 space-y-2 text-sm">
+                            <div className="rounded-xl bg-gray-50 dark:bg-gray-700/50 p-4 space-y-2 text-xs">
                                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
                                     <span>Nights</span>
-                                    <span className="font-semibold text-gray-900 dark:text-gray-100">{bookingUnits}</span>
+                                    <span className="font-bold text-gray-900 dark:text-gray-100">{bookingUnits}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
                                     <span>Rate</span>
-                                    <span className="font-semibold text-gray-900 dark:text-gray-100">₹{nightlyRate.toLocaleString()}</span>
+                                    <span className="font-bold text-gray-900 dark:text-gray-100">₹{nightlyRate.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-base font-bold text-gray-900 dark:text-gray-100 pt-2 border-t border-gray-200 dark:border-gray-600">
+                                <div className="flex justify-between text-sm font-extrabold text-gray-900 dark:text-white pt-2 border-t border-gray-200 dark:border-gray-600">
                                     <span>Total</span>
-                                    <span>₹{totalAmount.toLocaleString()}</span>
+                                    <span className="text-teal-600 dark:text-teal-400">₹{totalAmount.toLocaleString()}</span>
                                 </div>
                             </div>
 
-                            <button onClick={handleBookNow} disabled={bookingBusy} className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-white ${bookingBusy ? 'bg-teal-400' : 'bg-teal-600 hover:bg-teal-700'}`}>
+                            <button onClick={handleBookNow} disabled={bookingBusy} className={`w-full rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition-all cursor-pointer ${bookingBusy ? 'bg-teal-400' : 'bg-teal-600 hover:bg-teal-700'}`}>
                                 {bookingBusy ? 'Preparing checkout…' : 'Book Now'}
                             </button>
                         </div>
 
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4">
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Host details</h3>
-                            <div className="mt-4 text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                                <p><span className="font-medium text-gray-900 dark:text-gray-100">Name:</span> {room.hostId?.name || 'N/A'}</p>
-                                <p><span className="font-medium text-gray-900 dark:text-gray-100">Email:</span> {room.hostId?.email || 'N/A'}</p>
-                                <p><span className="font-medium text-gray-900 dark:text-gray-100">Phone:</span> {room.hostId?.phone || 'N/A'}</p>
-                            </div>
+                        <div className="p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1">Host details</h3>
+                            <p><span className="font-semibold text-gray-700 dark:text-gray-300">Name:</span> {room.hostId?.name || 'StayHub Host'}</p>
+                            <p><span className="font-semibold text-gray-700 dark:text-gray-300">Email:</span> {room.hostId?.email || 'N/A'}</p>
+                            {room.hostId?.phone && <p><span className="font-semibold text-gray-700 dark:text-gray-300">Phone:</span> {room.hostId.phone}</p>}
                         </div>
                     </aside>
                 </div>
-            </div>
 
-            {/* Location Section */}
-            {room.location?.coordinates?.length === 2 && (
-                <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 animate-scroll-reveal">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Location Section */}
+                {room.location?.coordinates?.length === 2 && (
+                    <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
                             <div>
                                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
@@ -808,9 +804,9 @@ const RoomDetailsPageView = () => {
                                 className="w-full h-[380px] z-0"
                             />
                         </div>
-                    </div>
-                </section>
-            )}
+                    </section>
+                )}
+            </div>
         </main>
     );
 };
