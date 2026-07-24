@@ -586,7 +586,7 @@ const RoomDetailsPageView = () => {
                             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">What this place offers</h3>
                             <div className="flex flex-wrap gap-2">
                                 {room.amenities?.length > 0 ? room.amenities.map((facility) => (
-                                    <span key={facility} className="rounded-xl bg-gray-100 dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200/60 dark:border-gray-700/60">
+                                    <span key={facility} className="rounded-md bg-gray-100 dark:bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200/60 dark:border-gray-700/60">
                                         {facility}
                                     </span>
                                 )) : <span className="text-sm text-gray-500 dark:text-gray-400">No listed amenities</span>}
@@ -624,7 +624,7 @@ const RoomDetailsPageView = () => {
 
                             {/* Review Form (Outlined Box) */}
                             {!hasReviewed && (
-                                <form onSubmit={handleReviewSubmit} className="mt-6 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
+                                <form onSubmit={handleReviewSubmit} className="mt-6 p-5 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
                                     <h4 className="text-base font-bold text-gray-900 dark:text-gray-100">Share Your Experience</h4>
                                     
                                     <div>
@@ -658,7 +658,7 @@ const RoomDetailsPageView = () => {
                                             onChange={(e) => setReviewComment(e.target.value)}
                                             disabled={!canReview}
                                             placeholder={canReview ? 'Tell us about your stay...' : 'Available after checkout date'}
-                                            className={`w-full bg-white dark:bg-gray-800/80 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                                            className={`w-full bg-white dark:bg-gray-800/80 border border-gray-300 dark:border-gray-700 rounded-md px-3.5 py-2.5 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                                                 !canReview ? 'opacity-50 cursor-not-allowed' : ''
                                             }`}
                                             rows="3"
@@ -669,7 +669,7 @@ const RoomDetailsPageView = () => {
                                         <button
                                             type="submit"
                                             disabled={!canReview || reviewSubmitting || reviewComment.trim().length < 10}
-                                            className={`py-2 px-6 rounded-xl font-semibold text-xs uppercase tracking-wider text-white transition-all cursor-pointer ${
+                                            className={`py-2 px-6 rounded-md font-semibold text-xs uppercase tracking-wider text-white transition-all cursor-pointer ${
                                                 !canReview || reviewSubmitting || reviewComment.trim().length < 10
                                                     ? 'bg-gray-400 cursor-not-allowed'
                                                     : 'bg-teal-600 hover:bg-teal-700'
@@ -687,7 +687,7 @@ const RoomDetailsPageView = () => {
                             )}
 
                             {hasReviewed && (
-                                <div className="mt-4 p-3.5 rounded-xl border border-emerald-500/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                                <div className="mt-4 p-3.5 rounded-md border border-emerald-500/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                                     ✓ You have reviewed this property
                                 </div>
                             )}
@@ -696,7 +696,7 @@ const RoomDetailsPageView = () => {
 
                     {/* Right Column: Sticky Booking Component (The ONLY Boxed Component) */}
                     <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-5 space-y-4">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-5 space-y-4">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Starting from</p>
                                 <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mt-1">₹{nightlyRate.toLocaleString()}</p>
@@ -706,15 +706,15 @@ const RoomDetailsPageView = () => {
                             <div className="grid grid-cols-2 gap-3">
                                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                     Check-in
-                                    <input type="date" value={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setFromDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
+                                    <input type="date" value={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setFromDate(e.target.value)} className="date-input mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
                                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                     Check-out
-                                    <input type="date" value={toDate} min={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setToDate(e.target.value)} className="date-input mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
+                                    <input type="date" value={toDate} min={fromDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(e) => setToDate(e.target.value)} className="date-input mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-900 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500" />
                                 </label>
                             </div>
 
-                            <div className="rounded-xl bg-gray-50 dark:bg-gray-700/50 p-4 space-y-2 text-xs">
+                            <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4 space-y-2 text-xs">
                                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
                                     <span>Nights</span>
                                     <span className="font-bold text-gray-900 dark:text-gray-100">{bookingUnits}</span>
@@ -729,7 +729,7 @@ const RoomDetailsPageView = () => {
                                 </div>
                             </div>
 
-                            <button onClick={handleBookNow} disabled={bookingBusy} className={`w-full rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition-all cursor-pointer ${bookingBusy ? 'bg-teal-400' : 'bg-teal-600 hover:bg-teal-700'}`}>
+                            <button onClick={handleBookNow} disabled={bookingBusy} className={`w-full rounded-md px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition-all cursor-pointer ${bookingBusy ? 'bg-teal-400' : 'bg-teal-600 hover:bg-teal-700'}`}>
                                 {bookingBusy ? 'Preparing checkout…' : 'Book Now'}
                             </button>
                         </div>
