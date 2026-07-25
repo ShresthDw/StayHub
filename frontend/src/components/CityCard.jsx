@@ -8,7 +8,7 @@ const CityCard = ({ city, imageUrl, roomCount, onClick }) => {
 	return (
 		<div
 			onClick={onClick}
-			className="relative rounded-none overflow-hidden shadow-md hover:shadow-xl w-full transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+			className="relative rounded-lg overflow-hidden shadow-md hover:shadow-xl w-full transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
 		>
 			{/* Background Image */}
 			<img

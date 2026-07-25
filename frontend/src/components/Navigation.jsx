@@ -77,28 +77,25 @@ const Navigation = ({ currentUser, icons }) => {
                             <button
                                 type="button"
                                 onClick={() => navigate('/my-properties')}
-                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center gap-1.5 active:scale-95 ${
+                                className={`px-3 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-200 inline-flex items-center cursor-pointer ${
                                     isTransparent
-                                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
-                                        : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'
+                                        ? 'text-white hover:text-teal-200'
+                                        : 'text-gray-700 hover:text-teal-600 dark:text-gray-200 dark:hover:text-teal-400'
                                 }`}
                             >
-                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                <span>List Property</span>
+                                List Property
                             </button>
                         ) : (
                             <button
                                 type="button"
                                 onClick={handleHostProperty}
                                 disabled={upgrading}
-                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center active:scale-95 ${
+                                className={`px-3 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-200 inline-flex items-center cursor-pointer ${
                                     upgrading
-                                        ? 'bg-teal-400 text-white'
+                                        ? 'text-gray-400 cursor-not-allowed'
                                         : isTransparent
-                                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
-                                        : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'
+                                        ? 'text-white hover:text-teal-200'
+                                        : 'text-gray-700 hover:text-teal-600 dark:text-gray-200 dark:hover:text-teal-400'
                                 }`}
                             >
                                 {upgrading ? 'Enabling…' : 'Host Property'}
@@ -114,7 +111,7 @@ const Navigation = ({ currentUser, icons }) => {
                         ) : (
                             <Link
                                 to="/login"
-                                className={`h-8 px-3.5 text-xs font-semibold rounded-full transition-all duration-200 inline-flex items-center justify-center active:scale-95 ${
+                                className={`h-8 px-3.5 text-xs font-semibold rounded-md transition-all duration-200 inline-flex items-center justify-center active:scale-95 ${
                                     isTransparent
                                         ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
                                         : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-sm'

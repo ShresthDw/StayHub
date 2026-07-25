@@ -94,7 +94,7 @@ const MyPropertiesPage = () => {
                 <button
                     type="button"
                     onClick={handleAddRoom}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all shrink-0 cursor-pointer"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all shrink-0 cursor-pointer"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -117,11 +117,11 @@ const MyPropertiesPage = () => {
                 <div className="mt-4 space-y-4">
                     {/* Status Filter Tabs */}
                     <div className="flex items-center justify-between pt-1">
-                        <div className="inline-flex p-1 rounded-xl bg-gray-100 dark:bg-gray-800 text-xs font-semibold">
+                        <div className="inline-flex p-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-semibold">
                             <button
                                 type="button"
                                 onClick={() => setSelectedTab('all')}
-                                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                                className={`px-3.5 py-1.5 rounded-md transition-all cursor-pointer ${
                                     selectedTab === 'all'
                                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-xs'
                                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
@@ -132,7 +132,7 @@ const MyPropertiesPage = () => {
                             <button
                                 type="button"
                                 onClick={() => setSelectedTab('active')}
-                                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                                className={`px-3.5 py-1.5 rounded-md transition-all cursor-pointer ${
                                     selectedTab === 'active'
                                         ? 'bg-white dark:bg-gray-700 text-emerald-700 dark:text-emerald-300 shadow-xs'
                                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
@@ -143,7 +143,7 @@ const MyPropertiesPage = () => {
                             <button
                                 type="button"
                                 onClick={() => setSelectedTab('draft')}
-                                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                                className={`px-3.5 py-1.5 rounded-md transition-all cursor-pointer ${
                                     selectedTab === 'draft'
                                         ? 'bg-white dark:bg-gray-700 text-amber-700 dark:text-amber-300 shadow-xs'
                                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
@@ -162,10 +162,10 @@ const MyPropertiesPage = () => {
                                 return (
                                     <div
                                         key={room._id}
-                                        className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                        className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                     >
                                         {/* Thumbnail with LIVE / DRAFT Badge */}
-                                        <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
+                                        <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
                                             <img
                                                 src={getImageUrl(room)}
                                                 alt={room.title}
@@ -244,7 +244,7 @@ const MyPropertiesPage = () => {
                             })}
                         </div>
                     ) : (
-                        <div className="py-12 px-4 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-850/40 text-center max-w-sm mx-auto">
+                        <div className="py-12 px-4 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-850/40 text-center max-w-sm mx-auto">
                             <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                                 {selectedTab === 'draft' ? 'No draft properties' : 'No properties listed yet'}
                             </h3>
@@ -254,7 +254,7 @@ const MyPropertiesPage = () => {
                             <button
                                 type="button"
                                 onClick={handleAddRoom}
-                                className="mt-3 px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold transition cursor-pointer"
+                                className="mt-3 px-3.5 py-1.5 rounded-md bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold transition cursor-pointer"
                             >
                                 List Property
                             </button>

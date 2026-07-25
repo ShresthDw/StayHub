@@ -10,7 +10,11 @@ const BrandLogo = ({ compact = false, isTransparent = false }) => (
                     event.currentTarget.nextElementSibling?.classList.remove('hidden');
                 }}
             />
-            <span className={`${compact ? 'h-6 w-6 text-sm' : 'h-7 w-7 text-base'} hidden items-center justify-center rounded-lg bg-teal-100 dark:bg-teal-900/60`} aria-hidden="true">⌂</span>
+            <span className={`${compact ? 'h-6 w-6 text-sm' : 'h-7 w-7 text-base'} hidden items-center justify-center rounded-lg bg-teal-100 dark:bg-teal-900/60 text-teal-700 dark:text-teal-300`} aria-hidden="true">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </span>
         </span>
         {!compact && (
             <span className={`text-base sm:text-lg font-extrabold tracking-tight transition-colors duration-300 ${

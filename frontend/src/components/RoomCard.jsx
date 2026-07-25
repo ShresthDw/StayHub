@@ -21,28 +21,36 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-none shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
             <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-750">
                 {isDashboard && !room.isActive && (
-                    <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 z-10">DRAFT</div>
+                    <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded z-10">DRAFT</div>
                 )}
                 {showWishlistAction && (
                     <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); onWishlistToggle?.(room); }}
-                        className={`absolute top-2 right-2 z-10 p-2 shadow-md transition-colors ${isWishlisted ? 'bg-green-600 text-white' : 'bg-white/90 text-gray-700 hover:bg-white'}`}
+                        className={`absolute top-2 right-2 z-10 p-1.5 rounded-md shadow-md transition-colors ${isWishlisted ? 'bg-teal-600 text-white' : 'bg-white/90 text-gray-700 hover:bg-white'}`}
                         aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                     >
-                        <span className="text-sm font-bold">{isWishlisted ? '♥' : '♡'}</span>
+                        {isWishlisted ? (
+                            <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        ) : (
+                            <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        )}
                     </button>
                 )}
                 {!isDashboard && (
-                    <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 z-10">
+                    <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 rounded z-10">
                         {room.propertyType ? room.propertyType.charAt(0).toUpperCase() + room.propertyType.slice(1) : 'Property'}
                     </div>
                 )}
                 {compact && (
-                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-850 dark:text-gray-100 dark:border dark:border-white/10">
+                    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-0.5 bg-white/95 px-1.5 py-0.5 rounded text-[10px] font-bold text-gray-800 shadow-sm [&>svg]:h-3 [&>svg]:w-3 dark:bg-gray-850 dark:text-gray-100 dark:border dark:border-white/10">
                         {icons.star}
                         <span>{room.rating || 'New'}</span>
                     </div>
@@ -85,7 +93,7 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
     );
 };
 
-// ✅ OPTIMIZATION: Memoize component to prevent re-renders when props haven't changed
+// OPTIMIZATION: Memoize component to prevent re-renders when props haven't changed
 export default React.memo(RoomCard, (prevProps, nextProps) => {
     // Custom comparison: return true if props are equal (don't re-render)
     return (

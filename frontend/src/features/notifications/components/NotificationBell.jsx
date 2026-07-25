@@ -24,35 +24,65 @@ const formatTimeAgo = (dateString) => {
 };
 
 // Helper for notification type icons & badges
+const renderBellTypeIcon = (type) => {
+    switch (type) {
+        case 'booking_confirmed':
+            return (
+                <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            );
+        case 'new_booking_received':
+            return (
+                <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            );
+        case 'booking_cancelled':
+            return (
+                <svg className="w-4 h-4 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            );
+        case 'review_received':
+            return (
+                <svg className="w-4 h-4 text-amber-500 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+            );
+        default:
+            return (
+                <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            );
+    }
+};
+
 const getNotificationTypeConfig = (type) => {
     switch (type) {
         case 'booking_confirmed':
             return {
-                icon: '🎉',
                 bg: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
                 badgeText: 'Confirmed'
             };
         case 'new_booking_received':
             return {
-                icon: '🛎️',
                 bg: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800',
                 badgeText: 'New Booking'
             };
         case 'booking_cancelled':
             return {
-                icon: '⚠️',
                 bg: 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800',
                 badgeText: 'Cancelled'
             };
         case 'review_received':
             return {
-                icon: '⭐',
                 bg: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
                 badgeText: 'Review'
             };
         default:
             return {
-                icon: '🔔',
                 bg: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
                 badgeText: 'Alert'
             };
@@ -104,17 +134,23 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const handleBellClick = () => {
+        setIsOpen(!isOpen);
+    };
+
     const handleNotificationClick = async (item) => {
         if (!item.isRead) {
             try {
                 await markAsRead(item._id).unwrap();
             } catch (err) {
-                console.error('Error marking as read:', err);
+                console.error('Failed to mark notification as read:', err);
             }
         }
         setIsOpen(false);
         if (item.link) {
             navigate(item.link);
+        } else {
+            navigate('/notifications');
         }
     };
 
@@ -122,7 +158,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
         try {
             await markAllAsRead().unwrap();
         } catch (err) {
-            console.error('Error marking all as read:', err);
+            console.error('Failed to mark all as read:', err);
         }
     };
 
@@ -131,7 +167,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
         try {
             await deleteNotification(id).unwrap();
         } catch (err) {
-            console.error('Error deleting notification:', err);
+            console.error('Failed to delete notification:', err);
         }
     };
 
@@ -143,47 +179,50 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
     if (!currentUser) return null;
 
     return (
-        <div className="relative" ref={dropdownRef}>
-            {/* Bell Trigger Button */}
+        <div className="relative inline-block" ref={dropdownRef}>
+            {/* Bell Button */}
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                className={`relative h-8 w-8 rounded-full transition-all duration-200 focus:outline-none inline-flex items-center justify-center active:scale-95 ${
+                onClick={handleBellClick}
+                className={`relative flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer ${
                     isTransparent
-                        ? 'bg-transparent text-white border border-white/80 hover:bg-white/15'
-                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-gray-750'
+                        ? 'text-white hover:bg-white/20'
+                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
                 }`}
-                title="Notifications"
                 aria-label="View notifications"
+                title="Notifications"
             >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
+                <svg
+                    className="w-5 h-5 transition-transform group-hover:scale-105"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
                 </svg>
 
-                {/* Unread Count Badge */}
+                {/* Unread Badge Pill */}
                 {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span className="relative inline-flex items-center justify-center rounded-full h-3.5 w-3.5 bg-gradient-to-r from-rose-500 to-red-600 text-[8px] font-bold text-white shadow-sm">
-                            {unreadCount > 9 ? '9+' : unreadCount}
-                        </span>
+                    <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded px-1 text-[10px] font-bold text-white bg-teal-600">
+                        {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                 )}
             </button>
 
-            {/* Dropdown Popover */}
+            {/* Dropdown Menu */}
             {isOpen && (
-                <div className="notification-menu-panel absolute right-0 mt-3 w-80 sm:w-96 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-900/10 z-50 dark:border-gray-700 dark:bg-gray-800">
+                <div className="notification-menu-panel absolute right-0 mt-2 w-80 sm:w-96 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl shadow-gray-900/10 z-50 dark:border-gray-700 dark:bg-gray-800">
                     {/* Header */}
-                    <div className="relative p-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/40 dark:to-cyan-900/30 border-b border-teal-100/70 dark:border-gray-700/80 flex items-center justify-between">
+                    <div className="relative p-3.5 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Notifications</span>
                             {unreadCount > 0 && (
-                                <span className="px-2 py-0.5 text-[11px] font-bold bg-teal-100 dark:bg-teal-800 text-teal-700 dark:text-teal-200 rounded-full">
+                                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-teal-100 dark:bg-teal-800 text-teal-700 dark:text-teal-200 rounded">
                                     {unreadCount} new
                                 </span>
                             )}
@@ -193,7 +232,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                                 type="button"
                                 onClick={handleMarkAllRead}
                                 disabled={markingAll}
-                                className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline transition-colors"
+                                className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline transition-colors cursor-pointer"
                             >
                                 Mark all as read
                             </button>
@@ -205,7 +244,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                         <button
                             type="button"
                             onClick={() => setActiveTab('all')}
-                            className={`pb-2 px-3 border-b-2 transition-colors ${
+                            className={`pb-2 px-3 border-b-2 transition-colors cursor-pointer ${
                                 activeTab === 'all'
                                     ? 'border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-400 font-bold'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'
@@ -216,7 +255,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                         <button
                             type="button"
                             onClick={() => setActiveTab('unread')}
-                            className={`pb-2 px-3 border-b-2 transition-colors ${
+                            className={`pb-2 px-3 border-b-2 transition-colors cursor-pointer ${
                                 activeTab === 'unread'
                                     ? 'border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-400 font-bold'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'
@@ -227,7 +266,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                         <button
                             type="button"
                             onClick={() => setActiveTab('bookings')}
-                            className={`pb-2 px-3 border-b-2 transition-colors ${
+                            className={`pb-2 px-3 border-b-2 transition-colors cursor-pointer ${
                                 activeTab === 'bookings'
                                     ? 'border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-400 font-bold'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'
@@ -243,7 +282,6 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                             <div className="p-6 text-center text-sm text-gray-400">Loading notifications...</div>
                         ) : filteredNotifications.length > 0 ? (
                             filteredNotifications.map((item) => {
-                                const typeConfig = getNotificationTypeConfig(item.type);
                                 return (
                                     <div
                                         key={item._id}
@@ -256,8 +294,8 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                                     >
                                         {/* Icon */}
                                         <div className="flex-shrink-0 mt-0.5">
-                                            <div className="w-9 h-9 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-300 flex items-center justify-center text-base shadow-sm">
-                                                {typeConfig.icon}
+                                            <div className="w-8 h-8 rounded-md bg-gray-100 dark:bg-gray-750 flex items-center justify-center shadow-xs">
+                                                {renderBellTypeIcon(item.type)}
                                             </div>
                                         </div>
 
@@ -283,7 +321,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                                         <button
                                             type="button"
                                             onClick={(e) => handleDelete(e, item._id)}
-                                            className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition-opacity"
+                                            className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition-opacity cursor-pointer"
                                             title="Delete"
                                         >
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -295,8 +333,10 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                             })
                         ) : (
                             <div className="p-8 text-center">
-                                <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 flex items-center justify-center mx-auto mb-2 text-xl">
-                                    📭
+                                <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-750 text-gray-500 dark:text-gray-400 flex items-center justify-center mx-auto mb-2">
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
                                 </div>
                                 <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                                     {activeTab === 'unread' ? 'No unread notifications' : 'No notifications yet'}
@@ -313,7 +353,7 @@ const NotificationBell = ({ currentUser, isTransparent = false }) => {
                         <button
                             type="button"
                             onClick={handleViewAll}
-                            className="w-full py-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+                            className="w-full py-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors cursor-pointer"
                         >
                             View all notifications →
                         </button>

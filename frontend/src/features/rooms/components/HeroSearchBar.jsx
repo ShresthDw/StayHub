@@ -167,12 +167,12 @@ const HeroSearchBar = ({ citiesData = [] }) => {
     return (
         <div className="w-full max-w-5xl mx-auto relative z-30" ref={searchContainerRef}>
             {/* Main Search Bar Capsule */}
-            <div className="bg-white rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl p-1.5 sm:p-2">
+            <div className="bg-white rounded-2xl sm:rounded-full border border-gray-200 shadow-xl p-1.5 sm:p-2">
                 <div className="flex flex-wrap sm:flex-nowrap items-center w-full">
 
                     {/* TOP ROW (Mobile) / MIDDLE-LEFT (Desktop): Check-in */}
                     <div
-                        className={`order-1 sm:order-2 w-1/2 sm:w-32 md:w-36 flex-shrink-0 sm:border-l border-gray-300 rounded-l-xl rounded-r-none sm:rounded-xl px-3 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
+                        className={`order-1 sm:order-2 w-1/2 sm:w-32 md:w-36 flex-shrink-0 sm:border-l border-gray-300 rounded-l-full rounded-r-none sm:rounded-full px-3.5 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
                             activeSection === 'checkin'
                                 ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
                                 : 'hover:bg-gray-50'
@@ -216,17 +216,19 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                     e.preventDefault();
                                     setTempCheckInDate('');
                                 }}
-                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
+                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 p-0.5"
                                 title="Clear date"
                             >
-                                ✕
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         )}
                     </div>
 
                     {/* TOP ROW (Mobile) / MIDDLE-RIGHT (Desktop): Check-out */}
                     <div
-                        className={`order-2 sm:order-3 w-1/2 sm:w-32 md:w-36 flex-shrink-0 border-l border-gray-300 rounded-r-xl rounded-l-none sm:rounded-xl px-3 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
+                        className={`order-2 sm:order-3 w-1/2 sm:w-32 md:w-36 flex-shrink-0 border-l border-gray-300 rounded-r-full rounded-l-none sm:rounded-full px-3.5 py-1.5 transition-all cursor-pointer relative overflow-hidden group ${
                             activeSection === 'checkout'
                                 ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
                                 : 'hover:bg-gray-50'
@@ -265,10 +267,12 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                     e.preventDefault();
                                     setTempCheckOutDate('');
                                 }}
-                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 text-xs p-0.5"
+                                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-gray-600 p-0.5"
                                 title="Clear date"
                             >
-                                ✕
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         )}
                     </div>
@@ -278,7 +282,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
                     {/* BOTTOM-LEFT (Mobile) / LEFTMOST (Desktop): Where Input */}
                     <div
-                        className={`order-4 sm:order-1 flex-1 min-w-0 relative rounded-xl sm:rounded-l-full sm:rounded-r-none px-2.5 sm:px-4 py-1.5 sm:py-2 transition-all cursor-pointer ${
+                        className={`order-4 sm:order-1 flex-1 min-w-0 relative rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 transition-all cursor-pointer ${
                             activeSection === 'where'
                                 ? 'bg-teal-50 ring-1 ring-teal-500/40 shadow-inner'
                                 : 'hover:bg-gray-50'
@@ -316,9 +320,12 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                 setSearchInput('');
                                                 setFilteredCities([]);
                                             }}
-                                            className="text-gray-400 hover:text-gray-600 p-0.5 text-xs ml-1 flex-shrink-0"
+                                            className="text-gray-400 hover:text-gray-600 p-0.5 ml-1 flex-shrink-0"
+                                            title="Clear input"
                                         >
-                                            ✕
+                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
                                         </button>
                                     )}
                                 </div>
@@ -327,7 +334,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
                         {/* Dropdown Suggestions Menu */}
                         {showSuggestions && (
-                            <div className="absolute top-full left-0 w-full sm:w-96 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
+                            <div className="absolute top-full left-0 w-full sm:w-96 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden max-h-80 overflow-y-auto animate-in fade-in-50 duration-150">
                                 {searchInput.trim() ? (
                                     /* Search Match Results */
                                     <div>
@@ -359,7 +366,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                         </div>
                                                     </div>
                                                     {city.count !== undefined && (
-                                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
+                                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-teal-50 text-teal-700">
                                                             {city.count} {city.count === 1 ? 'stay' : 'stays'}
                                                         </span>
                                                     )}
@@ -401,7 +408,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                     className="w-full px-4 py-2 text-left hover:bg-teal-50 flex items-center justify-between transition-colors group"
                                                 >
                                                     <div className="flex items-center gap-2.5">
-                                                         <span className="p-1.5 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0">
+                                                         <span className="p-1.5 rounded-md bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0">
                                                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -416,8 +423,11 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                                                              </span>
                                                          </div>
                                                      </div>
-                                                     <span className="text-xs font-semibold text-teal-600 group-hover:translate-x-0.5 transition-transform">
-                                                         Explore →
+                                                     <span className="text-xs font-semibold text-teal-600 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
+                                                         <span>Explore</span>
+                                                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                                                         </svg>
                                                      </span>
                                                  </button>
                                              ))}
@@ -433,7 +443,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         <button
                             type="button"
                             onClick={() => executeSearch()}
-                            className="w-10 h-10 sm:w-auto sm:h-11 sm:px-6 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-2 group flex-shrink-0"
+                            className="w-10 h-10 sm:w-auto sm:h-10 sm:px-5 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-2 group flex-shrink-0"
                             title="Search stays"
                             aria-label="Search"
                         >
@@ -449,7 +459,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
 
             {/* Error Message Toast / Alert */}
             {searchError && (
-                <div className="mt-3 p-3 bg-red-600 text-white rounded-xl text-xs font-semibold flex items-center justify-between shadow-lg animate-in fade-in duration-200">
+                <div className="mt-3 p-3 bg-red-600 text-white rounded-lg text-xs font-semibold flex items-center justify-between shadow-lg animate-in fade-in duration-200">
                     <span className="flex items-center gap-2">
                         <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -459,9 +469,12 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                     <button
                         type="button"
                         onClick={() => setSearchError('')}
-                        className="text-white hover:text-red-200 text-sm font-bold ml-2"
+                        className="text-white hover:text-red-200 p-0.5 ml-2"
+                        title="Dismiss error"
                     >
-                        ✕
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
             )}
@@ -479,7 +492,7 @@ const HeroSearchBar = ({ citiesData = [] }) => {
                         key={city.name}
                         type="button"
                         onClick={() => handleSelectCity(city.name)}
-                        className="h-7 px-3 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white backdrop-blur-md text-xs font-medium border border-white/20 hover:border-white/40 shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center justify-center"
+                        className="h-7 px-3.5 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white backdrop-blur-md text-xs font-medium border border-white/20 hover:border-white/40 shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center justify-center"
                     >
                         {city.name}
                     </button>

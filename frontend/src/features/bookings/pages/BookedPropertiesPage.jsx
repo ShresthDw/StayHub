@@ -67,7 +67,7 @@ const BookedPropertiesPage = () => {
                                         <span className="text-gray-400">No image</span>
                                     </div>
                                 )}
-                                <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
+                                <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold shadow-xs ${
                                     property.status === 'confirmed'
                                         ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
                                         : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'

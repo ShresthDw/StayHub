@@ -247,7 +247,8 @@ const RoomDetailsPageView = () => {
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
                         <span style="display: inline-block; padding: 2px 6px; font-size: 10px; font-weight: 700; background: #ccfbf1; color: #0f766e; border-radius: 4px; text-transform: uppercase;">${safeType}</span>
                         <span style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; color: #0f172a;">
-                            ★ ${room.rating || room.ratingAverage || '4.9'}
+                            <svg width="12" height="12" viewBox="0 0 20 20" fill="#f59e0b" style="display:inline-block;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span>${room.rating || room.ratingAverage || '4.9'}</span>
                         </span>
                     </div>
                     <p style="font-weight: 700; font-size: 13px; color: #0f172a; margin: 0 0 3px 0; line-height: 1.3;">${safeTitle}</p>
@@ -474,9 +475,9 @@ const RoomDetailsPageView = () => {
                     {/* Left Column (2 cols): Original position of Gallery, Title, Description, Specs, Amenities, Reviews - Unboxed */}
                     <section className="lg:col-span-2 space-y-4">
                         {/* Gallery Section */}
-                        <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3 bg-gray-900/10 dark:bg-gray-950/40 p-2 rounded-2xl">
+                        <div className="room-detail-gallery grid grid-cols-1 gap-2 overflow-hidden sm:grid-cols-3 bg-gray-900/10 dark:bg-gray-950/40 p-2 rounded-xl">
                             {/* Main Image Box */}
-                            <div className={`relative overflow-hidden rounded-xl bg-gray-900/80 dark:bg-gray-950 flex items-center justify-center h-full min-h-[260px] sm:min-h-[340px] ${hasMultipleImages ? 'sm:col-span-2' : 'col-span-full'}`}>
+                            <div className={`relative overflow-hidden rounded-lg bg-gray-900/80 dark:bg-gray-950 flex items-center justify-center h-full min-h-[260px] sm:min-h-[340px] ${hasMultipleImages ? 'sm:col-span-2' : 'col-span-full'}`}>
                                 <img
                                     src={getImageUrl(mainImage)}
                                     alt=""
@@ -492,13 +493,13 @@ const RoomDetailsPageView = () => {
 
                             {/* Thumbnail Stack if multiple images */}
                             {hasMultipleImages && (
-                                <div className="grid min-h-0 min-w-0 grid-cols-3 sm:grid-cols-1 gap-2 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800/80 p-2">
+                                <div className="grid min-h-0 min-w-0 grid-cols-3 sm:grid-cols-1 gap-2 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800/80 p-2">
                                     {allImages.slice(0, 3).map((img, idx) => (
                                         <button
                                             key={idx}
                                             type="button"
                                             onClick={() => setSelectedImageIndex(idx)}
-                                            className={`relative w-full h-full min-h-0 rounded-lg overflow-hidden border-2 transition-all cursor-pointer group ${
+                                            className={`relative w-full h-full min-h-0 rounded-md overflow-hidden border-2 transition-all cursor-pointer group ${
                                                 selectedImageIndex === idx
                                                     ? 'border-teal-500 shadow-md ring-2 ring-teal-500/30'
                                                     : 'border-transparent opacity-75 hover:opacity-100 hover:border-teal-300'
@@ -518,15 +519,29 @@ const RoomDetailsPageView = () => {
                         {/* Title & Description Section (Unboxed) */}
                         <div className="pt-2 space-y-3">
                             <div className="flex flex-wrap items-center gap-3">
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-200 capitalize">{room.propertyType}</span>
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">Daily stays</span>
+                                <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-200 capitalize">{room.propertyType}</span>
+                                <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200">Daily stays</span>
                                 <span className="flex items-center text-sm text-gray-700 dark:text-gray-300">{icons.star}<span className="ml-1 font-medium">{room.rating || room.ratingAverage || '4.9'}</span></span>
                                 <button
                                     type="button"
                                     onClick={handleToggleWishlist}
-                                    className={`ml-auto rounded-full px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${isWishlisted ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'}`}
+                                    className={`ml-auto rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer inline-flex items-center gap-1.5 ${isWishlisted ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'}`}
                                 >
-                                    {isWishlisted ? '♥ Saved' : '♡ Save to wishlist'}
+                                    {isWishlisted ? (
+                                        <>
+                                            <svg className="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 24 24">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                            </svg>
+                                            <span>Saved</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-3.5 h-3.5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                            <span>Save to wishlist</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{room.title}</h1>
@@ -597,8 +612,11 @@ const RoomDetailsPageView = () => {
                         <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-4">
                             <div className="flex items-center gap-2">
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Guest Reviews</h3>
-                                <span className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                    ★ {room.rating || room.ratingAverage || '4.9'}
+                                <span className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 gap-1">
+                                    <svg className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span>{room.rating || room.ratingAverage || '4.9'}</span>
                                 </span>
                             </div>
 
@@ -629,20 +647,26 @@ const RoomDetailsPageView = () => {
                                     
                                     <div>
                                         <label className="block text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300 font-semibold mb-1.5">Rating</label>
-                                        <div className="flex gap-1">
+                                        <div className="flex gap-1.5">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
                                                     type="button"
                                                     onClick={() => setReviewRating(star)}
                                                     disabled={!canReview}
-                                                    className={`text-2xl transition-transform ${
+                                                    className={`p-1 transition-transform ${
                                                         canReview ? 'hover:scale-110 cursor-pointer' : 'cursor-not-allowed opacity-50'
-                                                    } ${
-                                                        star <= reviewRating ? 'text-amber-400' : 'text-gray-300 dark:text-gray-600'
                                                     }`}
+                                                    aria-label={`Rate ${star} star`}
                                                 >
-                                                    ★
+                                                    <svg
+                                                        className={`w-6 h-6 ${
+                                                            star <= reviewRating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-gray-600 fill-transparent stroke-current'
+                                                        }`}
+                                                        viewBox="0 0 20 20"
+                                                    >
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
                                                 </button>
                                             ))}
                                         </div>
@@ -687,8 +711,11 @@ const RoomDetailsPageView = () => {
                             )}
 
                             {hasReviewed && (
-                                <div className="mt-4 p-3.5 rounded-md border border-emerald-500/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                                    ✓ You have reviewed this property
+                                <div className="mt-4 p-3.5 rounded-md border border-emerald-500/40 text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span>You have reviewed this property</span>
                                 </div>
                             )}
                         </div>
@@ -764,7 +791,7 @@ const RoomDetailsPageView = () => {
                                 <button
                                     type="button"
                                     onClick={handleCopyAddress}
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm cursor-pointer"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm cursor-pointer"
                                 >
                                     {copiedAddress ? (
                                         <>
@@ -787,7 +814,7 @@ const RoomDetailsPageView = () => {
                                     href={`https://www.google.com/maps/search/?api=1&query=${room.location.coordinates[1]},${room.location.coordinates[0]}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white transition shadow-sm"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-md bg-teal-600 hover:bg-teal-700 text-white transition shadow-sm"
                                 >
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -797,7 +824,7 @@ const RoomDetailsPageView = () => {
                             </div>
                         </div>
 
-                        <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
+                        <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
                             <div 
                                 ref={mapRef}
                                 id="room-detail-map"

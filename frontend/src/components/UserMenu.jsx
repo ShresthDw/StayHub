@@ -104,7 +104,7 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
             </button>
 
             {isOpen && (
-                <div className="user-menu-panel absolute right-0 mt-3 w-72 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-900/10 z-50 dark:border-gray-700 dark:bg-gray-800">
+                <div className="user-menu-panel absolute right-0 mt-3 w-72 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl shadow-gray-900/10 z-50 dark:border-gray-700 dark:bg-gray-800">
                     <div className="flex items-center gap-3 bg-gradient-to-br from-teal-50 to-cyan-50 p-4 dark:from-teal-900/40 dark:to-cyan-900/30">
                         {currentUser?.avatar || currentUser?.profilePicture ? (
                             <img
@@ -126,7 +126,7 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
                     <div className="space-y-1 p-2">
                         <button
                             onClick={handleEditProfile}
-                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                            className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                         >
                             {icons.edit}
                             <span>Edit Profile</span>
@@ -134,9 +134,9 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
 
                         <button
                             onClick={handleViewNotifications}
-                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                            className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                         >
-                            <svg className="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
                             <span>Notifications</span>
@@ -144,7 +144,7 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
 
                         <button
                             onClick={handleViewWishlist}
-                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                            className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                         >
                             {icons.heart}
                             <span>Wishlist</span>
@@ -152,7 +152,7 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
 
                         <button
                             onClick={handleViewMyBookings}
-                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                            className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                         >
                             {icons.calendar}
                             <span>My Bookings</span>
@@ -162,16 +162,16 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
                             <>
                                 <button
                                     onClick={handleViewMyProperties}
-                                    className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                                    className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                                 >
-                                    <svg className="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                     </svg>
                                     <span>My Properties</span>
                                 </button>
                                 <button
                                     onClick={handleViewHostEarnings}
-                                    className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
+                                    className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3"
                                 >
                                     {icons.trending}
                                     <span>Host Earnings & Bookings</span>
@@ -181,14 +181,14 @@ const UserMenu = ({ currentUser, icons, isTransparent = false }) => {
 
                         <button
                             onClick={handleThemeToggle}
-                            className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3">
+                            className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-gray-700 dark:hover:text-teal-300 transition-colors flex items-center gap-3">
                             {theme === 'dark' ? icons.sun : icons.moon}
                             <span>Switch to {theme === 'dark' ? 'Light' : 'Dark'} Theme</span>
                         </button>
 
                         <button
                             onClick={handleLogout}
-                            className="w-full rounded-xl border-t border-gray-100 px-3 pb-2 pt-3 text-left text-sm text-red-600 dark:border-gray-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-3">
+                            className="w-full rounded-md border-t border-gray-100 px-3 pb-2 pt-2 text-left text-sm text-red-600 dark:border-gray-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-3">
                             {icons.logout}
                             <span>Logout</span>
                         </button>

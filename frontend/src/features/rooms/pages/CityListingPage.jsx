@@ -201,9 +201,12 @@ const CityListingPage = () => {
                         {/* Filter Button */}
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition cursor-pointer"
+                            className="flex items-center gap-2 px-3.5 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-xs font-semibold transition cursor-pointer"
                         >
-                            {icons.filter || '⚙️'} Filters
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            <span>Filters</span>
                         </button>
                     </div>
                 </div>
@@ -214,21 +217,23 @@ const CityListingPage = () => {
                 <>
                     {/* Overlay */}
                     <div 
-                        className="fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity"
+                        className="fixed inset-0 bg-black/50 z-30 transition-opacity"
                         onClick={() => setShowFilters(false)}
                     />
                     
                     {/* Modal */}
                     <div className="fixed inset-0 flex items-center justify-center z-40 p-4">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
                             {/* Modal Header */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800">
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters & Sort</h2>
+                            <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Filters & Sort</h2>
                                 <button
                                     onClick={() => setShowFilters(false)}
-                                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none cursor-pointer"
+                                    className="p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
                                 >
-                                    ×
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
                                 </button>
                             </div>
 
@@ -308,7 +313,7 @@ const CityListingPage = () => {
             {/* Main Content - Responsive Layout */}
             <div className="home-content-rail flex flex-col gap-6 py-8 lg:flex-row">
                 {/* Left Panel - Room Grid */}
-                <div className="w-full rounded-2xl bg-white dark:bg-gray-800 p-5 shadow-sm lg:w-3/5">
+                <div className="w-full rounded-xl bg-white dark:bg-gray-800 p-5 shadow-sm border border-gray-100 dark:border-gray-700/60 lg:w-3/5">
                     <div>
                         {citiesRooms.length > 0 ? (
                             <>
@@ -340,7 +345,7 @@ const CityListingPage = () => {
                                 </p>
                                 <button
                                     onClick={() => navigate('/')}
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
+                                    className="px-5 py-2.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-xs font-semibold"
                                 >
                                     Explore Other Cities
                                 </button>
@@ -350,12 +355,12 @@ const CityListingPage = () => {
                 </div>
 
                 {/* Right Panel - Responsive Map */}
-                <div className="w-full rounded-2xl bg-gray-100 p-3 shadow-sm dark:bg-gray-800 lg:w-2/5 lg:flex-shrink-0">
+                <div className="w-full rounded-xl bg-gray-100 p-3 shadow-sm border border-gray-200/80 dark:border-gray-700/60 dark:bg-gray-800 lg:w-2/5 lg:flex-shrink-0">
                     {citiesRooms.length > 0 ? (
                         <div className="flex h-72 w-full items-center justify-center lg:h-[calc(100vh-14rem)]">
                             <div 
                                 ref={mapRef}
-                                className="w-full h-full rounded-xl border border-gray-300 dark:border-gray-600 shadow-md"
+                                className="w-full h-full rounded-lg border border-gray-300 dark:border-gray-600 shadow-md"
                             />
                         </div>
                     ) : (

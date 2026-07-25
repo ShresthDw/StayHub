@@ -25,7 +25,7 @@ const Toast = ({ message, type, onClose }) => {
 
     return (
         <div
-            className={`fixed top-20 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-xl font-medium transition-all duration-300 ease-in-out z-50 ${
+            className={`fixed top-20 left-1/2 transform -translate-x-1/2 px-5 py-2.5 rounded-lg shadow-xl font-medium text-sm transition-all duration-300 ease-in-out z-50 ${
                 bgColor
             } ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'

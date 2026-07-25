@@ -134,7 +134,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                 {/* Status Toast Alert */}
                 {statusMessage && (
                     <div
-                        className={`flex items-center justify-between p-4 rounded-2xl shadow-lg border transition-all animate-fade-in ${
+                        className={`flex items-center justify-between p-4 rounded-lg shadow-sm border transition-all animate-fade-in ${
                             statusMessage.type === 'success'
                                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border-emerald-800'
                                 : 'bg-red-50 text-red-800 border-red-200 dark:bg-red-950/80 dark:text-red-200 dark:border-red-800'
@@ -164,9 +164,9 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                 )}
 
                 {/* PAGE HEADER */}
-                <div>
+                <div className="pb-4 border-b border-gray-200 dark:border-gray-800">
                     <BackButton to="/" label="Back to Home" className="mb-2" />
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
                                 Account & Profile
@@ -182,14 +182,14 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                 <div className="grid gap-6 md:grid-cols-3">
                     {/* Left/Center Form Column (2 Cols) */}
                     <div className="md:col-span-2 space-y-6 animate-scroll-reveal">
-                        <form onSubmit={handleSaveProfile} className="rounded-3xl bg-white dark:bg-gray-800 p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-6">
-                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
+                        <form onSubmit={handleSaveProfile} className="rounded-xl bg-white dark:bg-gray-800 p-6 sm:p-7 shadow-xs border border-gray-200/80 dark:border-gray-700/80 space-y-5">
+                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-3">
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Personal Information</h2>
+                                    <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">Personal Information</h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Update your account details and password anytime.</p>
                                 </div>
                                 {isDirty && (
-                                    <span className="inline-flex items-center rounded-full bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1 text-xs font-semibold text-amber-800 dark:text-amber-300">
+                                    <span className="inline-flex items-center rounded bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:text-amber-300">
                                         Unsaved Changes
                                     </span>
                                 )}
@@ -201,9 +201,9 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">
                                         Full Name <span className="text-red-500">*</span>
                                     </label>
-                                    <div className="relative rounded-2xl shadow-sm">
+                                    <div className="relative rounded-md shadow-xs">
                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
@@ -214,7 +214,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                             placeholder="e.g. Alex Johnson"
-                                            className="block w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 dark:focus:bg-gray-900 transition-all"
+                                            className="block w-full rounded-md border border-gray-200 bg-gray-50/50 py-2.5 pl-10 pr-4 text-xs sm:text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 dark:focus:bg-gray-900 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -224,9 +224,9 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">
                                         Phone Number
                                     </label>
-                                    <div className="relative rounded-2xl shadow-sm">
+                                    <div className="relative rounded-md shadow-xs">
                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                             </svg>
                                         </div>
@@ -236,7 +236,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                             placeholder="e.g. +1 555-0199"
-                                            className="block w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 dark:focus:bg-gray-900 transition-all"
+                                            className="block w-full rounded-md border border-gray-200 bg-gray-50/50 py-2.5 pl-10 pr-4 text-xs sm:text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 dark:focus:bg-gray-900 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -254,9 +254,9 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             Verified
                                         </span>
                                     </div>
-                                    <div className="relative rounded-2xl shadow-sm">
+                                    <div className="relative rounded-md shadow-xs">
                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
                                         </div>
@@ -266,7 +266,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             readOnly
                                             disabled
                                             value={currentUser.email}
-                                            className="block w-full rounded-2xl border border-gray-200 bg-gray-100/80 py-3 pl-11 pr-10 text-sm text-gray-500 cursor-not-allowed dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400"
+                                            className="block w-full rounded-md border border-gray-200 bg-gray-100/80 py-2.5 pl-10 pr-10 text-xs sm:text-sm text-gray-500 cursor-not-allowed dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400"
                                         />
                                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400">
                                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -279,21 +279,21 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                             </div>
 
                             {/* Password Update Section */}
-                            <div className="border-t border-gray-100 dark:border-gray-700/80 pt-5">
+                            <div className="border-t border-gray-100 dark:border-gray-700/80 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => setShowPasswordSection(!showPasswordSection)}
-                                    className="flex items-center justify-between w-full text-left py-2 group"
+                                    className="flex items-center justify-between w-full text-left py-1.5 group cursor-pointer"
                                 >
                                     <div className="flex items-center gap-2.5">
-                                        <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 group-hover:bg-teal-100 transition-colors">
+                                        <div className="p-1.5 rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 group-hover:bg-teal-100 transition-colors">
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Change Password</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">Leave blank to keep your current password.</p>
+                                            <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Change Password</p>
+                                            <p className="text-[11px] text-gray-500 dark:text-gray-400">Leave blank to keep your current password.</p>
                                         </div>
                                     </div>
                                     <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 flex items-center gap-1">
@@ -311,19 +311,19 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">
                                                 New Password
                                             </label>
-                                            <div className="relative rounded-2xl shadow-sm">
+                                            <div className="relative rounded-md shadow-xs">
                                                 <input
                                                     type={showNewPassword ? 'text' : 'password'}
                                                     name="newPassword"
                                                     value={formData.newPassword}
                                                     onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                                                     placeholder="Enter new password (min. 6 chars)"
-                                                    className="block w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-4 pr-11 text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 transition-all"
+                                                    className="block w-full rounded-md border border-gray-200 bg-gray-50/50 py-2.5 pl-4 pr-11 text-xs sm:text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 transition-all"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
                                                 >
                                                     {showNewPassword ? (
                                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -344,19 +344,19 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">
                                                 Confirm New Password
                                             </label>
-                                            <div className="relative rounded-2xl shadow-sm">
+                                            <div className="relative rounded-md shadow-xs">
                                                 <input
                                                     type={showConfirmPassword ? 'text' : 'password'}
                                                     name="confirmPassword"
                                                     value={formData.confirmPassword}
                                                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                                     placeholder="Re-enter new password"
-                                                    className="block w-full rounded-2xl border border-gray-200 bg-gray-50/50 py-3 pl-4 pr-11 text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 transition-all"
+                                                    className="block w-full rounded-md border border-gray-200 bg-gray-50/50 py-2.5 pl-4 pr-11 text-xs sm:text-sm text-gray-900 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-100 dark:focus:border-teal-400 transition-all"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
                                                 >
                                                     {showConfirmPassword ? (
                                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -376,12 +376,12 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                             </div>
 
                             {/* Form Action Buttons */}
-                            <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/80">
+                            <div className="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-700/80">
                                 <button
                                     type="button"
                                     onClick={handleResetForm}
                                     disabled={!isDirty || isUpdating}
-                                    className="rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition-colors"
+                                    className="rounded-md px-3.5 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition-colors cursor-pointer"
                                 >
                                     Discard Changes
                                 </button>
@@ -389,10 +389,10 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                 <button
                                     type="submit"
                                     disabled={!isDirty || isUpdating}
-                                    className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all ${
+                                    className={`flex items-center gap-2 rounded-md px-5 py-2 text-xs sm:text-sm font-semibold text-white shadow-xs transition-all cursor-pointer ${
                                         !isDirty || isUpdating
                                             ? 'bg-teal-400 dark:bg-teal-700 cursor-not-allowed opacity-60'
-                                            : 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-teal-600/20 active:scale-95'
+                                            : 'bg-teal-600 hover:bg-teal-700 active:scale-95'
                                     }`}
                                 >
                                     {isUpdating ? (
@@ -419,7 +419,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                     {/* Right Side Column (1 Col) */}
                     <div className="space-y-6 animate-scroll-reveal">
                         {/* Profile Identity & Account Overview Card */}
-                        <div className="rounded-3xl bg-white dark:bg-gray-800 p-6 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-5">
+                        <div className="rounded-xl bg-white dark:bg-gray-800 p-5 sm:p-6 shadow-xs border border-gray-200/80 dark:border-gray-700/80 space-y-5">
                             {/* User Avatar & Identity */}
                             <div className="flex items-center gap-4">
                                 <div className="relative shrink-0">
@@ -427,17 +427,17 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                         <img
                                             src={currentUser.avatar || currentUser.profilePicture}
                                             alt={currentUser.name}
-                                            className="h-16 w-16 rounded-2xl object-cover shadow-md ring-2 ring-teal-500/30"
+                                            className="h-14 w-14 rounded-xl object-cover shadow-sm ring-2 ring-teal-500/30"
                                         />
                                     ) : (
-                                        <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-700 text-white font-extrabold text-2xl flex items-center justify-center shadow-md">
+                                        <div className="h-14 w-14 rounded-xl bg-teal-600 text-white font-extrabold text-xl flex items-center justify-center shadow-sm">
                                             {userInitial}
                                         </div>
                                     )}
-                                    <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 ring-2 ring-emerald-500/30" title="Active Account" />
+                                    <span className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800" title="Active Account" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 truncate capitalize">
+                                    <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 truncate capitalize">
                                         {currentUser.name}
                                     </h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
@@ -445,14 +445,14 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     </p>
                                     <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                                         {currentUser.role === 'owner' ? (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 px-2.5 py-0.5 text-[11px] font-semibold">
+                                            <span className="inline-flex items-center gap-1 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 px-2 py-0.5 text-[10px] font-semibold">
                                                 <svg className="w-3 h-3 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
                                                 <span>Property Host</span>
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 px-2.5 py-0.5 text-[11px] font-semibold">
+                                            <span className="inline-flex items-center gap-1 rounded bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 px-2 py-0.5 text-[10px] font-semibold">
                                                 <svg className="w-3 h-3 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                 </svg>
@@ -460,7 +460,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                             </span>
                                         )}
                                         {currentUser.authProvider === 'google' || currentUser.googleId ? (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 text-[11px] font-medium border border-blue-200/60 dark:border-blue-800/60">
+                                            <span className="inline-flex items-center gap-1 rounded bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 text-[10px] font-medium border border-blue-200/60 dark:border-blue-800/60">
                                                 Google Account
                                             </span>
                                         ) : null}
@@ -505,7 +505,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                 <button
                                     type="button"
                                     onClick={handleThemeToggle}
-                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 py-2.5 px-3 text-xs font-semibold text-gray-700 dark:text-gray-200 transition-all"
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 py-2 px-3 text-xs font-semibold text-gray-700 dark:text-gray-200 transition-all cursor-pointer"
                                     title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
                                 >
                                     {theme === 'dark' ? (
@@ -528,7 +528,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                 <button
                                     type="button"
                                     onClick={onLogout}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/70 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 py-2.5 px-3.5 text-xs font-semibold text-red-600 dark:text-red-400 transition-all"
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50/70 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 py-2 px-3 text-xs font-semibold text-red-600 dark:text-red-400 transition-all cursor-pointer"
                                 >
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -540,7 +540,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
 
                         {/* Host Status Upgrade Card (If Guest) */}
                         {currentUser.role !== 'owner' && (
-                            <div className="rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-6 border border-amber-200 dark:border-amber-800/60 space-y-3">
+                            <div className="rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-5 border border-amber-200 dark:border-amber-800/60 space-y-3">
                                 <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-sm">
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -554,7 +554,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
                                     type="button"
                                     onClick={handleBecomeHost}
                                     disabled={isUpgradingHost}
-                                    className="w-full mt-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xs py-2.5 shadow-sm transition-all flex items-center justify-center gap-2"
+                                    className="w-full mt-2 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs py-2 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     {isUpgradingHost ? 'Enabling Host Mode…' : 'Switch to Host Account'}
                                 </button>

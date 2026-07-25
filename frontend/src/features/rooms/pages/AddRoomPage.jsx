@@ -408,7 +408,7 @@ const AddRoomPage = () => {
                     </div>
 
                     {/* Quick Stat Pill */}
-                    <div className="hidden sm:flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div className="hidden sm:flex items-center gap-2 bg-white dark:bg-gray-800 px-3.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm">
                         <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
                         <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
                             Host Studio
@@ -425,9 +425,9 @@ const AddRoomPage = () => {
                     <div className="lg:col-span-7 space-y-6 animate-scroll-reveal">
 
                         {/* 1. Property Type & Category */}
-                        <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
+                        <div className="bg-white dark:bg-gray-800/90 rounded-xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">1</span>
+                                <span className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">1</span>
                                 Property Type & Category
                             </h2>
 
@@ -441,14 +441,14 @@ const AddRoomPage = () => {
                                             key={type}
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, propertyType: type }))}
-                                            className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all text-center ${
+                                            className={`flex flex-col items-center justify-center p-2.5 rounded-lg border transition-all text-center ${
                                                 isSelected
                                                     ? 'border-teal-500 bg-teal-50/80 dark:bg-teal-900/30 text-teal-900 dark:text-teal-100 ring-2 ring-teal-500/20 font-bold'
                                                     : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50/40 dark:bg-gray-800/50'
                                             }`}
                                         >
                                             <span className="text-teal-600 dark:text-teal-400 mb-1">{icon}</span>
-                                            <span className="text-[10px] capitalize">{type}</span>
+                                            <span className="text-[11px] capitalize font-medium">{type}</span>
                                         </button>
                                     );
                                 })}
@@ -518,17 +518,17 @@ const AddRoomPage = () => {
                         </div>
 
                         {/* 2. Location & Map Pin */}
-                        <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
+                        <div className="bg-white dark:bg-gray-800/90 rounded-xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                    <span className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">2</span>
+                                    <span className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">2</span>
                                     Location & Map Pin
                                 </h2>
                                 <button
                                     type="button"
                                     onClick={handleAutoFillAddress}
                                     disabled={loading || !formData.location.lat}
-                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 bg-teal-50 dark:bg-teal-900/40 px-3 py-1.5 rounded-lg border border-teal-200 dark:border-teal-700 transition-all disabled:opacity-50"
+                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 bg-teal-50 dark:bg-teal-900/40 px-3 py-1.5 rounded-md border border-teal-200 dark:border-teal-700 transition-all disabled:opacity-50"
                                 >
                                     {ICONS.autoFill}
                                     <span>{loading ? 'Auto-filling...' : 'Auto-fill from Pin'}</span>
@@ -536,7 +536,7 @@ const AddRoomPage = () => {
                             </div>
 
                             {/* Map */}
-                            <div className="h-56 w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-inner">
+                            <div className="h-56 w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-inner">
                                 <MapLocationSelector
                                     location={formData.location}
                                     onLocationSelect={handleLocationSelect}
@@ -556,7 +556,7 @@ const AddRoomPage = () => {
                                         value={formData.address.street}
                                         onChange={handleAddressChange}
                                         placeholder="e.g. 104 Sunset Blvd, Near Lighthouse"
-                                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                        className="w-full px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                     />
                                 </div>
                                 <div>
@@ -569,7 +569,7 @@ const AddRoomPage = () => {
                                         value={formData.address.city}
                                         onChange={handleAddressChange}
                                         placeholder="e.g. Goa"
-                                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                        className="w-full px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                     />
                                 </div>
                                 <div>
@@ -582,7 +582,7 @@ const AddRoomPage = () => {
                                         value={formData.address.state}
                                         onChange={handleAddressChange}
                                         placeholder="e.g. Goa"
-                                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                        className="w-full px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                     />
                                 </div>
                                 <div>
@@ -595,7 +595,7 @@ const AddRoomPage = () => {
                                         value={formData.address.country}
                                         onChange={handleAddressChange}
                                         placeholder="e.g. India"
-                                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                        className="w-full px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                     />
                                 </div>
                                 <div>
@@ -608,16 +608,16 @@ const AddRoomPage = () => {
                                         value={formData.address.zipCode}
                                         onChange={handleAddressChange}
                                         placeholder="e.g. 403509"
-                                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                        className="w-full px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* 3. Amenities & Features */}
-                        <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-4">
+                        <div className="bg-white dark:bg-gray-800/90 rounded-xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-4">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">3</span>
+                                <span className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">3</span>
                                 Amenities & Features
                             </h2>
 
@@ -630,7 +630,7 @@ const AddRoomPage = () => {
                                             key={facility}
                                             type="button"
                                             onClick={() => handleAmenityToggle(facility)}
-                                            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                                            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold transition-all ${
                                                 isSelected
                                                     ? 'bg-teal-600 text-white shadow-sm'
                                                     : 'bg-gray-100 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -651,9 +651,9 @@ const AddRoomPage = () => {
                     <div className="lg:col-span-5 space-y-6 animate-scroll-reveal">
 
                         {/* 4. Pricing & Capacity */}
-                        <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
+                        <div className="bg-white dark:bg-gray-800/90 rounded-xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-5">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">4</span>
+                                <span className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">4</span>
                                 Pricing & Capacity
                             </h2>
 
@@ -662,7 +662,7 @@ const AddRoomPage = () => {
                                 <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                                     Price Per Night <span className="text-red-500">*</span>
                                 </label>
-                                <div className="relative rounded-xl">
+                                <div className="relative rounded-md">
                                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
                                         <span className="text-gray-500 dark:text-gray-400 text-sm font-semibold">₹</span>
                                     </div>
@@ -672,7 +672,7 @@ const AddRoomPage = () => {
                                         min="1"
                                         value={formData.pricePerNight}
                                         onChange={handleInputChange}
-                                        className="w-full pl-8 pr-16 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all"
+                                        className="w-full pl-8 pr-16 py-2.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all"
                                     />
                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
                                         <span className="text-xs text-gray-400 dark:text-gray-500">/ night</span>
@@ -693,7 +693,7 @@ const AddRoomPage = () => {
                                     { label: 'Beds', field: 'beds', icon: ICONS.beds, min: 1 },
                                     { label: 'Bathrooms', field: 'bathrooms', icon: ICONS.bathrooms, min: 1 }
                                 ].map(item => (
-                                    <div key={item.field} className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-900/40 text-center">
+                                    <div key={item.field} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-900/40 text-center">
                                         <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center justify-center gap-1.5 mb-2">
                                             <span className="text-gray-500 dark:text-gray-400">{item.icon}</span>
                                             <span>{item.label}</span>
@@ -702,7 +702,7 @@ const AddRoomPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleStepperChange(item.field, -1, item.min)}
-                                                className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs"
+                                                className="w-7 h-7 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs"
                                             >
                                                 -
                                             </button>
@@ -712,7 +712,7 @@ const AddRoomPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleStepperChange(item.field, 1, item.min)}
-                                                className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs"
+                                                className="w-7 h-7 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs"
                                             >
                                                 +
                                             </button>
@@ -723,9 +723,9 @@ const AddRoomPage = () => {
                         </div>
 
                         {/* 5. Property Photos */}
-                        <div className="bg-white dark:bg-gray-800/90 rounded-2xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-4">
+                        <div className="bg-white dark:bg-gray-800/90 rounded-xl p-6 sm:p-7 border border-gray-200/90 dark:border-gray-700/80 shadow-sm space-y-4">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">5</span>
+                                <span className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center text-xs font-bold">5</span>
                                 Property Photos
                             </h2>
 
@@ -741,12 +741,12 @@ const AddRoomPage = () => {
                                         }
                                     }}
                                     placeholder="Paste photo URL (https://...)"
-                                    className="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
+                                    className="flex-1 px-3.5 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/60 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleAddImage}
-                                    className="px-4 py-2 bg-teal-600 text-white text-xs font-bold rounded-xl hover:bg-teal-700 transition-colors shadow-sm whitespace-nowrap"
+                                    className="px-4 py-2 bg-teal-600 text-white text-xs font-bold rounded-md hover:bg-teal-700 transition-colors shadow-sm whitespace-nowrap"
                                 >
                                     + Add Photo
                                 </button>
@@ -760,7 +760,7 @@ const AddRoomPage = () => {
                                         return (
                                             <div
                                                 key={idx}
-                                                className={`relative rounded-xl overflow-hidden aspect-video border-2 group transition-all ${
+                                                className={`relative rounded-lg overflow-hidden aspect-video border-2 group transition-all ${
                                                     isCover ? 'border-teal-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'
                                                 }`}
                                             >
@@ -793,19 +793,19 @@ const AddRoomPage = () => {
                                     })}
                                 </div>
                             ) : (
-                                <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center bg-gray-50/40 dark:bg-gray-900/30">
+                                <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-4 text-center bg-gray-50/40 dark:bg-gray-900/30">
                                     <p className="text-xs text-gray-400 dark:text-gray-500">No photos added yet. Paste image URLs above.</p>
                                 </div>
                             )}
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm space-y-2.5">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm space-y-2.5">
                             <button
                                 type="button"
                                 onClick={(e) => handleSubmit(e, true)}
                                 disabled={loading}
-                                className="w-full py-3 px-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="w-full py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-md shadow-sm hover:shadow-md transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {ICONS.publish}
                                 <span>{loading ? 'Publishing...' : 'Publish Listing'}</span>
@@ -815,7 +815,7 @@ const AddRoomPage = () => {
                                 type="button"
                                 onClick={(e) => handleSubmit(e, false)}
                                 disabled={loading}
-                                className="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-all text-xs disabled:opacity-50"
+                                className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-md transition-all text-xs disabled:opacity-50"
                             >
                                 Save as Draft
                             </button>

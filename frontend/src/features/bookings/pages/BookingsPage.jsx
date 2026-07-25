@@ -54,7 +54,7 @@ const BookingsPage = () => {
                                         <td className="py-3 px-4 text-gray-900 dark:text-gray-100">{booking.roomId?.title || 'Property'}</td>
                                         <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{booking.hostId?.name || 'Host'}</td>
                                         <td className="py-3 px-4">
-                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
+                                            <span className={`inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold ${
                                                 booking.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200' :
                                                 booking.status === 'pending_payment' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200' :
                                                 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200'

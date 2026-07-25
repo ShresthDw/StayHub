@@ -442,12 +442,12 @@ const AddEditRoomModal = ({ isOpen, onClose, initialRoomData, onRoomModified, ge
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-800 max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden">
                 
                 {/* Header Section */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur shrink-0">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
@@ -466,7 +466,7 @@ const AddEditRoomModal = ({ isOpen, onClose, initialRoomData, onRoomModified, ge
                         type="button"
                         onClick={onClose}
                         disabled={loading}
-                        className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                         title="Close"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -592,14 +592,14 @@ const AddEditRoomModal = ({ isOpen, onClose, initialRoomData, onRoomModified, ge
                         </div>
 
                         {/* Interactive Map Box */}
-                        <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm relative">
+                        <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm relative">
                             <div style={{ height: '260px', width: '100%' }}>
                                 <MapLocationSelector location={formData.location} onLocationSelect={handleLocationSelect} geoApiKey={geoApiKey} />
                             </div>
                         </div>
 
                         {/* Auto-fill Action Bar */}
-                        <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-teal-950/40 border border-teal-200/70 dark:border-teal-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="p-3.5 rounded-lg bg-teal-50/70 dark:bg-teal-950/40 border border-teal-200/70 dark:border-teal-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div className="flex items-center gap-2 text-xs text-teal-800 dark:text-teal-200 font-medium">
                                 <svg className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -616,7 +616,7 @@ const AddEditRoomModal = ({ isOpen, onClose, initialRoomData, onRoomModified, ge
                                 type="button"
                                 onClick={handleAutoFillAddress}
                                 disabled={!formData.location.lat || !formData.location.lng || autoFilling}
-                                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                             >
                                 <svg className={`w-3.5 h-3.5 ${autoFilling ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -887,38 +887,38 @@ const AddEditRoomModal = ({ isOpen, onClose, initialRoomData, onRoomModified, ge
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-center text-xs text-gray-400">
-                                No photos added yet. Paste image URLs above to showcase your property.
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Section 5: Amenities */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
-                            <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">Step 5</span>
-                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Amenities & Facilities</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 text-center text-xs text-gray-400">
+                                    No photos added yet. Paste image URLs above to showcase your property.
+                                </div>
+                            )}
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
-                            {FACILITY_OPTIONS.map((facility) => {
-                                const isChecked = formData.amenities.includes(facility);
-                                return (
-                                    <button
-                                        key={facility}
-                                        type="button"
-                                        onClick={() => handleFacilityToggle(facility)}
-                                        className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
-                                            isChecked
-                                                ? 'border-teal-500 bg-teal-50/60 dark:bg-teal-950/30 text-teal-800 dark:text-teal-200 font-semibold shadow-sm'
-                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-teal-300 hover:bg-gray-50 dark:hover:bg-gray-750'
-                                        }`}
-                                    >
-                                        <span className={isChecked ? 'text-teal-600 dark:text-teal-400 shrink-0' : 'text-gray-400 shrink-0'}>
+                        {/* Section 5: Amenities */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
+                                <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">Step 5</span>
+                                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Amenities & Facilities</span>
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+                                {FACILITY_OPTIONS.map((facility) => {
+                                    const isChecked = formData.amenities.includes(facility);
+                                    return (
+                                        <button
+                                            key={facility}
+                                            type="button"
+                                            onClick={() => handleFacilityToggle(facility)}
+                                            className={`flex items-center gap-2.5 p-3 rounded-md border text-left transition-all ${
+                                                isChecked
+                                                    ? 'border-teal-500 bg-teal-50/60 dark:bg-teal-950/30 text-teal-800 dark:text-teal-200 font-semibold shadow-sm'
+                                                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-teal-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                                            }`}
+                                        >
+                                            <span className={isChecked ? 'text-teal-600 dark:text-teal-400 shrink-0' : 'text-gray-400 shrink-0'}>
                                             {MODAL_ICONS[facility] || (
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />

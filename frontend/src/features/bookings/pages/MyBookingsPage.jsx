@@ -48,11 +48,11 @@ const MyBookingsPage = () => {
                     <BackButton to="/" label="Back to Home" className="mb-2" />
 
                     {/* Header Title & Filter Chips */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 flex items-center gap-2.5">
                                 <span>My Bookings</span>
-                                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">
+                                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">
                                     {bookings.length} {bookings.length === 1 ? 'Stay' : 'Stays'}
                                 </span>
                             </h1>
@@ -62,11 +62,11 @@ const MyBookingsPage = () => {
                         </div>
 
                         {/* Filter Tabs */}
-                        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-gray-200/70 dark:bg-gray-800 self-start sm:self-auto overflow-x-auto text-xs font-semibold">
+                        <div className="flex items-center gap-1 p-1 rounded-lg bg-gray-200/70 dark:bg-gray-800 self-start sm:self-auto overflow-x-auto text-xs font-semibold">
                             <button
                                 type="button"
                                 onClick={() => setFilterStatus('all')}
-                                className={`px-3 py-1.5 rounded-xl transition-all ${
+                                className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                                     filterStatus === 'all'
                                         ? 'bg-white text-gray-900 shadow-sm dark:bg-teal-600 dark:text-white'
                                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
@@ -77,7 +77,7 @@ const MyBookingsPage = () => {
                             <button
                                 type="button"
                                 onClick={() => setFilterStatus('confirmed')}
-                                className={`px-3 py-1.5 rounded-xl transition-all ${
+                                className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                                     filterStatus === 'confirmed'
                                         ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
                                         : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600'
@@ -89,7 +89,7 @@ const MyBookingsPage = () => {
                                 <button
                                     type="button"
                                     onClick={() => setFilterStatus('pending')}
-                                    className={`px-3 py-1.5 rounded-xl transition-all ${
+                                    className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                                         filterStatus === 'pending'
                                             ? 'bg-white text-amber-700 shadow-sm dark:bg-amber-600 dark:text-white'
                                             : 'text-gray-600 dark:text-gray-400 hover:text-amber-600'
@@ -102,7 +102,7 @@ const MyBookingsPage = () => {
                                 <button
                                     type="button"
                                     onClick={() => setFilterStatus('cancelled')}
-                                    className={`px-3 py-1.5 rounded-xl transition-all ${
+                                    className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                                         filterStatus === 'cancelled'
                                             ? 'bg-white text-rose-700 shadow-sm dark:bg-rose-600 dark:text-white'
                                             : 'text-gray-600 dark:text-gray-400 hover:text-rose-600'
@@ -123,7 +123,7 @@ const MyBookingsPage = () => {
                         {[1, 2, 3, 4].map((i) => (
                             <div
                                 key={i}
-                                className="h-28 bg-white dark:bg-gray-800 rounded-2xl animate-pulse border border-gray-100 dark:border-gray-800"
+                                className="h-28 bg-white dark:bg-gray-800 rounded-lg animate-pulse border border-gray-100 dark:border-gray-800"
                             />
                         ))}
                     </div>
@@ -141,10 +141,10 @@ const MyBookingsPage = () => {
                             return (
                                 <div
                                     key={booking._id}
-                                    className={`group relative flex flex-col sm:flex-row items-stretch bg-white dark:bg-gray-800 rounded-2xl p-3.5 shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all gap-3.5 animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                    className={`group relative flex flex-col sm:flex-row items-stretch bg-white dark:bg-gray-800 rounded-lg p-3.5 shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-700/60 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all gap-3.5 animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                 >
                                     {/* Compact Thumbnail */}
-                                    <div className="relative w-full sm:w-36 h-32 sm:h-auto shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                    <div className="relative w-full sm:w-36 h-32 sm:h-auto shrink-0 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
                                         {mainImage ? (
                                             <img
                                                 src={mainImage}
@@ -159,7 +159,7 @@ const MyBookingsPage = () => {
 
                                         {/* Status Tag on image */}
                                         <span
-                                            className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide shadow-sm ${
+                                            className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide shadow-sm ${
                                                 isConfirmed
                                                     ? 'bg-emerald-500 text-white'
                                                     : isPending
@@ -199,7 +199,7 @@ const MyBookingsPage = () => {
                                         </div>
 
                                         {/* Dates Banner & Duration */}
-                                        <div className="my-2 py-1.5 px-2.5 rounded-lg bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs">
+                                        <div className="my-2 py-1.5 px-2.5 rounded-md bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs">
                                             <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-medium truncate">
                                                 <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -221,10 +221,12 @@ const MyBookingsPage = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => navigate(`/rooms/${booking.roomId}`)}
-                                                    className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 group-hover:translate-x-0.5 transition-all"
+                                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 group-hover:translate-x-0.5 transition-all cursor-pointer"
                                                 >
                                                     <span>View Room</span>
-                                                    <span>→</span>
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                    </svg>
                                                 </button>
                                             )}
                                         </div>
@@ -235,9 +237,11 @@ const MyBookingsPage = () => {
                     </div>
                 ) : (
                     /* Empty State */
-                    <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 text-center border border-gray-100 dark:border-gray-700/60 max-w-md mx-auto space-y-4 shadow-sm">
-                        <div className="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto text-2xl">
-                            🏨
+                    <div className="bg-white dark:bg-gray-800 rounded-xl p-8 sm:p-12 text-center border border-gray-200 dark:border-gray-700 max-w-md mx-auto space-y-4 shadow-sm">
+                        <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 flex items-center justify-center mx-auto">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
                         </div>
                         <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">
                             {filterStatus !== 'all' ? `No ${filterStatus} bookings` : 'No bookings found'}
@@ -250,10 +254,12 @@ const MyBookingsPage = () => {
                         <button
                             type="button"
                             onClick={() => navigate('/')}
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-xs font-semibold px-5 py-2.5 shadow-md shadow-teal-600/20 transition-all active:scale-95"
+                            className="inline-flex items-center gap-2 rounded-md bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold px-5 py-2.5 shadow-sm transition-all cursor-pointer"
                         >
                             <span>Explore Properties</span>
-                            <span>→</span>
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                         </button>
                     </div>
                 )}

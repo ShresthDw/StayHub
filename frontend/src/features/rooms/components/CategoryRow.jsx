@@ -139,7 +139,7 @@ const CategoryRow = ({ propertyType, icons, onRoomClick, initialRooms = null }) 
                 <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse mb-4" />
                 <div className="flex gap-5 overflow-hidden pb-4">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="w-56 bg-white dark:bg-gray-800 rounded-none shadow-md overflow-hidden flex-shrink-0 animate-pulse border border-gray-100 dark:border-gray-700/60">
+                        <div key={i} className="w-56 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden flex-shrink-0 animate-pulse border border-gray-100 dark:border-gray-700/60">
                             <div className="h-36 sm:h-40 w-full bg-gray-200 dark:bg-gray-700" />
                             <div className="p-2.5 space-y-2">
                                 <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -165,7 +165,7 @@ const CategoryRow = ({ propertyType, icons, onRoomClick, initialRooms = null }) 
                 <button
                     type="button"
                     onClick={() => handleHorizontalScroll(-1)}
-                    className={`absolute left-2 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${canScrollLeft ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default pointer-events-none'
+                    className={`absolute left-2 top-1/3 -translate-y-1/2 z-10 rounded-md bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${canScrollLeft ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default pointer-events-none'
                         }`}
                     aria-label={`Scroll ${propertyType} left`}
                     disabled={!canScrollLeft}
@@ -204,7 +204,7 @@ const CategoryRow = ({ propertyType, icons, onRoomClick, initialRooms = null }) 
                 <button
                     type="button"
                     onClick={() => handleHorizontalScroll(1)}
-                    className={`absolute right-2 top-1/3 -translate-y-1/2 z-10 rounded-full bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${canScrollRight ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default pointer-events-none'
+                    className={`absolute right-2 top-1/3 -translate-y-1/2 z-10 rounded-md bg-white/95 dark:bg-gray-800/95 shadow-md border border-gray-200 dark:border-gray-700 p-2 text-gray-700 dark:text-gray-200 transition-opacity hover:bg-white dark:hover:bg-gray-800 ${canScrollRight ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default pointer-events-none'
                         }`}
                     aria-label={`Scroll ${propertyType} right`}
                     disabled={!canScrollRight}
