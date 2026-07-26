@@ -183,10 +183,11 @@ const NotificationsPage = () => {
     };
 
     return (
-        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 min-h-screen">
-            <BackButton to="/" label="Back to Home" className="mb-2" />
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-7xl mx-auto space-y-5">
+                <BackButton to="/" label="Back to Home" className="mb-2" />
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
@@ -431,6 +432,7 @@ const NotificationsPage = () => {
                     </button>
                 </div>
             )}
+            </div>
         </main>
     );
 };

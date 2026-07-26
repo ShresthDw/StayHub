@@ -46,19 +46,20 @@ const WishlistPage = () => {
     const handleRoomClick = (room) => navigate(`/rooms/${room._id}`);
 
     return (
-        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-12 min-h-screen">
-            <BackButton fallback="/" className="mb-2" />
-            
-            <div className="flex items-center justify-between pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
-                        Wishlist
-                    </h1>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                        {wishlist.length} saved stay{wishlist.length !== 1 ? 's' : ''} for your upcoming trips.
-                    </p>
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-7xl mx-auto space-y-5">
+                <BackButton fallback="/" className="mb-2" />
+                
+                <div className="flex items-center justify-between pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
+                            Wishlist
+                        </h1>
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                            {wishlist.length} saved stay{wishlist.length !== 1 ? 's' : ''} for your upcoming trips.
+                        </p>
+                    </div>
                 </div>
-            </div>
 
             {message && <div className="mb-5"><Toast message={message} type={msgType} /></div>}
 
@@ -183,6 +184,7 @@ const WishlistPage = () => {
                     </button>
                 </div>
             )}
+            </div>
         </main>
     );
 };

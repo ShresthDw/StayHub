@@ -21,8 +21,8 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transform hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={onClick}>
-            <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-750">
+        <div className="cursor-pointer group flex flex-col" onClick={onClick}>
+            <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-750 rounded-none">
                 {isDashboard && !room.isActive && (
                     <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded z-10">DRAFT</div>
                 )}
@@ -56,7 +56,7 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                     </div>
                 )}
                 <img
-                    className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover group-hover:scale-105 transition-transform duration-300`}
+                    className={`${compact ? 'h-36 sm:h-40' : 'h-56'} w-full object-cover rounded-none group-hover:scale-105 transition-transform duration-300`}
                     src={imageUrl}
                     srcSet={srcSet}
                     sizes={sizes}
@@ -65,10 +65,15 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                     decoding="async"
                 />
             </div>
-            <div className={compact ? 'flex flex-col p-2.5' : 'p-4'}>
-                <h3 className={`${compact ? 'text-sm' : 'text-lg'} font-semibold text-gray-800 dark:text-gray-100 truncate`}>{room.title}</h3>
-                <p className={`${compact ? 'text-[11px]' : 'text-xs sm:text-sm'} flex text-gray-600 dark:text-gray-300 mt-1 truncate`}>{icons.location} {getAddressLine(room)}</p>
-                {(!compact || isDashboard) && <div className="flex items-center justify-between mt-2">
+            <div className={compact ? 'flex flex-col pt-2.5 pb-1 px-0' : 'flex flex-col pt-3 pb-1 px-0'}>
+                <h3 className={`${compact ? 'text-sm' : 'text-base sm:text-lg'} font-semibold text-gray-900 dark:text-gray-100 truncate`}>{room.title}</h3>
+                <div className={`flex items-center gap-1 text-gray-500 dark:text-gray-400 mt-1 min-w-0 ${compact ? 'text-[11px]' : 'text-xs sm:text-sm'}`}>
+                    <svg className="w-3.5 h-3.5 shrink-0 text-gray-400 dark:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="truncate">{getAddressLine(room)}</span>
+                </div>
+                {(!compact || isDashboard) && <div className="flex items-center justify-between mt-1.5">
                     {!compact && <div className="flex flex-col">
                         <div className="flex items-center text-sm text-gray-700 dark:text-gray-200">
                             {icons.star}<span className="ml-1">{room.rating || 'New'}</span>
@@ -85,8 +90,8 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                         </div>
                     )}
                 </div>}
-                <p className={`${compact ? 'mt-2 text-sm' : 'mt-2 text-lg'} font-bold text-gray-900 dark:text-white`}>
-                    ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-sm font-normal text-gray-600 dark:text-gray-300">/ night</span>
+                <p className={`${compact ? 'mt-1.5 text-sm' : 'mt-2 text-base sm:text-lg'} font-bold text-gray-900 dark:text-white`}>
+                    ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400">/ night</span>
                 </p>
             </div>
         </div>

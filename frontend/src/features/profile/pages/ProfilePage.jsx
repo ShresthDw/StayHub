@@ -129,7 +129,7 @@ const ProfilePage = ({ onLogout, theme: propTheme, toggleTheme: propToggleTheme 
 
     return (
         <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-            <div className="max-w-4xl mx-auto space-y-5">
+            <div className="max-w-7xl mx-auto space-y-5">
 
                 {/* Status Toast Alert */}
                 {statusMessage && (

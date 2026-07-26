@@ -77,11 +77,12 @@ const MyPropertiesPage = () => {
     }, [ownerRooms, activeRooms, draftRooms, selectedTab]);
 
     return (
-        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-12 min-h-screen">
-            <BackButton fallback="/" className="mb-2" />
+        <main className="min-h-screen bg-slate-50/60 dark:bg-gray-900 pt-4 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+            <div className="max-w-7xl mx-auto space-y-5">
+                <BackButton fallback="/" className="mb-2" />
 
-            {/* Header with Title & Action */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
+                {/* Header with Title & Action */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
                         My Properties
@@ -263,14 +264,15 @@ const MyPropertiesPage = () => {
                 </div>
             )}
 
-            {/* Edit Property Modal */}
-            <AddEditRoomModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                initialRoomData={editingRoom}
-                onRoomModified={refreshRooms}
-                geoApiKey={geoApiKey}
-            />
+                {/* Edit Property Modal */}
+                <AddEditRoomModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    initialRoomData={editingRoom}
+                    onRoomModified={refreshRooms}
+                    geoApiKey={geoApiKey}
+                />
+            </div>
         </main>
     );
 };

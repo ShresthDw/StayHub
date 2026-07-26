@@ -69,9 +69,9 @@ const ExploreUniquePlaces = ({ icons, onRoomClick, initialRooms = null }) => {
                 <div className="h-4 w-72 bg-gray-200/60 dark:bg-gray-800 rounded-md animate-pulse mb-5 mt-1" />
                 <div className="flex gap-5 overflow-hidden pb-4">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="w-56 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden flex-shrink-0 animate-pulse border border-gray-100 dark:border-gray-700/60">
-                            <div className="h-36 sm:h-40 w-full bg-gray-200 dark:bg-gray-700" />
-                            <div className="p-2.5 space-y-2">
+                        <div key={i} className="w-56 overflow-hidden flex-shrink-0 animate-pulse">
+                            <div className="h-36 sm:h-40 w-full bg-gray-200 dark:bg-gray-700 rounded-none" />
+                            <div className="pt-2.5 space-y-2">
                                 <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded" />
                                 <div className="h-3 w-1/2 bg-gray-100 dark:bg-gray-700/60 rounded" />
                                 <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded mt-1" />
