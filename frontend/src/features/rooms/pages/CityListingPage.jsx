@@ -15,6 +15,7 @@ const CityListingPage = () => {
     const dispatch = useDispatch();
     const { checkInDate, checkOutDate } = useSelector((state) => state.app);
     const [sortBy, setSortBy] = useState('popular');
+    const [viewMode, setViewMode] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 'list' : 'grid')); // mobile default: list, web default: grid
     const [toast, setToast] = useState(null);
     const [tempCheckInDate, setTempCheckInDate] = useState(checkInDate || '');
     const [tempCheckOutDate, setTempCheckOutDate] = useState(checkOutDate || '');
@@ -198,16 +199,52 @@ const CityListingPage = () => {
                             </p>
                         </div>
                         
-                        {/* Filter Button */}
-                        <button
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-3.5 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-xs font-semibold transition cursor-pointer"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            <span>Filters</span>
-                        </button>
+                        {/* Actions: View Toggle & Filters */}
+                        <div className="flex items-center gap-2">
+                            {citiesRooms.length > 0 && (
+                                <div className="inline-flex items-center p-1 rounded-md bg-gray-100 dark:bg-gray-700 text-xs font-semibold">
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode('grid')}
+                                        className={`p-1.5 rounded transition-all cursor-pointer ${
+                                            viewMode === 'grid'
+                                                ? 'bg-white dark:bg-gray-600 text-teal-600 dark:text-teal-300 shadow-xs'
+                                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                        }`}
+                                        title="Grid view"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode('list')}
+                                        className={`p-1.5 rounded transition-all cursor-pointer ${
+                                            viewMode === 'list'
+                                                ? 'bg-white dark:bg-gray-600 text-teal-600 dark:text-teal-300 shadow-xs'
+                                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                        }`}
+                                        title="List view"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Filter Button */}
+                            <button
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="flex items-center gap-2 px-3.5 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-xs font-semibold transition cursor-pointer"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                </svg>
+                                <span>Filters</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,18 +354,65 @@ const CityListingPage = () => {
                     <div>
                         {citiesRooms.length > 0 ? (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {citiesRooms.map((room, idx) => (
-                                        <div key={room._id} className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
-                                            <RoomCard 
-                                                room={room} 
-                                                icons={icons} 
-                                                compact
-                                                onClick={() => handleRoomClick(room)}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                                {viewMode === 'grid' ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {citiesRooms.map((room, idx) => (
+                                            <div key={room._id} className={`animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
+                                                <RoomCard 
+                                                    room={room} 
+                                                    icons={icons} 
+                                                    compact
+                                                    onClick={() => handleRoomClick(room)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {citiesRooms.map((room, idx) => {
+                                            const rawImageUrl = Array.isArray(room.images) && room.images.length > 0 
+                                                ? (typeof room.images[0] === 'string' ? room.images[0] : room.images[0]?.url)
+                                                : 'https://placehold.co/600x400?text=No+Image';
+                                            return (
+                                                <div
+                                                    key={room._id}
+                                                    onClick={() => handleRoomClick(room)}
+                                                    className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 gap-3 group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                                >
+                                                    <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
+                                                        <img
+                                                            src={rawImageUrl}
+                                                            alt={room.title}
+                                                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                                                            loading="lazy"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                                                        <div className="flex items-center justify-between gap-1.5">
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shrink-0">
+                                                                {room.propertyType || 'Property'}
+                                                            </span>
+                                                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-0.5">
+                                                                ★ {room.rating || 'New'}
+                                                            </span>
+                                                        </div>
+                                                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1">
+                                                            {room.title}
+                                                        </h3>
+                                                        <div className="mt-1 flex items-center justify-between">
+                                                            <span className="text-sm font-extrabold text-gray-900 dark:text-gray-100">
+                                                                ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-xs text-gray-400 font-normal">/ nt</span>
+                                                            </span>
+                                                            <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:underline">
+                                                                View →
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
 
                                 <div className="text-center py-6 mt-4">
                                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">

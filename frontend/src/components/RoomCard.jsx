@@ -93,6 +93,7 @@ const RoomCard = ({ room, icons, isDashboard = false, compact = false, onEdit, o
                 <p className={`${compact ? 'mt-1.5 text-sm' : 'mt-2 text-base sm:text-lg'} font-bold text-gray-900 dark:text-white`}>
                     ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-xs sm:text-sm font-normal text-gray-500 dark:text-gray-400">/ night</span>
                 </p>
+                <div className="w-full border-b border-gray-300 dark:border-gray-600 mt-2.5" />
             </div>
         </div>
     );

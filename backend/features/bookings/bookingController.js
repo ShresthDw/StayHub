@@ -283,33 +283,50 @@ export const getMyBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ guestId: req.user.id })
             .select('roomId hostId totalAmount pricePerNight nights checkInDate checkOutDate status paymentId razorpayOrderId createdAt updatedAt')
-            .populate('roomId', 'title images address.city location')
+            .populate('roomId', 'title images address location propertyType rating ratingAverage')
             .populate('hostId', 'name email phone')
             .sort({ checkInDate: -1 })
             .lean();
 
         // Transform bookings to include payment status and formatted data
-        const transformedBookings = bookings.map(booking => ({
-            _id: booking._id,
-            roomId: booking.roomId?._id,
-            roomTitle: booking.roomId?.title || 'Unknown Property',
-            roomAddress: booking.roomId?.address?.city || 'Unknown Location',
-            roomImages: booking.roomId?.images?.slice(0, 1) || [],
-            hostName: booking.hostId?.name || 'Unknown Host',
-            hostEmail: booking.hostId?.email,
-            hostPhone: booking.hostId?.phone,
-            checkInDate: booking.checkInDate,
-            checkOutDate: booking.checkOutDate,
-            nights: booking.nights,
-            totalAmount: booking.totalAmount,
-            pricePerNight: booking.pricePerNight,
-            status: booking.status,
-            paymentStatus: booking.status === 'confirmed' ? 'Paid' : booking.status === 'pending_payment' ? 'Pending' : 'Cancelled',
-            paymentId: booking.paymentId,
-            razorpayOrderId: booking.razorpayOrderId,
-            createdAt: booking.createdAt,
-            updatedAt: booking.updatedAt
-        }));
+        const transformedBookings = bookings.map(booking => {
+            const addr = booking.roomId?.address;
+            let formattedAddress = 'Unknown Location';
+            if (addr) {
+                if (typeof addr === 'string') {
+                    formattedAddress = addr;
+                } else {
+                    const parts = [addr.city, addr.state].filter(Boolean);
+                    formattedAddress = parts.length > 0 ? parts.join(', ') : (addr.city || addr.country || 'Unknown Location');
+                }
+            } else if (booking.roomId?.location) {
+                formattedAddress = typeof booking.roomId.location === 'string' ? booking.roomId.location : 'Unknown Location';
+            }
+
+            return {
+                _id: booking._id,
+                roomId: booking.roomId?._id,
+                roomTitle: booking.roomId?.title || 'Unknown Property',
+                roomAddress: formattedAddress,
+                roomImages: booking.roomId?.images || [],
+                propertyType: booking.roomId?.propertyType,
+                rating: booking.roomId?.rating || booking.roomId?.ratingAverage,
+                hostName: booking.hostId?.name || 'Unknown Host',
+                hostEmail: booking.hostId?.email,
+                hostPhone: booking.hostId?.phone,
+                checkInDate: booking.checkInDate,
+                checkOutDate: booking.checkOutDate,
+                nights: booking.nights,
+                totalAmount: booking.totalAmount,
+                pricePerNight: booking.pricePerNight,
+                status: booking.status,
+                paymentStatus: booking.status === 'confirmed' ? 'Paid' : booking.status === 'pending_payment' ? 'Pending' : 'Cancelled',
+                paymentId: booking.paymentId,
+                razorpayOrderId: booking.razorpayOrderId,
+                createdAt: booking.createdAt,
+                updatedAt: booking.updatedAt
+            };
+        });
 
         res.status(200).json(transformedBookings);
 
