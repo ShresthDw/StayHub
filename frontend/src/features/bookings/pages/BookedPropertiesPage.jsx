@@ -5,6 +5,7 @@ import { useGetBookedPropertiesQuery } from '../services/bookingService.js';
 import { ProfileSkeleton } from '../../../components/Skeletons.jsx';
 import Toast from '../../../components/Toast.jsx';
 import BackButton from '../../../components/BackButton.jsx';
+import { getRoomCardThumbnail } from '../../../utils/imageKitOptimizer.js';
 
 const BookedPropertiesPage = () => {
     const { currentUser } = useSelector((state) => state.app);
@@ -84,137 +85,170 @@ const BookedPropertiesPage = () => {
             {message && <div className="mb-6"><Toast message={message} type="error" /></div>}
 
             {isLoading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-gray-200 dark:bg-gray-700 rounded-xl h-80 animate-pulse" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5 lg:gap-5">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="bg-gray-200 dark:bg-gray-800 aspect-[4/3] animate-pulse" />
                     ))}
                 </div>
             ) : bookedProperties.length > 0 ? (
                 viewMode === 'grid' ? (
-                    /* 5-Column Responsive Grid Layout */
+                    /* 5-Column Responsive Grid Layout (No Outer Box) */
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5 lg:gap-5">
-                        {bookedProperties.map((property) => (
-                            <div key={property._id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200/80 dark:border-gray-700/80 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between">
-                                <div>
+                        {bookedProperties.map((property, idx) => {
+                            const rawImg = property.roomImages && property.roomImages.length > 0
+                                ? (typeof property.roomImages[0] === 'string' ? property.roomImages[0] : property.roomImages[0]?.url)
+                                : null;
+                            const imageUrl = rawImg ? getRoomCardThumbnail(rawImg) : 'https://placehold.co/600x400?text=Booked+Stay';
+
+                            return (
+                                <div key={property._id} className={`group flex flex-col animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}>
                                     {/* Property Image */}
-                                    <div className="relative aspect-[4/3] w-full bg-gray-200 dark:bg-gray-700 overflow-hidden shrink-0">
-                                        {property.roomImages && property.roomImages.length > 0 ? (
-                                            <img
-                                                src={property.roomImages[0].url}
-                                                alt={property.roomTitle}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <span className="text-gray-400 text-xs">No image</span>
-                                            </div>
-                                        )}
-                                        <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold shadow-xs ${
+                                    <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0 rounded-none">
+                                        <img
+                                            src={imageUrl}
+                                            alt={property.roomTitle}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            loading="lazy"
+                                        />
+                                        <div className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider shadow-xs ${
                                             property.status === 'confirmed'
                                                 ? 'bg-blue-600 text-white'
                                                 : 'bg-emerald-600 text-white'
                                         }`}>
                                             {property.status === 'confirmed' ? 'Upcoming' : 'Active'}
                                         </div>
+                                        <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                                            {property.nights} {property.nights === 1 ? 'night' : 'nights'}
+                                        </span>
                                     </div>
 
                                     {/* Property Details */}
-                                    <div className="p-3 sm:p-3.5">
-                                        <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100 line-clamp-1 mb-0.5" title={property.roomTitle}>{property.roomTitle}</h3>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-2.5">{property.roomAddress}</p>
+                                    <div className="pt-2.5 pb-1 px-0 flex flex-col">
+                                        {/* Location */}
+                                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 min-w-0">
+                                            <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span className="truncate">{property.roomAddress}</span>
+                                        </div>
+
+                                        {/* Title */}
+                                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1" title={property.roomTitle}>
+                                            {property.roomTitle}
+                                        </h3>
 
                                         {/* Guest Info */}
-                                        <div className="border-t border-gray-100 dark:border-gray-700/70 pt-2 mb-2 text-xs">
-                                            <p className="font-medium text-gray-700 dark:text-gray-300 truncate">Guest: <strong className="font-semibold">{property.guestName}</strong></p>
-                                            {property.guestEmail && (
-                                                <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{property.guestEmail}</p>
-                                            )}
+                                        <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                                            <p className="truncate">Guest: <strong className="font-semibold text-gray-800 dark:text-gray-200">{property.guestName}</strong></p>
                                         </div>
 
                                         {/* Booking Dates */}
-                                        <div className="border-t border-gray-100 dark:border-gray-700/70 pt-2 mb-2">
-                                            <div className="flex justify-between text-[11px] text-gray-600 dark:text-gray-400">
-                                                <span>{new Date(property.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} → {new Date(property.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                                                <span className="font-semibold text-gray-700 dark:text-gray-300">({property.nights}n)</span>
+                                        <div className="mt-1 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                                            <span className="truncate">
+                                                {new Date(property.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – {new Date(property.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                            </span>
+                                        </div>
+
+                                        {/* Pricing */}
+                                        <div className="mt-1.5 flex justify-between items-baseline text-xs">
+                                            <div>
+                                                <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">₹{property.totalAmount?.toLocaleString() || '0'}</span>
+                                                <span className="text-[10px] text-gray-400"> total</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">₹{property.pricePerNight?.toLocaleString() || '0'}</span>
+                                                <span className="text-[10px] text-gray-400"> /nt</span>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                {/* Pricing */}
-                                <div className="p-3 sm:p-3.5 pt-0">
-                                    <div className="border-t border-gray-100 dark:border-gray-700/70 pt-2.5 flex justify-between items-center text-xs">
-                                        <div>
-                                            <span className="text-[10px] text-gray-400 block">Total</span>
-                                            <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">₹{property.totalAmount?.toLocaleString() || '0'}</span>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className="text-[10px] text-gray-400 block">Per Night</span>
-                                            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">₹{property.pricePerNight?.toLocaleString() || '0'}</span>
-                                        </div>
+                                        <div className="w-full border-b border-gray-300 dark:border-gray-600 mt-2.5" />
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 ) : (
-                    /* List View */
+                    /* Horizontal List Rows: Image on Left, Info on Right (No Outer Box) */
                     <div className="space-y-4">
-                        {bookedProperties.map((property) => (
-                            <div key={property._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md border border-gray-200/80 dark:border-gray-700/80 overflow-hidden flex flex-col md:flex-row gap-4 p-4 transition-all">
-                                <div className="relative w-full md:w-56 h-40 md:h-auto shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                    {property.roomImages && property.roomImages.length > 0 ? (
+                        {bookedProperties.map((property, idx) => {
+                            const rawImg = property.roomImages && property.roomImages.length > 0
+                                ? (typeof property.roomImages[0] === 'string' ? property.roomImages[0] : property.roomImages[0]?.url)
+                                : null;
+                            const imageUrl = rawImg ? getRoomCardThumbnail(rawImg) : 'https://placehold.co/600x400?text=Booked+Stay';
+
+                            return (
+                                <div
+                                    key={property._id}
+                                    className={`group flex flex-row items-stretch pb-3.5 sm:pb-4 border-b border-gray-300 dark:border-gray-600 gap-3 sm:gap-4 transition-colors animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                >
+                                    {/* Thumbnail on Left */}
+                                    <div className="relative w-28 sm:w-44 md:w-52 h-24 sm:h-32 md:h-36 shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-750 rounded-none">
                                         <img
-                                            src={property.roomImages[0].url}
+                                            src={imageUrl}
                                             alt={property.roomTitle}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            loading="lazy"
                                         />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <span className="text-gray-400">No image</span>
+                                        <div className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider shadow-xs ${
+                                            property.status === 'confirmed'
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-emerald-600 text-white'
+                                        }`}>
+                                            {property.status === 'confirmed' ? 'Upcoming' : 'Active'}
                                         </div>
-                                    )}
-                                    <div className={`absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded text-[11px] font-bold shadow-xs ${
-                                        property.status === 'confirmed'
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-emerald-600 text-white'
-                                    }`}>
-                                        {property.status === 'confirmed' ? 'Upcoming' : 'Active'}
+                                        <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                                            {property.nights} {property.nights === 1 ? 'nt' : 'nts'}
+                                        </span>
                                     </div>
-                                </div>
 
-                                <div className="flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                            <div>
-                                                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">{property.roomTitle}</h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{property.roomAddress}</p>
-                                            </div>
-                                            <div className="text-left sm:text-right shrink-0">
-                                                <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">₹{property.totalAmount?.toLocaleString() || '0'}</span>
-                                                <span className="text-xs text-gray-500 block">₹{property.pricePerNight?.toLocaleString() || '0'} / night</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-900/50 text-xs">
-                                            <div>
-                                                <span className="text-gray-500 dark:text-gray-400">Guest:</span>
-                                                <span className="ml-1.5 font-semibold text-gray-800 dark:text-gray-200">{property.guestName}</span>
-                                                {property.guestEmail && <span className="text-gray-500 block text-[11px]">{property.guestEmail}</span>}
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-500 dark:text-gray-400">Stay Duration:</span>
-                                                <span className="ml-1.5 font-semibold text-gray-800 dark:text-gray-200">
-                                                    {new Date(property.checkInDate).toLocaleDateString()} → {new Date(property.checkOutDate).toLocaleDateString()}
+                                    {/* Content on Right */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                                        <div>
+                                            <div className="flex items-center justify-between gap-2">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
+                                                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    </svg>
+                                                    <span>{property.roomAddress}</span>
+                                                </p>
+                                                <span className="text-[10px] font-medium text-gray-400 hidden sm:inline shrink-0">
+                                                    ID: #{property._id?.slice(-6).toUpperCase()}
                                                 </span>
-                                                <span className="text-gray-500 block text-[11px]">({property.nights} nights)</span>
+                                            </div>
+
+                                            <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-0.5">
+                                                {property.roomTitle}
+                                            </h3>
+
+                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                                <span>Guest: <strong className="font-semibold text-gray-800 dark:text-gray-200">{property.guestName}</strong></span>
+                                                <span className="text-gray-400 hidden sm:inline">•</span>
+                                                <span>
+                                                    {new Date(property.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – {new Date(property.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-2 flex items-center justify-between gap-2 pt-1.5">
+                                            <div>
+                                                <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">
+                                                    ₹{property.totalAmount?.toLocaleString() || '0'}
+                                                </span>
+                                                <span className="text-xs text-gray-400 font-normal"> total</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                                    ₹{property.pricePerNight?.toLocaleString() || '0'}
+                                                </span>
+                                                <span className="text-[11px] text-gray-400 font-normal"> / night</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )
             ) : (

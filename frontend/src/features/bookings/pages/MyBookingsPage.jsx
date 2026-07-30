@@ -250,17 +250,17 @@ const MyBookingsPage = () => {
 
                 {/* Loading Skeleton */}
                 {isLoading ? (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         {[1, 2, 3, 4].map((i) => (
                             <div
                                 key={i}
-                                className="h-28 bg-white dark:bg-gray-800 rounded-lg animate-pulse border border-gray-100 dark:border-gray-800"
+                                className="h-28 bg-gray-200 dark:bg-gray-800 animate-pulse"
                             />
                         ))}
                     </div>
                 ) : filteredBookings.length > 0 ? (
                     viewMode === 'grid' ? (
-                        /* 5-Column Responsive Grid Layout */
+                        /* 5-Column Responsive Grid Layout (No Outer Box) */
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5 lg:gap-5">
                             {filteredBookings.map((booking, idx) => {
                                 const isConfirmed = booking.status === 'confirmed' || booking.status === 'completed';
@@ -279,84 +279,78 @@ const MyBookingsPage = () => {
                                     <div
                                         key={booking._id}
                                         onClick={() => roomId && navigate(`/rooms/${roomId}`)}
-                                        className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                        className={`group flex flex-col cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                     >
-                                        <div>
-                                            {/* Card Thumbnail */}
-                                            <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0">
-                                                <img
-                                                    src={getBookingImage(booking)}
-                                                    alt={roomTitle}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                    loading="lazy"
-                                                />
+                                        {/* Card Thumbnail */}
+                                        <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0 rounded-none">
+                                            <img
+                                                src={getBookingImage(booking)}
+                                                alt={roomTitle}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                loading="lazy"
+                                            />
 
-                                                {/* Status Badge */}
-                                                <span
-                                                    className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider shadow-xs ${
-                                                        isConfirmed
-                                                            ? 'bg-emerald-600 text-white'
-                                                            : isPending
-                                                            ? 'bg-amber-500 text-white'
-                                                            : 'bg-rose-500 text-white'
-                                                    }`}
-                                                >
-                                                    {isConfirmed ? 'Confirmed' : isPending ? 'Pending' : 'Cancelled'}
-                                                </span>
+                                            {/* Status Badge */}
+                                            <span
+                                                className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider shadow-xs ${
+                                                    isConfirmed
+                                                        ? 'bg-emerald-600 text-white'
+                                                        : isPending
+                                                        ? 'bg-amber-500 text-white'
+                                                        : 'bg-rose-500 text-white'
+                                                }`}
+                                            >
+                                                {isConfirmed ? 'Confirmed' : isPending ? 'Pending' : 'Cancelled'}
+                                            </span>
 
-                                                {/* Nights Badge */}
-                                                <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
-                                                    {nights} {nights === 1 ? 'night' : 'nights'}
-                                                </span>
-                                            </div>
-
-                                            {/* Card Body */}
-                                            <div className="p-3 sm:p-3.5">
-                                                {/* Location */}
-                                                <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 min-w-0">
-                                                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span className="truncate">{roomAddress}</span>
-                                                </div>
-
-                                                {/* Title */}
-                                                <h3
-                                                    className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1"
-                                                    title={roomTitle}
-                                                >
-                                                    {roomTitle}
-                                                </h3>
-
-                                                {/* Dates Strip */}
-                                                <div className="mt-2 py-1 px-2 rounded bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs">
-                                                    <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-medium truncate text-[11px]">
-                                                        <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
-                                                        <span className="truncate">{formatDateRange(checkIn, checkOut)}</span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Host & Price */}
-                                                <div className="mt-2 flex items-baseline justify-between">
-                                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 truncate max-w-[110px]">
-                                                        Host: <strong className="font-semibold text-gray-700 dark:text-gray-300">{hostName}</strong>
-                                                    </span>
-                                                    <div className="text-right shrink-0">
-                                                        <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">
-                                                            ₹{totalAmount.toLocaleString()}
-                                                        </span>
-                                                        <span className="text-[10px] text-gray-400 block -mt-0.5">total</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {/* Nights Badge */}
+                                            <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                                                {nights} {nights === 1 ? 'night' : 'nights'}
+                                            </span>
                                         </div>
 
-                                        {/* Actions Bar at bottom */}
-                                        <div className="p-3 sm:p-3.5 pt-0">
-                                            <div className="pt-2.5 border-t border-gray-100 dark:border-gray-700/70 flex items-center justify-between text-xs">
+                                        {/* Card Body */}
+                                        <div className="pt-2.5 pb-1 px-0 flex flex-col">
+                                            {/* Location */}
+                                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 min-w-0">
+                                                <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span className="truncate">{roomAddress}</span>
+                                            </div>
+
+                                            {/* Title */}
+                                            <h3
+                                                className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1"
+                                                title={roomTitle}
+                                            >
+                                                {roomTitle}
+                                            </h3>
+
+                                            {/* Dates Strip */}
+                                            <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 font-medium text-xs mt-1 truncate">
+                                                <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span className="truncate">{formatDateRange(checkIn, checkOut)}</span>
+                                            </div>
+
+                                            {/* Host & Price */}
+                                            <div className="mt-1.5 flex items-baseline justify-between">
+                                                <span className="text-[11px] text-gray-500 dark:text-gray-400 truncate max-w-[120px]">
+                                                    Host: <strong className="font-semibold text-gray-700 dark:text-gray-300">{hostName}</strong>
+                                                </span>
+                                                <div className="text-right shrink-0">
+                                                    <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">
+                                                        ₹{totalAmount.toLocaleString()}
+                                                    </span>
+                                                    <span className="text-[10px] text-gray-400 block -mt-0.5">total</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Actions Bar at bottom */}
+                                            <div className="mt-2 pt-2 flex items-center justify-between text-xs">
                                                 {canCancel ? (
                                                     <button
                                                         type="button"
@@ -382,14 +376,16 @@ const MyBookingsPage = () => {
                                                     </svg>
                                                 </span>
                                             </div>
+
+                                            <div className="w-full border-b border-gray-300 dark:border-gray-600 mt-2.5" />
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
                     ) : (
-                        /* Clean Horizontal List View */
-                        <div className="space-y-3">
+                        /* Horizontal List Rows: Image on Left, Info on Right (No Outer Box) */
+                        <div className="space-y-4">
                             {filteredBookings.map((booking, idx) => {
                                 const isConfirmed = booking.status === 'confirmed' || booking.status === 'completed';
                                 const isPending = booking.status === 'pending_payment';
@@ -407,14 +403,14 @@ const MyBookingsPage = () => {
                                     <div
                                         key={booking._id}
                                         onClick={() => roomId && navigate(`/rooms/${roomId}`)}
-                                        className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                        className={`group flex flex-row items-stretch pb-3.5 sm:pb-4 border-b border-gray-300 dark:border-gray-600 gap-3 sm:gap-4 transition-colors cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                     >
-                                        {/* Thumbnail */}
-                                        <div className="relative w-28 sm:w-36 h-24 sm:h-28 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
+                                        {/* Thumbnail on Left */}
+                                        <div className="relative w-28 sm:w-44 md:w-52 h-24 sm:h-32 md:h-36 shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-750 rounded-none">
                                             <img
                                                 src={getBookingImage(booking)}
                                                 alt={roomTitle}
-                                                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading="lazy"
                                             />
                                             <span
@@ -433,46 +429,46 @@ const MyBookingsPage = () => {
                                             </span>
                                         </div>
 
-                                        {/* Content Box */}
+                                        {/* Content on Right */}
                                         <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                            {/* Top Line: Category / Ref & Location */}
-                                            <div className="flex items-center justify-between gap-1.5">
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    <p className="text-xs text-gray-400 dark:text-gray-400 truncate flex items-center gap-1">
+                                            {/* Top Line: Location & Booking ID */}
+                                            <div>
+                                                <div className="flex items-center justify-between gap-1.5">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
                                                         <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         </svg>
                                                         <span>{roomAddress}</span>
                                                     </p>
+
+                                                    <span className="text-[10px] font-medium text-gray-400 hidden sm:inline shrink-0">
+                                                        ID: #{booking._id?.slice(-6).toUpperCase()}
+                                                    </span>
                                                 </div>
 
-                                                <span className="text-[10px] font-medium text-gray-400 hidden sm:inline shrink-0">
-                                                    ID: #{booking._id?.slice(-6).toUpperCase()}
-                                                </span>
-                                            </div>
+                                                {/* Middle Line: Title */}
+                                                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-0.5">
+                                                    {roomTitle}
+                                                </h3>
 
-                                            {/* Middle Line: Title */}
-                                            <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-0.5">
-                                                {roomTitle}
-                                            </h3>
-
-                                            {/* Dates & Host */}
-                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                                <span className="flex items-center gap-1 text-teal-700 dark:text-teal-300 font-medium text-[11px] sm:text-xs">
-                                                    <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                    <span>{formatDateRange(checkIn, checkOut)}</span>
-                                                </span>
-                                                <span className="text-gray-400 hidden sm:inline">•</span>
-                                                <span className="text-gray-500 text-[11px] truncate">
-                                                    Host: <strong className="font-semibold text-gray-700 dark:text-gray-300">{hostName}</strong>
-                                                </span>
+                                                {/* Dates & Host */}
+                                                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                                    <span className="flex items-center gap-1 text-teal-700 dark:text-teal-300 font-medium text-[11px] sm:text-xs">
+                                                        <svg className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                        </svg>
+                                                        <span>{formatDateRange(checkIn, checkOut)}</span>
+                                                    </span>
+                                                    <span className="text-gray-400 hidden sm:inline">•</span>
+                                                    <span className="text-gray-500 text-[11px] truncate">
+                                                        Host: <strong className="font-semibold text-gray-700 dark:text-gray-300">{hostName}</strong>
+                                                    </span>
+                                                </div>
                                             </div>
 
                                             {/* Bottom Line: Price & Actions */}
-                                            <div className="mt-2 flex items-center justify-between gap-2 pt-1.5 border-t border-gray-100 dark:border-gray-700/60">
+                                            <div className="mt-2 flex items-center justify-between gap-2 pt-1.5">
                                                 <div>
                                                     <span className="text-sm sm:text-base font-extrabold text-teal-700 dark:text-teal-300">
                                                         ₹{totalAmount.toLocaleString()}

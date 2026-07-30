@@ -105,7 +105,7 @@ const WishlistPage = () => {
                 <PageSkeleton />
             ) : wishlist.length > 0 ? (
                 viewMode === 'grid' ? (
-                    /* 5-Column Responsive Grid Layout */
+                    /* 5-Column Responsive Grid Layout (No Outer Box) */
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5 lg:gap-5">
                         {wishlist.map((room, idx) => {
                             const rawImageUrl = Array.isArray(room.images) && room.images.length > 0 
@@ -118,10 +118,10 @@ const WishlistPage = () => {
                                 <div
                                     key={room._id}
                                     onClick={() => handleRoomClick(room)}
-                                    className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                    className={`cursor-pointer group flex flex-col animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                 >
                                     {/* Thumbnail with Heart Button & Badges */}
-                                    <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0">
+                                    <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0 rounded-none">
                                         <img
                                             src={imageUrl}
                                             alt={room.title}
@@ -165,36 +165,28 @@ const WishlistPage = () => {
                                     </div>
 
                                     {/* Card Content */}
-                                    <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between">
-                                        <div>
-                                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 min-w-0">
-                                                <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                                <span className="truncate">{getAddressLine(room)}</span>
-                                            </div>
-                                            <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1" title={room.title}>
-                                                {room.title}
-                                            </h3>
+                                    <div className="pt-2.5 pb-1 px-0 flex flex-col">
+                                        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" title={room.title}>
+                                            {room.title}
+                                        </h3>
+                                        <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 mt-1 min-w-0 text-xs">
+                                            <svg className="w-3.5 h-3.5 shrink-0 text-gray-400 dark:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                                            </svg>
+                                            <span className="truncate">{getAddressLine(room)}</span>
                                         </div>
-
-                                        <div className="mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-700/70 flex items-center justify-between text-xs">
-                                            <p className="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white">
-                                                ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-[11px] text-gray-500 font-normal">/ night</span>
-                                            </p>
-                                            <span className="font-semibold text-teal-600 dark:text-teal-400 group-hover:underline text-xs">
-                                                View Stay →
-                                            </span>
-                                        </div>
+                                        <p className="mt-1.5 text-sm sm:text-base font-bold text-gray-900 dark:text-white">
+                                            ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-[11px] sm:text-xs font-normal text-gray-500 dark:text-gray-400">/ night</span>
+                                        </p>
+                                        <div className="w-full border-b border-gray-300 dark:border-gray-600 mt-2.5" />
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
                 ) : (
-                    /* Compact Horizontal List Rows Matching Screenshot */
-                    <div className="space-y-3">
+                    /* Horizontal List Rows: Image on Left, Info on Right (No Outer Box) */
+                    <div className="space-y-4">
                         {wishlist.map((room, idx) => {
                             const rawImageUrl = Array.isArray(room.images) && room.images.length > 0 
                                 ? (typeof room.images[0] === 'string' ? room.images[0] : room.images[0]?.url)
@@ -206,14 +198,14 @@ const WishlistPage = () => {
                                 <div
                                     key={room._id}
                                     onClick={() => handleRoomClick(room)}
-                                    className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group cursor-pointer animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                    className={`cursor-pointer group flex flex-row items-stretch pb-3.5 sm:pb-4 border-b border-gray-300 dark:border-gray-600 gap-3 sm:gap-4 transition-colors animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                 >
-                                    {/* Thumbnail with Heart Button */}
-                                    <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
+                                    {/* Thumbnail with Heart Button on Left */}
+                                    <div className="relative w-28 sm:w-44 md:w-52 h-24 sm:h-32 md:h-36 shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-750 rounded-none">
                                         <img
                                             src={imageUrl}
                                             alt={room.title}
-                                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                             loading="lazy"
                                         />
                                         <button
@@ -222,7 +214,7 @@ const WishlistPage = () => {
                                                 e.stopPropagation();
                                                 handleToggleWishlist(room);
                                             }}
-                                            className={`absolute top-1.5 right-1.5 rounded-md w-6 h-6 flex items-center justify-center shadow-xs transition-transform active:scale-90 ${
+                                            className={`absolute top-1.5 right-1.5 rounded-full w-6 h-6 flex items-center justify-center shadow-xs transition-transform active:scale-90 ${
                                                 isWishlisted
                                                     ? 'bg-rose-500 text-white'
                                                     : 'bg-white/90 text-gray-700 hover:bg-white dark:bg-gray-800/90 dark:text-gray-200'
@@ -230,60 +222,57 @@ const WishlistPage = () => {
                                             aria-label="Toggle wishlist"
                                         >
                                             {isWishlisted ? (
-                                                <svg className="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 24 24">
+                                                <svg className="w-3 h-3 fill-current text-white" viewBox="0 0 24 24">
                                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                                 </svg>
                                             ) : (
-                                                <svg className="w-3.5 h-3.5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
+                                                <svg className="w-3 h-3 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                 </svg>
                                             )}
                                         </button>
+                                        {room.propertyType && (
+                                            <span className="absolute top-1.5 left-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                                                {room.propertyType}
+                                            </span>
+                                        )}
                                     </div>
 
-                                    {/* Content Box */}
+                                    {/* Content on Right */}
                                     <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                        {/* Top Line: Category Badge + Location + Star Rating */}
-                                        <div className="flex items-center justify-between gap-1.5">
-                                            <div className="flex items-center gap-1.5 min-w-0">
-                                                {room.propertyType && (
-                                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shrink-0">
-                                                        {room.propertyType}
-                                                    </span>
-                                                )}
-                                                <p className="text-xs text-gray-400 dark:text-gray-400 truncate flex items-center gap-1">
-                                                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <div>
+                                            {/* Location & Star Rating */}
+                                            <div className="flex items-center justify-between gap-1.5">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
+                                                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                                                     </svg>
-                                                    <span>{getAddressLine(room)}</span>
+                                                    <span className="truncate">{getAddressLine(room)}</span>
                                                 </p>
+                                                <div className="flex items-center gap-0.5 text-xs font-bold text-gray-800 dark:text-gray-200 shrink-0">
+                                                    <svg className="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <span>{room.rating || room.ratingAverage || '4.9'}</span>
+                                                </div>
                                             </div>
 
-                                            <div className="flex items-center gap-1 text-xs font-bold text-gray-800 dark:text-gray-200 shrink-0">
-                                                <svg className="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                                <span>{room.rating || room.ratingAverage || '4.9'}</span>
-                                            </div>
+                                            {/* Title */}
+                                            <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-0.5 sm:mt-1" title={room.title}>
+                                                {room.title}
+                                            </h3>
                                         </div>
 
-                                        {/* Middle Line: Title */}
-                                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1">
-                                            {room.title}
-                                        </h3>
-
-                                        {/* Bottom Line: Price & View Action */}
-                                        <div className="mt-2 flex items-center justify-between gap-2">
-                                            <div>
-                                                <span className="text-sm sm:text-base font-extrabold text-gray-900 dark:text-gray-100">
-                                                    ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()}
-                                                </span>
-                                                <span className="text-xs text-gray-400 font-normal"> / nt</span>
-                                            </div>
-
-                                            <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 flex items-center gap-0.5">
-                                                View Stay →
+                                        {/* Price & Action */}
+                                        <div className="mt-1.5 sm:mt-2.5 flex items-baseline justify-between pt-1">
+                                            <p className="text-sm sm:text-base md:text-lg font-bold text-gray-900 dark:text-white">
+                                                ₹{Math.max(1, Math.round(room.pricePerNight || 0)).toLocaleString()} <span className="text-[11px] sm:text-xs font-normal text-gray-500 dark:text-gray-400">/ night</span>
+                                            </p>
+                                            <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                                                <span>View Stay</span>
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
                                             </span>
                                         </div>
                                     </div>

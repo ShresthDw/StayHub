@@ -195,17 +195,20 @@ const MyPropertiesPage = () => {
                     {/* Properties Display: Grid or List */}
                     {filteredRooms.length > 0 ? (
                         viewMode === 'grid' ? (
-                            /* 5-Column Responsive Grid Layout without distortion */
+                            /* 5-Column Responsive Grid Layout (No Outer Box) */
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5 lg:gap-5">
                                 {filteredRooms.map((room, idx) => {
                                     const isActive = room.isActive !== false;
                                     return (
                                         <div
                                             key={room._id}
-                                            className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col group animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                            className={`group flex flex-col animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                         >
                                             {/* Thumbnail with LIVE / DRAFT Badge */}
-                                            <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0">
+                                            <div 
+                                                onClick={() => navigate(`/rooms/${room._id}`)}
+                                                className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-750 overflow-hidden shrink-0 rounded-none cursor-pointer"
+                                            >
                                                 <img
                                                     src={getImageUrl(room)}
                                                     alt={room.title}
@@ -225,8 +228,11 @@ const MyPropertiesPage = () => {
                                             </div>
 
                                             {/* Card Content */}
-                                            <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between">
-                                                <div>
+                                            <div className="pt-2.5 pb-1 px-0 flex flex-col">
+                                                <div 
+                                                    onClick={() => navigate(`/rooms/${room._id}`)}
+                                                    className="cursor-pointer"
+                                                >
                                                     <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 min-w-0">
                                                         <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -237,13 +243,13 @@ const MyPropertiesPage = () => {
                                                     <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1" title={room.title}>
                                                         {room.title}
                                                     </h3>
-                                                    <p className="mt-1.5 text-sm sm:text-base font-extrabold text-gray-900 dark:text-gray-100">
+                                                    <p className="mt-1 text-sm sm:text-base font-extrabold text-gray-900 dark:text-gray-100">
                                                         ₹{Number(room.pricePerNight || 0).toLocaleString()} <span className="text-[11px] text-gray-500 font-normal">/ night</span>
                                                     </p>
                                                 </div>
 
-                                                {/* Actions bar at card bottom */}
-                                                <div className="mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-700/70 flex items-center justify-between text-xs">
+                                                {/* Actions bar */}
+                                                <div className="mt-2.5 pt-2 flex items-center justify-between text-xs">
                                                     <button
                                                         type="button"
                                                         onClick={() => navigate(`/rooms/${room._id}`)}
@@ -271,61 +277,71 @@ const MyPropertiesPage = () => {
                                                         </button>
                                                     </div>
                                                 </div>
+
+                                                <div className="w-full border-b border-gray-300 dark:border-gray-600 mt-2.5" />
                                             </div>
                                         </div>
                                     );
                                 })}
                             </div>
                         ) : (
-                            /* List Layout */
-                            <div className="space-y-3">
+                            /* List Layout: Image on Left, Info on Right (No Outer Box) */
+                            <div className="space-y-4">
                                 {filteredRooms.map((room, idx) => {
                                     const isActive = room.isActive !== false;
                                     return (
                                         <div
                                             key={room._id}
-                                            className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700/80 overflow-hidden shadow-xs hover:shadow-sm transition-all flex items-center p-3 sm:p-3.5 gap-3.5 group animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
+                                            className={`group flex flex-row items-stretch pb-3.5 sm:pb-4 border-b border-gray-300 dark:border-gray-600 gap-3 sm:gap-4 transition-colors animate-card-cascade stagger-${Math.min(idx + 1, 8)}`}
                                         >
-                                            {/* Thumbnail with LIVE / DRAFT Badge */}
-                                            <div className="relative w-24 h-20 sm:w-28 sm:h-22 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-750 shrink-0">
+                                            {/* Thumbnail on Left with LIVE / DRAFT Badge */}
+                                            <div 
+                                                onClick={() => navigate(`/rooms/${room._id}`)}
+                                                className="relative w-28 sm:w-44 md:w-52 h-24 sm:h-32 md:h-36 shrink-0 overflow-hidden bg-gray-100 dark:bg-gray-750 rounded-none cursor-pointer"
+                                            >
                                                 <img
                                                     src={getImageUrl(room)}
                                                     alt={room.title}
-                                                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                     loading="lazy"
                                                 />
-                                                <span className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider shadow-xs ${
+                                                <span className={`absolute top-1.5 left-1.5 px-1.5 sm:px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider shadow-xs ${
                                                     isActive ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'
                                                 }`}>
                                                     {isActive ? 'LIVE' : 'DRAFT'}
                                                 </span>
                                             </div>
 
-                                            {/* Content Box */}
+                                            {/* Content on Right */}
                                             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                                {/* Top Line: Category Badge + Location */}
-                                                <div className="flex items-center gap-2">
-                                                    {room.propertyType && (
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shrink-0">
-                                                            {room.propertyType}
-                                                        </span>
-                                                    )}
-                                                    <p className="text-xs text-gray-400 dark:text-gray-400 truncate flex items-center gap-1">
-                                                        <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        </svg>
-                                                        <span>{getAddressLine(room)}</span>
-                                                    </p>
+                                                <div 
+                                                    onClick={() => navigate(`/rooms/${room._id}`)}
+                                                    className="cursor-pointer"
+                                                >
+                                                    {/* Top Line: Category Badge + Location */}
+                                                    <div className="flex items-center gap-1.5">
+                                                        {room.propertyType && (
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shrink-0">
+                                                                {room.propertyType}
+                                                            </span>
+                                                        )}
+                                                        <p className="text-xs text-gray-400 dark:text-gray-400 truncate flex items-center gap-1">
+                                                            <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            </svg>
+                                                            <span>{getAddressLine(room)}</span>
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Middle Line: Title */}
+                                                    <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-0.5 sm:mt-1">
+                                                        {room.title}
+                                                    </h3>
                                                 </div>
 
-                                                {/* Middle Line: Title */}
-                                                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base line-clamp-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mt-1">
-                                                    {room.title}
-                                                </h3>
-
                                                 {/* Bottom Line: Price on Left, Actions on Right */}
-                                                <div className="mt-2 flex items-center justify-between gap-2">
+                                                <div className="mt-2 flex items-center justify-between gap-2 pt-1">
                                                     <div>
                                                         <span className="text-sm sm:text-base font-extrabold text-gray-900 dark:text-gray-100">
                                                             ₹{Number(room.pricePerNight || 0).toLocaleString()}
