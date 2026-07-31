@@ -135,7 +135,7 @@ export const apiSlice = createApi({
 
         getCurrentUser: builder.query({
             query: () => '/auth/me',
-            transformResponse: (response) => response.user,
+            transformResponse: (response) => response?.user || null,
             providesTags: ['User']
         }),
 

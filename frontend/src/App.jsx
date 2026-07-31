@@ -67,8 +67,8 @@ const App = () => {
             }
         }
 
-        if (userData) {
-            dispatch(setCurrentUser(userData));
+        if (userData !== undefined) {
+            dispatch(setCurrentUser(userData || null));
         } else if (userError) {
             dispatch(setCurrentUser(null));
         }

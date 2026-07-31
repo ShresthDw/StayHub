@@ -7,8 +7,8 @@ import User from '../models/User.js';
  * Verifies user exists in DB and attaches user data to req.user
  */
 export const mockAuth = async (req, res, next) => {
-    const token = req.cookies.authToken;
-    const userId = req.headers['x-user-id'];
+    const token = req.cookies?.authToken;
+    const userId = req.headers?.['x-user-id'];
 
     if (!token && !userId) {
         return res.status(401).json({ msg: 'Authentication required' });
@@ -37,6 +37,47 @@ export const mockAuth = async (req, res, next) => {
         }
     } catch (err) {
         return res.status(401).json({ msg: 'Invalid authentication' });
+    }
+};
+
+/**
+ * Optional authentication middleware for session checks (e.g. GET /api/auth/me).
+ * Attaches req.user if a valid token or userId exists, but allows guest visitors
+ * through without returning a 401 error to prevent console errors in DevTools/Lighthouse.
+ */
+export const optionalAuth = async (req, res, next) => {
+    const token = req.cookies?.authToken;
+    const userId = req.headers?.['x-user-id'];
+
+    if (!token && !userId) {
+        req.user = null;
+        return next();
+    }
+
+    try {
+        if (token) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+            const user = await User.findById(decoded.id).select('-password');
+            if (user) {
+                req.user = { id: user._id.toString(), role: user.role, verified: user.verified };
+            } else {
+                req.user = null;
+            }
+            return next();
+        }
+
+        if (userId) {
+            const user = await User.findById(userId).select('-password');
+            if (user) {
+                req.user = { id: user._id.toString(), role: user.role, verified: user.verified };
+            } else {
+                req.user = null;
+            }
+            return next();
+        }
+    } catch (err) {
+        req.user = null;
+        return next();
     }
 };
 

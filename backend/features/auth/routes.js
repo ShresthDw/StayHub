@@ -1,6 +1,6 @@
 
 import express from 'express';
-import mockAuth from '../../middleware/auth.js';
+import mockAuth, { optionalAuth } from '../../middleware/auth.js';
 import { register, login, googleAuth, getCurrentUser, updateProfile, becomeOwner, logout, getWishlist, toggleWishlist } from './authController.js';
 
 const router = express.Router();
@@ -10,8 +10,10 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/google', googleAuth);
 
+// Session check route (gracefully handles unauthenticated / guest visitors with 200 { user: null })
+router.get('/me', optionalAuth, getCurrentUser);
+
 // Protected routes (require authentication)
-router.get('/me', mockAuth, getCurrentUser);
 router.put('/profile', mockAuth, updateProfile);
 router.post('/become-owner', mockAuth, becomeOwner);
 router.post('/logout', mockAuth, logout);

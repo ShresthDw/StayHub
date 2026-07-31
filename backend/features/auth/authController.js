@@ -225,9 +225,13 @@ export const googleAuth = async (req, res) => {
 // GET /api/auth/me
 export const getCurrentUser = async (req, res) => {
     try {
+        if (!req.user || !req.user.id) {
+            return res.json({ user: null });
+        }
+
         const user = await User.findById(req.user.id).select('-password').lean();
         if (!user) {
-            return res.status(404).json({ msg: 'User not found' });
+            return res.json({ user: null });
         }
 
         res.json({ user: formatUserData(user) });
