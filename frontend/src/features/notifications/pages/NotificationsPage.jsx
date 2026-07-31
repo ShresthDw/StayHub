@@ -190,16 +190,16 @@ const NotificationsPage = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <div className="flex items-center gap-3">
-                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
+                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                             Notifications
                         </h1>
                         {unreadCount > 0 && (
-                            <span className="px-2 py-0.5 text-xs font-bold rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
+                            <span className="px-2 py-0.5 text-xs font-bold rounded-none bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
                                 {unreadCount} Unread
                             </span>
                         )}
                     </div>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
                         Stay updated on your booking activities, payments, property alerts, and reviews.
                     </p>
                 </div>
@@ -325,7 +325,7 @@ const NotificationsPage = () => {
                                                 >
                                                     {typeInfo.badge}
                                                 </span>
-                                                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">
                                                     {item.title}
                                                 </h3>
                                                 {!item.isRead && (
@@ -333,7 +333,7 @@ const NotificationsPage = () => {
                                                 )}
                                             </div>
 
-                                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-200 leading-relaxed">
                                                 {item.message}
                                             </p>
 
