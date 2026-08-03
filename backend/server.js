@@ -13,6 +13,7 @@ import bookingRoutes from './features/bookings/routes.js';
 import addressRoutes from './features/address/routes.js';
 import notificationRoutes from './features/notifications/routes.js';
 import healthRoutes from './features/health/routes.js';
+import chatRoutes from './features/chat/routes.js';
 import { connectDB } from './config/database.js';
 import { initSocket } from './config/socket.js';
 import { initKeepAlive } from './services/keepAliveService.js';
@@ -85,6 +86,7 @@ app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/chat', chatRoutes);
 
 
 // --- Config endpoint (exposes public keys for frontend map, payment & auth) ---
