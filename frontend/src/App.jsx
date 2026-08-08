@@ -10,6 +10,7 @@ import { AppSkeleton, PageSkeleton } from './components/Skeletons.jsx';
 import Footer from './components/Footer.jsx';
 import NotificationToast from './features/notifications/components/NotificationToast.jsx';
 import useNotificationSocket from './features/notifications/hooks/useNotificationSocket.js';
+import ChatbotWidget from './features/chat/components/ChatbotWidget.jsx';
 import HomePageView from './features/rooms/pages/HomePage.jsx';
 
 // Code-split / Lazy-loaded route components
@@ -146,6 +147,7 @@ const App = () => {
                 </Suspense>
 
                 <Footer />
+                <ChatbotWidget />
             </div>
         </GoogleOAuthProvider>
     );

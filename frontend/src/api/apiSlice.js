@@ -459,6 +459,19 @@ export const apiSlice = createApi({
             providesTags: ['Address']
         }),
 
+        // ============= CHATBOT ENDPOINTS =============
+        sendChatMessage: builder.mutation({
+            query: ({ message, history }) => ({
+                url: '/chat/message',
+                method: 'POST',
+                body: { message, history }
+            })
+        }),
+
+        getChatSuggestions: builder.query({
+            query: () => '/chat/suggestions'
+        }),
+
         // ============= CONFIG ENDPOINTS =============
         getAppConfig: builder.query({
             query: () => '/config',
@@ -517,6 +530,9 @@ export const {
     useToggleWishlistMutation,
     // Address
     useReverseGeocodeAddressQuery,
+    // Chatbot
+    useSendChatMessageMutation,
+    useGetChatSuggestionsQuery,
     // Config & Health
     useGetAppConfigQuery,
     useGetHealthQuery
