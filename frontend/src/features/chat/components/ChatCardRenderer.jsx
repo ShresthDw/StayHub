@@ -1,5 +1,5 @@
 // features/chat/components/ChatCardRenderer.jsx
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const StarIcon = () => (
@@ -16,7 +16,7 @@ const LocationPinIcon = ({ className = 'w-3.5 h-3.5 text-teal-600 dark:text-teal
 
 export const RoomCardItem = ({ room, onNavigate }) => {
     return (
-        <div className="flex-shrink-0 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+        <div className="flex-shrink-0 w-60 sm:w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between select-none">
             <div className="relative h-32 w-full overflow-hidden bg-gray-100 dark:bg-gray-700">
                 <img
                     src={room.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'}
@@ -76,7 +76,7 @@ export const BookingCardItem = ({ booking, onNavigate }) => {
         : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
 
     return (
-        <div className="flex-shrink-0 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="flex-shrink-0 w-68 sm:w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 select-none">
             <div className="p-3.5 space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -133,7 +133,7 @@ export const CityCardItem = ({ city, onNavigate }) => {
     return (
         <div
             onClick={() => onNavigate(`/cities/${encodeURIComponent(city.name)}`)}
-            className="flex-shrink-0 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-teal-500 cursor-pointer transition-all duration-200 group"
+            className="flex-shrink-0 w-40 sm:w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-teal-500 cursor-pointer transition-all duration-200 group select-none"
         >
             <div className="relative h-24 w-full overflow-hidden bg-gray-100 dark:bg-gray-700">
                 <img
@@ -163,7 +163,7 @@ export const CityCardItem = ({ city, onNavigate }) => {
 
 export const HostPropertyCardItem = ({ property, onNavigate }) => {
     return (
-        <div className="flex-shrink-0 w-60 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 shadow-sm hover:shadow-md transition-all">
+        <div className="flex-shrink-0 w-56 sm:w-60 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 shadow-sm hover:shadow-md transition-all select-none">
             <div className="flex items-start justify-between gap-1 mb-1.5">
                 <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate" title={property.title}>
                     {property.title}
@@ -192,11 +192,88 @@ export const HostPropertyCardItem = ({ property, onNavigate }) => {
 };
 
 export const ChatCardsCarousel = ({ cards, cardType, onNavigate }) => {
+    const scrollRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const checkScrollButtons = () => {
+        if (!scrollRef.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 5);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    };
+
+    useEffect(() => {
+        checkScrollButtons();
+        const el = scrollRef.current;
+        if (el) {
+            el.addEventListener('scroll', checkScrollButtons, { passive: true });
+            window.addEventListener('resize', checkScrollButtons);
+        }
+        return () => {
+            if (el) el.removeEventListener('scroll', checkScrollButtons);
+            window.removeEventListener('resize', checkScrollButtons);
+        };
+    }, [cards]);
+
+    const handleScroll = (direction) => {
+        if (!scrollRef.current) return;
+        const scrollAmount = direction === 'left' ? -260 : 260;
+        scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    };
+
     if (!cards || cards.length === 0) return null;
 
     return (
-        <div className="w-full mt-3 pt-2 pb-1">
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
+        <div className="relative w-full mt-3 pt-2 pb-1 group">
+            {/* Header info / count badge */}
+            <div className="flex items-center justify-between px-1 mb-1.5">
+                <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {cards.length} {cards.length === 1 ? 'result' : 'results'} available
+                </span>
+
+                {/* Left/Right Navigation arrows for desktop */}
+                {cards.length > 1 && (
+                    <div className="flex items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={() => handleScroll('left')}
+                            disabled={!canScrollLeft}
+                            aria-label="Scroll left"
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs transition-all ${
+                                canScrollLeft
+                                    ? 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-gray-700'
+                                    : 'opacity-30 cursor-not-allowed text-gray-400'
+                            }`}
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleScroll('right')}
+                            disabled={!canScrollRight}
+                            aria-label="Scroll right"
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs transition-all ${
+                                canScrollRight
+                                    ? 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-gray-700'
+                                    : 'opacity-30 cursor-not-allowed text-gray-400'
+                            }`}
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Scrollable container with visible sleek custom scrollbar */}
+            <div
+                ref={scrollRef}
+                className="flex gap-3 overflow-x-auto pb-3 pt-0.5 custom-scrollbar scroll-smooth"
+            >
                 {cards.map((item, index) => {
                     if (cardType === 'rooms' || !cardType) {
                         return <RoomCardItem key={item.id || index} room={item} onNavigate={onNavigate} />;

@@ -73,16 +73,60 @@ input[type='date']::-webkit-calendar-picker-indicator {
 	opacity: .72;
 }
 
-/* Hide horizontal/vertical scrollbars while preserving scroll behavior */
-.no-scrollbar {
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+/* =========================================================
+   SCROLLBAR UTILITIES (Cross-browser desktop & mobile)
+   ========================================================= */
+
+/* Hide horizontal/vertical scrollbars completely */
+.no-scrollbar,
+.scrollbar-none {
+	-ms-overflow-style: none !important;
+	scrollbar-width: none !important;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-	width: 0;
-	height: 0;
-	display: none;
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+	display: none !important;
+	width: 0 !important;
+	height: 0 !important;
+	-webkit-appearance: none !important;
+	background: transparent !important;
+}
+
+/* Sleek modern custom scrollbar for desktop message streams */
+.custom-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(148, 163, 184, 0.35);
+	border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(148, 163, 184, 0.6);
+}
+
+.dark .custom-scrollbar {
+	scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(100, 116, 139, 0.35);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(100, 116, 139, 0.6);
 }
 
 /* Animated placeholder text */
@@ -311,5 +355,3 @@ input::placeholder {
 .stagger-6 { animation-delay: 290ms; }
 .stagger-7 { animation-delay: 340ms; }
 .stagger-8 { animation-delay: 390ms; }
-
-

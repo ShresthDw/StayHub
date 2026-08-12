@@ -289,7 +289,7 @@ const ChatbotWidget = () => {
                     </div>
 
                     {/* Messages Body */}
-                    <div className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50/60 dark:bg-gray-900/60 space-y-1 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
+                    <div className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50/60 dark:bg-gray-900/60 space-y-1 custom-scrollbar">
                         {messages.map((msg) => (
                             <ChatMessage
                                 key={msg.id}
@@ -327,7 +327,7 @@ const ChatbotWidget = () => {
                             <p className="text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                                 Suggested questions:
                             </p>
-                            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                            <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                                 {defaultQuickPrompts.map((prompt, idx) => (
                                     <button
                                         key={idx}
