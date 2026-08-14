@@ -220,20 +220,12 @@ const ChatbotWidget = () => {
         handleClose();
     };
 
-    const defaultQuickPrompts = (suggestionsData?.suggestions || [
-        'Villas in Goa under 5000',
-        'Apartments in Mumbai',
-        'Check my bookings',
-        'Top rated stays'
-    ]).map(stripEmojis);
-
     return (
         <>
             {/* Floating Action Button */}
             {!isOpen && (
                 <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
                     <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-xs font-semibold rounded-full shadow-lg border border-gray-200 dark:border-gray-700 animate-bounce">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         <span>Ask StayBot AI</span>
                     </div>
 
@@ -279,14 +271,10 @@ const ChatbotWidget = () => {
                                     <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner ring-2 ring-white/40">
                                         <BotHeaderIcon />
                                     </div>
-                                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-teal-700 rounded-full" />
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-1.5">
                                         <h3 className="font-extrabold text-sm tracking-wide">StayBot AI</h3>
-                                        <span className="px-1.5 py-0.5 bg-white/20 text-[10px] font-semibold rounded-full uppercase tracking-wider text-teal-100">
-                                            Live
-                                        </span>
                                     </div>
                                     <p className="text-[11px] text-teal-100/90 font-medium">
                                         StayHub AI Concierge
@@ -354,29 +342,6 @@ const ChatbotWidget = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Quick Starter Chips */}
-                        {messages.length <= 1 && (
-                            <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-white/70 dark:bg-gray-850/70 shrink-0">
-                                <p className="text-[11px] font-semibold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                                    Suggested questions:
-                                </p>
-                                <div
-                                    className="flex gap-1.5 pb-1"
-                                    style={{ overflowX: 'auto', scrollbarWidth: 'thin', scrollbarColor: '#99f6e4 transparent' }}
-                                >
-                                    {defaultQuickPrompts.map((prompt, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => handleSendMessage(prompt)}
-                                            className="whitespace-nowrap px-3 py-1.5 bg-gray-100 hover:bg-teal-50 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-200 hover:text-teal-700 dark:hover:text-teal-300 border border-gray-200/80 dark:border-gray-700/80 text-xs font-medium rounded-full transition-all active:scale-95"
-                                        >
-                                            {prompt}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
                         {/* Input Bar */}
                         <div className="p-3 bg-white dark:bg-gray-850 border-t border-gray-200 dark:border-gray-700/80 shrink-0">
                             <form
@@ -399,11 +364,10 @@ const ChatbotWidget = () => {
                                 <button
                                     type="submit"
                                     disabled={!inputMessage.trim() || isSending}
-                                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                                        inputMessage.trim() && !isSending
-                                            ? 'bg-teal-600 hover:bg-teal-700 active:scale-95 text-white shadow-md shadow-teal-500/20'
-                                            : 'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                                    }`}
+                                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${inputMessage.trim() && !isSending
+                                        ? 'bg-teal-600 hover:bg-teal-700 active:scale-95 text-white shadow-md shadow-teal-500/20'
+                                        : 'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                        }`}
                                     aria-label="Send message"
                                 >
                                     <svg className="w-5 h-5 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
