@@ -14,7 +14,9 @@ export const stripEmojis = (str) => {
     if (typeof str !== 'string') return str;
     return str
         .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|[\uFE00-\uFE0F]|[\u{1F000}-\u{1FFFF}])/gu, '')
-        .replace(/\s+/g, ' ')
+        // Keep newlines intact so the chat Markdown renderer can format
+        // headings, paragraphs, and list items correctly.
+        .replace(/[^\S\r\n]+/g, ' ')
         .trim();
 };
 
@@ -150,7 +152,9 @@ const ChatbotWidget = () => {
         setMessages(updatedMessages);
 
         try {
-            const historyPayload = updatedMessages.slice(-6).map(m => ({
+            // Gemini receives the current message separately below, so history
+            // must contain only messages that came before this request.
+            const historyPayload = messages.slice(-6).map(m => ({
                 sender: m.sender,
                 text: stripEmojis(m.text)
             }));

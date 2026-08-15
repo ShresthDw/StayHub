@@ -29,6 +29,16 @@ const formatMessageText = (text) => {
             return <div key={lineIdx} className="h-2" />;
         }
 
+        // Markdown headings (### Heading)
+        const headingMatch = line.match(/^\s*#{1,6}\s*(.+)$/);
+        if (headingMatch) {
+            return (
+                <h4 key={lineIdx} className="mt-1 mb-1 font-bold text-sm text-gray-950 dark:text-white">
+                    {renderInlineMarkdown(headingMatch[1])}
+                </h4>
+            );
+        }
+
         // Bullet point lines (- item or * item)
         const isBullet = /^\s*[-*•]\s+(.*)/.test(line);
         if (isBullet) {
@@ -111,9 +121,25 @@ const renderInlineMarkdown = (text) => {
     return parts;
 };
 
+const getCardIntro = (cardType) => {
+    switch (cardType) {
+        case 'rooms':
+            return 'Here are the matching stays:';
+        case 'bookings':
+            return 'Here are your bookings:';
+        case 'cities':
+            return 'Here are the available destinations:';
+        case 'host_properties':
+            return 'Here are your properties:';
+        default:
+            return 'Here are the results:';
+    }
+};
+
 const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
     const isUser = message.sender === 'user';
     const isSystem = message.sender === 'system';
+    const hasCards = !isUser && message.cards && message.cards.length > 0;
 
     const formatTime = (dateStr) => {
         try {
@@ -149,6 +175,8 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
                     <div className="break-words">
                         {isUser ? (
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">{stripEmojis(message.text)}</p>
+                        ) : hasCards ? (
+                            <p className="text-sm leading-relaxed">{getCardIntro(message.cardType)}</p>
                         ) : (
                             formatMessageText(message.text)
                         )}

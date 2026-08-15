@@ -498,6 +498,24 @@ const geminiToolDeclarations = [
     }
 ];
 
+const wait = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+const withRetry = async (operation, label, attempts = 3) => {
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+        try {
+            return await operation();
+        } catch (error) {
+            const status = Number(error?.status || error?.statusCode);
+            const retryable = !status || status === 408 || status === 429 || status >= 500;
+            if (!retryable || attempt === attempts) throw error;
+
+            const delay = 500 * (2 ** (attempt - 1));
+            console.warn(`${label} request failed (attempt ${attempt}/${attempts}), retrying in ${delay}ms:`, error.message);
+            await wait(delay);
+        }
+    }
+};
+
 
 // HYBRID NLP PARSER & INTENT RECOGNITION (FALLBACK ENGINE)
 
@@ -822,7 +840,7 @@ export const processChatMessage = async ({ message, history = [], user = null })
         try {
             const genAI = new GoogleGenerativeAI(geminiApiKey.trim());
             const model = genAI.getGenerativeModel({
-                model: 'gemini-1.5-flash',
+                model: process.env.GEMINI_MODEL || 'gemini-flash-lite-latest',
                 systemInstruction: `You are StayBot, the AI Concierge for StayHub (a vacation rental platform).
 You have direct access to database tools to answer real-time queries about stays, rooms, bookings, user wishlists, host earnings, and platform policies.
 
@@ -835,16 +853,38 @@ RULES:
                 tools: [{ functionDeclarations: geminiToolDeclarations }]
             });
 
-            // Format previous chat history for Gemini
+            // Gemini chat history must begin with a user message and cannot
+            // contain consecutive messages from the same role. The UI may
+            // persist a bot greeting as the first message, so normalize it
+            // before creating the chat session.
+            const geminiHistory = [];
+            for (const msg of Array.isArray(history) ? history.slice(-6) : []) {
+                const text = typeof msg?.text === 'string' ? msg.text.trim() : '';
+                if (!text) continue;
+
+                const role = msg.sender === 'user' ? 'user' : 'model';
+                const previous = geminiHistory[geminiHistory.length - 1];
+
+                if (previous?.role === role) {
+                    previous.parts[0].text += `\n${text}`;
+                } else {
+                    geminiHistory.push({
+                        role,
+                        parts: [{ text }]
+                    });
+                }
+            }
+
+            while (geminiHistory[0]?.role === 'model') {
+                geminiHistory.shift();
+            }
+
             const chat = model.startChat({
-                history: (history || []).slice(-6).map(msg => ({
-                    role: msg.sender === 'user' ? 'user' : 'model',
-                    parts: [{ text: msg.text || '' }]
-                }))
+                history: geminiHistory
             });
 
             // Send message and handle tool calling loop
-            let result = await chat.sendMessage(message);
+            let result = await withRetry(() => chat.sendMessage(message), 'Gemini');
             let response = result.response;
             let functionCalls = response.functionCalls ? response.functionCalls() : null;
 
@@ -893,15 +933,13 @@ RULES:
                     functionResponseData = getPlatformFaqTool(args);
                 }
 
-                // Send function execution response back to Gemini
-                const secondResult = await chat.sendMessage([
-                    {
-                        functionResponse: {
-                            name,
-                            response: functionResponseData
-                        }
-                    }
-                ]);
+                // The current Gemini endpoint rejects the SDK's generated
+                // `function` role for functionResponse parts. Send the tool
+                // result as user context instead, which is supported by all
+                // configured Gemini models.
+                const secondResult = await withRetry(() => chat.sendMessage(
+                    `Tool result for ${name}. Use this data to answer the user's request accurately:\n${JSON.stringify(functionResponseData)}`
+                ), 'Gemini');
 
                 const finalReply = stripEmojis(secondResult.response.text());
                 return {
