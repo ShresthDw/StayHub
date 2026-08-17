@@ -3,13 +3,15 @@ import React from 'react';
 import { ChatCardsCarousel } from './ChatCardRenderer.jsx';
 import { stripEmojis } from './ChatbotWidget.jsx';
 
-const BotReplyLabel = () => (
-    <div className="flex items-center gap-1 mb-1 ml-1 text-[10px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400">
-        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+const BotReplyLabel = ({ large = false }) => (
+    <div className={`${large ? 'flex-col gap-1.5 mb-2' : 'flex-row gap-1 mb-1 ml-1'} flex items-center text-[10px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400`}>
+        <span className={large ? 'flex h-10 w-10 items-center justify-center rounded-full bg-teal-600 text-white shadow-md shadow-teal-900/20' : ''}>
+            <svg className={large ? 'w-6 h-6' : 'w-3 h-3'} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4V2.5M9 2.5h6M8 7h8a2 2 0 012 2v7a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z" />
             <circle cx="9" cy="11.5" r="1" fill="currentColor" stroke="none" />
             <circle cx="15" cy="11.5" r="1" fill="currentColor" stroke="none" />
-        </svg>
+            </svg>
+        </span>
         <span>StayBot</span>
     </div>
 );
@@ -140,6 +142,8 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
     const isUser = message.sender === 'user';
     const isSystem = message.sender === 'system';
     const hasCards = !isUser && message.cards && message.cards.length > 0;
+    const isWelcome = !isUser && (message.isWelcome || String(message.id || '').startsWith('welcome'));
+    const welcomeParts = isWelcome ? stripEmojis(message.text || '').split('\n\n') : [];
 
     const formatTime = (dateStr) => {
         try {
@@ -161,30 +165,41 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
     }
 
     return (
-        <div className={`flex flex-col my-3 ${isUser ? 'items-end' : 'items-start'} max-w-full`}>
-            {!isUser && <BotReplyLabel />}
+        <div className={`flex flex-col my-3 ${isUser ? 'items-end' : isWelcome ? 'items-center' : 'items-start'} max-w-full`}>
+            {!isUser && <BotReplyLabel large={isWelcome} />}
 
             <div className={`flex items-end gap-2 max-w-[92%] sm:max-w-[85%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {/* Message Box */}
                 <div
-                    className={`rounded-xl px-3 py-2 shadow-sm transition-all ${isUser
-                        ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-br-xs'
-                        : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/70 text-gray-800 dark:text-gray-100 rounded-bl-xs'
-                        }`}
+                    className={`${isWelcome
+                        ? 'relative w-full px-1 py-2 text-center text-gray-100'
+                        : `rounded-xl px-3 py-2 shadow-sm ${isUser
+                            ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-br-xs'
+                            : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/70 text-gray-800 dark:text-gray-100 rounded-bl-xs'
+                            }`}`}
                 >
                     <div className="break-words">
                         {isUser ? (
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">{stripEmojis(message.text)}</p>
                         ) : hasCards ? (
                             <p className="text-sm leading-relaxed">{getCardIntro(message.cardType)}</p>
+                        ) : isWelcome ? (
+                            <div className="relative">
+                                <h4 className="mt-1 text-xl font-extrabold tracking-tight">Plan your next stay</h4>
+                                <p className="mt-2 text-sm leading-relaxed text-teal-50/95">
+                                    {welcomeParts[0] || 'Tell me where you want to go, and I will help you find the right place to stay.'} Live stay search, smart filters, and booking help are available.
+                                </p>
+                            </div>
                         ) : (
                             formatMessageText(message.text)
                         )}
                     </div>
 
-                    <div className={`text-[8px] mt-0.5 flex items-center gap-1 ${isUser ? 'text-teal-100 justify-end' : 'text-gray-400 dark:text-gray-500 justify-end'}`}>
-                        <span>{formatTime(message.timestamp)}</span>
-                    </div>
+                    {!isWelcome && (
+                        <div className={`text-[8px] mt-0.5 flex items-center gap-1 ${isUser ? 'text-teal-100 justify-end' : 'text-gray-400 dark:text-gray-500 justify-end'}`}>
+                            <span>{formatTime(message.timestamp)}</span>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -209,7 +224,7 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
                             <button
                                 key={idx}
                                 onClick={() => onSuggestionClick(cleanSug)}
-                                className="px-3 py-1 bg-teal-50 dark:bg-gray-800/90 hover:bg-teal-100 dark:hover:bg-gray-700 text-teal-700 dark:text-teal-300 border border-teal-200/60 dark:border-teal-900/50 text-xs font-medium rounded-full transition-all active:scale-95 text-left"
+                                className="bg-white/15 hover:bg-white/25 text-teal-50 border-transparent px-2.5 py-1 text-xs font-medium rounded-full transition-all active:scale-95 text-left"
                             >
                                 {cleanSug}
                             </button>

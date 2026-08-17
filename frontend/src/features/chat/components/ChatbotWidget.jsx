@@ -49,6 +49,7 @@ const ChatbotWidget = () => {
             return Array.isArray(parsed)
                 ? parsed.map(m => ({
                     ...m,
+                    isWelcome: m.isWelcome || String(m.id || '').startsWith('welcome'),
                     text: stripEmojis(m.text),
                     suggestions: (m.suggestions || []).map(stripEmojis)
                 }))
@@ -119,6 +120,7 @@ const ChatbotWidget = () => {
                 {
                     id: 'welcome_1',
                     sender: 'bot',
+                    isWelcome: true,
                     text: greeting,
                     cards: [],
                     cardType: null,
@@ -209,6 +211,7 @@ const ChatbotWidget = () => {
                 {
                     id: 'welcome_reset',
                     sender: 'bot',
+                    isWelcome: true,
                     text: greeting,
                     cards: [],
                     cardType: null,
@@ -228,23 +231,14 @@ const ChatbotWidget = () => {
         <>
             {/* Floating Action Button */}
             {!isOpen && (
-                <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-                    <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-xs font-semibold rounded-full shadow-lg border border-gray-200 dark:border-gray-700 animate-bounce">
-                        <span>Ask StayBot AI</span>
-                    </div>
+                <button
+                    onClick={handleInitialOpen}
+                    className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 active:scale-95 text-white text-sm font-semibold shadow-xl shadow-teal-600/30 transition-all duration-300 hover:ring-4 hover:ring-teal-400/30 focus:outline-none"
+                    aria-label="Open AI Travel Assistant"
+                >
+                    Ask AI
+                </button>
 
-                    <button
-                        onClick={handleInitialOpen}
-                        className="relative w-14 h-14 rounded-full bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 active:scale-95 text-white shadow-xl shadow-teal-600/30 flex items-center justify-center transition-all duration-300 group hover:ring-4 hover:ring-teal-400/30 focus:outline-none"
-                        aria-label="Open AI Travel Assistant"
-                    >
-                        <div className="absolute inset-0 rounded-full bg-teal-400 opacity-20 blur-md group-hover:opacity-40 transition-opacity" />
-                        <svg className="w-7 h-7 text-white transform group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full" />
-                    </button>
-                </div>
             )}
 
             {/* Sidebar Overlay + Panel */}
