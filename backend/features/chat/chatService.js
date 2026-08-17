@@ -951,6 +951,22 @@ RULES:
                 };
             }
 
+            // Flash-Lite can occasionally answer a data query without
+            // invoking a tool. Route obvious stay/location requests through
+            // the deterministic parser so the user still gets live cards.
+            const isDataQuery = /\b(in|near|around|under|below|hotel|hotels|villa|villas|apartment|apartments|resort|resorts|cottage|hostel|stays|rooms|wishlist|booking|bookings|cities|destinations)\b/i.test(message);
+            if (isDataQuery) {
+                const fallbackResult = await parseIntentAndExecute({ message, user });
+                if (fallbackResult.cardType || (fallbackResult.cards && fallbackResult.cards.length > 0)) {
+                    return {
+                        ...fallbackResult,
+                        reply: stripEmojis(fallbackResult.reply),
+                        suggestions: (fallbackResult.suggestions || []).map(stripEmojis),
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            }
+
             // Normal text response from Gemini
             return {
                 reply: stripEmojis(response.text()),
