@@ -8,7 +8,9 @@ export const stripEmojis = (str) => {
     if (typeof str !== 'string') return str;
     return str
         .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|[\uFE00-\uFE0F]|[\u{1F000}-\u{1FFFF}])/gu, '')
-        .replace(/\s+/g, ' ')
+        // Preserve line breaks so the frontend can render Markdown headings
+        // and lists instead of receiving one flattened paragraph.
+        .replace(/[^\S\r\n]+/g, ' ')
         .trim();
 };
 
