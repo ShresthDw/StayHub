@@ -115,7 +115,7 @@ const AuthPage = ({ mode }) => {
                             </Link>
                         </div>
                         <h1 className="text-3xl sm:text-4xl lg:text-[36px] font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight">
-                            <span className="text-teal-600 dark:text-teal-400">StayHub</span> — Find your ideal stay or host guests with ease.
+                            Find your ideal stay or host guests with ease.
                         </h1>
                         <p className="mt-2.5 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
                             StayHub connects travelers with verified rooms, luxury villas, and comfortable apartments worldwide. Enjoy instant bookings, secure payments, and a seamless hosting experience.
@@ -168,7 +168,7 @@ const AuthPage = ({ mode }) => {
                             </div>
                             <div>
                                 <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">Live Updates</h2>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">Real-time status via WebSocket alerts.</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">Real-time status updates.</p>
                             </div>
                         </div>
                     </div>

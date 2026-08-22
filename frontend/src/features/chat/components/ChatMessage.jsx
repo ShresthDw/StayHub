@@ -172,7 +172,7 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
                 {/* Message Box */}
                 <div
                     className={`${isWelcome
-                        ? 'relative w-full px-1 py-2 text-center text-gray-100'
+                        ? 'relative w-full px-1 py-2 text-center text-gray-900 dark:text-gray-100'
                         : `rounded-xl px-3 py-2 shadow-sm ${isUser
                             ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-br-xs'
                             : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/70 text-gray-800 dark:text-gray-100 rounded-bl-xs'
@@ -186,7 +186,7 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
                         ) : isWelcome ? (
                             <div className="relative">
                                 <h4 className="mt-1 text-xl font-extrabold tracking-tight">Plan your next stay</h4>
-                                <p className="mt-2 text-sm leading-relaxed text-teal-50/95">
+                                <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-teal-50/95">
                                     {welcomeParts[0] || 'Tell me where you want to go, and I will help you find the right place to stay.'} Live stay search, smart filters, and booking help are available.
                                 </p>
                             </div>
@@ -224,7 +224,7 @@ const ChatMessage = ({ message, onNavigate, onSuggestionClick }) => {
                             <button
                                 key={idx}
                                 onClick={() => onSuggestionClick(cleanSug)}
-                                className="bg-white/15 hover:bg-white/25 text-teal-50 border-transparent px-2.5 py-1 text-xs font-medium rounded-full transition-all active:scale-95 text-left"
+                                className="bg-gray-100/80 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-700 dark:text-teal-50 border border-gray-200 dark:border-transparent px-2.5 py-1 text-xs font-medium rounded-full transition-all active:scale-95 text-left"
                             >
                                 {cleanSug}
                             </button>
