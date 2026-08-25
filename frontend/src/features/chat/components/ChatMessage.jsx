@@ -6,11 +6,7 @@ import { stripEmojis } from './ChatbotWidget.jsx';
 const BotReplyLabel = ({ large = false }) => (
     <div className={`${large ? 'flex-col gap-1.5 mb-2' : 'flex-row gap-1 mb-1 ml-1'} flex items-center text-[10px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400`}>
         <span className={large ? 'flex h-10 w-10 items-center justify-center rounded-full bg-teal-600 text-white shadow-md shadow-teal-900/20' : ''}>
-            <svg className={large ? 'w-6 h-6' : 'w-3 h-3'} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4V2.5M9 2.5h6M8 7h8a2 2 0 012 2v7a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z" />
-            <circle cx="9" cy="11.5" r="1" fill="currentColor" stroke="none" />
-            <circle cx="15" cy="11.5" r="1" fill="currentColor" stroke="none" />
-            </svg>
+            <span className={`${large ? 'h-6 w-6' : 'h-3 w-3 text-teal-600 dark:text-teal-400'} inline-block bg-current`} style={{ WebkitMaskImage: "url('/hubot.svg')", maskImage: "url('/hubot.svg')", WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center', WebkitMaskSize: 'contain', maskSize: 'contain' }} aria-hidden="true" />
         </span>
         <span>StayBot</span>
     </div>
