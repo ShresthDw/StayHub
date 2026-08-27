@@ -64,7 +64,7 @@ const HomePage = () => {
                             propertyType={filters.propertyType}
                             icons={icons}
                             onRoomClick={handleRoomClick}
-                            initialRooms={homeFeed?.categories?.[filters.propertyType]}
+                            initialRooms={!hasActiveFilters ? (homeFeed?.categories?.[filters.propertyType] || []) : undefined}
                         />
                     ) : (
                         <>
@@ -83,7 +83,7 @@ const HomePage = () => {
                                         propertyType={propertyType}
                                         icons={icons}
                                         onRoomClick={handleRoomClick}
-                                        initialRooms={homeFeed?.categories?.[propertyType]}
+                                        initialRooms={!hasActiveFilters ? (homeFeed?.categories?.[propertyType] || []) : undefined}
                                     />
                                 ))}
                             </div>

@@ -28,7 +28,9 @@ const CategoryRow = ({ propertyType, icons, onRoomClick, initialRooms = null }) 
     );
 
     // Skip individual category query if we already received initial feed data for page 1
-    const canUseInitialData = Boolean(initialRooms && initialRooms.length > 0 && page === 1 && !hasCustomFilters);
+    // An empty array is also valid initial data. It means this category has no
+    // matches, so do not fall back to a separate request for it.
+    const canUseInitialData = Array.isArray(initialRooms) && page === 1;
 
     const { data, isFetching, isLoading, isError } = useGetPublicRoomsByTypeQuery({
         propertyType,
