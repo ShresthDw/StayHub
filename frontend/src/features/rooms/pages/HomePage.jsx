@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { icons, PROPERTY_TYPES } from '../../../constants.jsx';
@@ -7,7 +7,7 @@ import HeroBackgroundAnimation from '../components/HeroBackgroundAnimation.jsx';
 import HeroSearchBar from '../components/HeroSearchBar.jsx';
 import CategoryRow from '../components/CategoryRow.jsx';
 import ExploreUniquePlaces from '../components/ExploreUniquePlaces.jsx';
-import { useGetHomeFeedQuery, useGetCitiesQuery } from '../../../api/apiSlice.js';
+import { useGetHomeFeedQuery, useGetCitiesQuery, useGetPublicRoomsQuery } from '../../../api/apiSlice.js';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -28,6 +28,25 @@ const HomePage = () => {
     const { data: homeFeed } = useGetHomeFeedQuery(undefined, {
         skip: hasActiveFilters
     });
+
+    const { data: filteredRoomsData } = useGetPublicRoomsQuery({
+        filters,
+        searchLocation,
+        checkInDate,
+        checkOutDate,
+        page: 1,
+        limit: 100
+    }, {
+        skip: !hasActiveFilters
+    });
+
+    const filteredCategories = useMemo(() => {
+        const categories = Object.fromEntries(PROPERTY_TYPES.map((type) => [type, []]));
+        (filteredRoomsData?.rooms || []).forEach((room) => {
+            if (categories[room.propertyType]) categories[room.propertyType].push(room);
+        });
+        return categories;
+    }, [filteredRoomsData]);
 
     // Fallback cities query if homeFeed is skipped due to active filters
     const { data: fallbackCities = [] } = useGetCitiesQuery(undefined, {
@@ -64,7 +83,9 @@ const HomePage = () => {
                             propertyType={filters.propertyType}
                             icons={icons}
                             onRoomClick={handleRoomClick}
-                            initialRooms={!hasActiveFilters ? (homeFeed?.categories?.[filters.propertyType] || []) : undefined}
+                            initialRooms={hasActiveFilters
+                                ? filteredCategories[filters.propertyType] || []
+                                : homeFeed?.categories?.[filters.propertyType] || []}
                         />
                     ) : (
                         <>
@@ -83,7 +104,9 @@ const HomePage = () => {
                                         propertyType={propertyType}
                                         icons={icons}
                                         onRoomClick={handleRoomClick}
-                                        initialRooms={!hasActiveFilters ? (homeFeed?.categories?.[propertyType] || []) : undefined}
+                                        initialRooms={hasActiveFilters
+                                            ? filteredCategories[propertyType] || []
+                                            : homeFeed?.categories?.[propertyType] || []}
                                     />
                                 ))}
                             </div>

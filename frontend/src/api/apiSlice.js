@@ -158,8 +158,8 @@ export const apiSlice = createApi({
 
         // ============= ROOMS ENDPOINTS =============
         getPublicRooms: builder.query({
-            query: ({ filters, searchLocation, checkInDate, checkOutDate, page = 1 }) => {
-                const params = { isActive: 'true', page, limit: 5 };
+            query: ({ filters, searchLocation, checkInDate, checkOutDate, page = 1, limit = 5 }) => {
+                const params = { isActive: 'true', page, limit };
 
                 if (filters?.propertyType) params.propertyType = filters.propertyType;
                 if (filters?.amenities?.length > 0) params.amenities = filters.amenities.join(',');
