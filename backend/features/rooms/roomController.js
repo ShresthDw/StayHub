@@ -371,45 +371,44 @@ export const getHomeFeed = async (req, res) => {
     }
 
     try {
-        const projectionFields = 'title propertyType address location images pricePerNight rating';
-        const PROPERTY_TYPES = ["apartment", "house", "villa", "hotel", "resort", "cottage", "hostel"];
-
-        const [featured, categoryResults, cities] = await Promise.all([
-            // Featured listings (limit 6)
-            Room.find({ isActive: true })
-                .select(projectionFields)
-                .slice('images', 1)
-                .sort({ rating: -1, createdAt: -1 })
-                .limit(6)
-                .lean(),
-
-            // Top rooms per property type in parallel
-            Promise.all(
-                PROPERTY_TYPES.map(async (type) => {
-                    const rooms = await Room.find({ isActive: true, propertyType: type })
-                        .select(projectionFields)
-                        .slice('images', 1)
-                        .limit(8)
-                        .lean();
-                    return { type, rooms };
-                })
-            ),
-
-            // Top cities
-            Room.aggregate([
-                { $match: { isActive: true } },
-                {
-                    $group: {
-                        _id: '$address.city',
-                        count: { $sum: 1 },
-                        firstImage: { $first: '$images' }
-                    }
-                },
-                { $match: { _id: { $ne: null } } },
-                { $sort: { count: -1 } },
-                { $limit: 8 }
-            ])
+        const [feed] = await Room.aggregate([
+            { $match: { isActive: true } },
+            {
+                $project: {
+                    title: 1,
+                    propertyType: 1,
+                    address: 1,
+                    location: 1,
+                    images: { $slice: ['$images', 1] },
+                    pricePerNight: 1,
+                    rating: 1,
+                    createdAt: 1
+                }
+            },
+            {
+                $facet: {
+                    featured: [
+                        { $sort: { rating: -1, createdAt: -1 } },
+                        { $limit: 6 }
+                    ],
+                    categoryResults: [
+                        { $sort: { rating: -1, createdAt: -1 } },
+                        { $group: { _id: '$propertyType', rooms: { $push: '$$ROOT' } } },
+                        { $project: { _id: 0, type: '$_id', rooms: { $slice: ['$rooms', 8] } } }
+                    ],
+                    cities: [
+                        { $group: { _id: '$address.city', count: { $sum: 1 }, firstImage: { $first: '$images' } } },
+                        { $match: { _id: { $ne: null } } },
+                        { $sort: { count: -1 } },
+                        { $limit: 8 }
+                    ]
+                }
+            }
         ]);
+
+        const featured = feed?.featured || [];
+        const categoryResults = feed?.categoryResults || [];
+        const cities = feed?.cities || [];
 
         const categories = {};
         categoryResults.forEach(item => {
