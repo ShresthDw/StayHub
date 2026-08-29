@@ -142,7 +142,8 @@ export const getCityCardSizes = () => {
 /**
  * Get responsive srcset for room cards across different viewports
  * Generates multiple sizes for optimal loading on different devices
- * Room cards display at ~300px mobile, ~400px tablet, ~500px desktop
+ * Room cards display at ~210px on desktop, with 2x/3x candidates for
+ * high-density displays.
  * Quality reduced to 70% for better compression
  * @param {string} imageUrl - The original image URL
  * @returns {string} srcset string for responsive images
@@ -153,9 +154,9 @@ export const getRoomCardSrcSet = (imageUrl) => {
     }
 
     const sizes = [
-        { width: 300, height: 225 }, // Mobile (4:3)
-        { width: 400, height: 300 }, // Tablet (4:3)
-        { width: 500, height: 375 }  // Desktop (4:3)
+        { width: 210, height: 158 }, // Display size (4:3)
+        { width: 420, height: 315 }, // 2x / Retina (4:3)
+        { width: 630, height: 473 }  // 3x / high-density (4:3)
     ];
 
     return sizes
@@ -173,7 +174,7 @@ export const getRoomCardSrcSet = (imageUrl) => {
  * @returns {string} sizes attribute value
  */
 export const getRoomCardSizes = () => {
-    return '(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 22vw';
+    return '(max-width: 768px) 100vw, 210px';
 };
 
 /**
