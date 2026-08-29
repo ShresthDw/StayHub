@@ -96,8 +96,8 @@ export const getRoomDetailImage = (imageUrl) => {
  */
 export const getCityCardImage = (imageUrl) => {
     return optimizeImage(imageUrl, {
-        width: 400, // Reduced from 800 - matches actual display size
-        height: 225, // Maintains h-56 aspect ratio (16:9)
+        width: 210, // Reduced from 800 - matches actual display size
+        height: 158, // Maintains h-56 aspect ratio (16:9)
         quality: 70, // Reduced from 75% for better compression
         format: 'auto'
     });
