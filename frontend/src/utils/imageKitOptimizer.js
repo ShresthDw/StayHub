@@ -66,8 +66,8 @@ export const optimizeImage = (imageUrl, options = {}) => {
  */
 export const getRoomCardThumbnail = (imageUrl) => {
     return optimizeImage(imageUrl, {
-        width: 400,
-        height: 300,
+        width: 210,
+        height: 158,
         quality: 70, // Reduced from 75% for better compression
         format: 'auto'
     });
@@ -80,7 +80,7 @@ export const getRoomCardThumbnail = (imageUrl) => {
  */
 export const getRoomDetailImage = (imageUrl) => {
     return optimizeImage(imageUrl, {
-        width: 800,
+        width: 600,
         quality: 85,
         format: 'auto'
     });
@@ -154,9 +154,9 @@ export const getRoomCardSrcSet = (imageUrl) => {
     }
 
     const sizes = [
-        { width: 210, height: 158 }, // Display size (4:3)
-        { width: 420, height: 315 }, // 2x / Retina (4:3)
-        { width: 630, height: 473 }  // 3x / high-density (4:3)
+        { width: 100, height: 75 }, // Display size (4:3)
+        { width: 200, height: 150 }, // 2x / Retina (4:3)
+        { width: 400, height: 300 }  // 3x / high-density (4:3)
     ];
 
     return sizes
