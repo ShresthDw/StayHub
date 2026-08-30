@@ -116,9 +116,9 @@ export const getCityCardSrcSet = (imageUrl) => {
     }
 
     const sizes = [
-        { width: 300, height: 169 }, // Mobile (16:9)
-        { width: 400, height: 225 }, // Tablet (16:9)
-        { width: 600, height: 338 }  // Desktop (16:9)
+        { width: 150, height: 100}, // Mobile (16:9)
+        { width: 210, height: 158 }, // Tablet (16:9)
+        { width: 210, height: 158 }  // Desktop (16:9)
     ];
 
     return sizes
@@ -154,9 +154,9 @@ export const getRoomCardSrcSet = (imageUrl) => {
     }
 
     const sizes = [
-        { width: 100, height: 75 }, // Display size (4:3)
-        { width: 200, height: 150 }, // 2x / Retina (4:3)
-        { width: 400, height: 300 }  // 3x / high-density (4:3)
+        { width: 150, height: 100 }, // Display size (4:3)
+        { width: 210, height: 158 }, // 2x / Retina (4:3)
+        { width: 210, height: 158 }  // 3x / high-density (4:3)
     ];
 
     return sizes
